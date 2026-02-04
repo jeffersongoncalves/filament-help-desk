@@ -8,30 +8,15 @@ Filament plugins for [jeffersongoncalves/laravel-help-desk](https://github.com/j
 
 ## Requirements
 
-| Branch | Filament | Laravel Help Desk | PHP    | Laravel    |
-|--------|----------|-------------------|--------|------------|
-| `1.x`  | `^3.0`   | `^1.0`            | `^8.1` | `^10\|^11\|^12` |
-| `2.x`  | `^4.0`   | `^2.0`            | `^8.2` | `^11\|^12` |
-| `3.x`  | `^5.0`   | `^3.0`            | `^8.3` | `^12`      |
+- PHP `^8.1`
+- Laravel `^10 | ^11 | ^12`
+- Filament `^3.0`
+- [jeffersongoncalves/laravel-help-desk](https://github.com/jeffersongoncalves/laravel-help-desk) `^1.0`
 
 ## Installation
 
-### Branch 1.x (Filament 3)
-
 ```bash
 composer require jeffersongoncalves/filament-help-desk:^1.0
-```
-
-### Branch 2.x (Filament 4) — future
-
-```bash
-composer require jeffersongoncalves/filament-help-desk:^2.0
-```
-
-### Branch 3.x (Filament 5) — future
-
-```bash
-composer require jeffersongoncalves/filament-help-desk:^3.0
 ```
 
 ### Publish config (optional)

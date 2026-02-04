@@ -17,8 +17,11 @@ use JeffersonGoncalves\FilamentHelpDesk\Concerns\InteractsWithTicketComments;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource;
 use JeffersonGoncalves\HelpDesk\Enums\TicketPriority;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Storage;
 use JeffersonGoncalves\HelpDesk\Models\CannedResponse;
 use JeffersonGoncalves\HelpDesk\Models\Ticket;
+use JeffersonGoncalves\HelpDesk\Services\AttachmentService;
 use JeffersonGoncalves\HelpDesk\Services\CommentService;
 use JeffersonGoncalves\HelpDesk\Services\TicketService;
 
@@ -73,7 +76,11 @@ class ViewTicket extends ViewRecord
                     ->multiple()
                     ->maxFiles(config('help-desk.ticket.max_attachments_per_comment', 5))
                     ->maxSize(config('help-desk.ticket.max_file_size', 10240))
-                    ->acceptedFileTypes(config('help-desk.ticket.allowed_extensions', []))
+                    ->acceptedFileTypes(
+                        collect(config('help-desk.ticket.allowed_extensions', []))
+                            ->map(fn (string $ext): string => '.' . $ext)
+                            ->toArray()
+                    )
                     ->disk(config('help-desk.ticket.attachment_disk', 'public'))
                     ->directory(config('help-desk.ticket.attachment_path', 'help-desk/attachments'))
                     ->columnSpanFull(),
@@ -92,28 +99,44 @@ class ViewTicket extends ViewRecord
         /** @var CommentService $commentService */
         $commentService = app(CommentService::class);
 
+        /** @var Ticket $ticket */
+        $ticket = $this->record;
+
         $author = Filament::auth()->user();
 
-        $options = [];
-
-        if (! empty($data['attachments'])) {
-            $options['attachments'] = $data['attachments'];
-        }
-
         if ($data['is_internal'] ?? false) {
-            $commentService->addNote(
-                ticket: $this->record,
+            $comment = $commentService->addNote(
+                ticket: $ticket,
                 author: $author,
                 body: $data['body'],
-                options: $options,
             );
         } else {
-            $commentService->addReply(
-                ticket: $this->record,
+            $comment = $commentService->addReply(
+                ticket: $ticket,
                 author: $author,
                 body: $data['body'],
-                options: $options,
             );
+        }
+
+        $attachments = $data['attachments'] ?? [];
+
+        if (! empty($attachments)) {
+            /** @var AttachmentService $attachmentService */
+            $attachmentService = app(AttachmentService::class);
+            $disk = config('help-desk.ticket.attachment_disk', 'local');
+
+            foreach ($attachments as $filePath) {
+                $storage = Storage::disk($disk);
+                $attachmentService->storeFromPath(
+                    ticket: $ticket,
+                    filePath: $filePath,
+                    fileName: basename($filePath),
+                    mimeType: $storage->mimeType($filePath) ?: 'application/octet-stream',
+                    fileSize: $storage->size($filePath) ?: 0,
+                    uploadedBy: $author,
+                    comment: $comment,
+                );
+            }
         }
 
         $this->commentForm->fill();
