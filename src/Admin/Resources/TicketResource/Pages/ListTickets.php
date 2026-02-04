@@ -18,26 +18,26 @@ class ListTickets extends ListRecords
     public function getTabs(): array
     {
         return [
-            'all' => Tab::make(__('filament-help-desk::filament-help-desk.resource.ticket.tabs.all'))
+            'all' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.all'))
                 ->badge(Ticket::query()->count()),
 
-            'open' => Tab::make(__('filament-help-desk::filament-help-desk.resource.ticket.tabs.open'))
+            'open' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.open'))
                 ->modifyQueryUsing(fn (Builder $query): Builder => $query->byStatus(TicketStatus::Open))
                 ->badge(Ticket::query()->byStatus(TicketStatus::Open)->count()),
 
-            'pending' => Tab::make(__('filament-help-desk::filament-help-desk.resource.ticket.tabs.pending'))
+            'pending' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.pending'))
                 ->modifyQueryUsing(fn (Builder $query): Builder => $query->byStatus(TicketStatus::Pending))
                 ->badge(Ticket::query()->byStatus(TicketStatus::Pending)->count()),
 
-            'in_progress' => Tab::make(__('filament-help-desk::filament-help-desk.resource.ticket.tabs.in_progress'))
+            'in_progress' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.in_progress'))
                 ->modifyQueryUsing(fn (Builder $query): Builder => $query->byStatus(TicketStatus::InProgress))
                 ->badge(Ticket::query()->byStatus(TicketStatus::InProgress)->count()),
 
-            'resolved' => Tab::make(__('filament-help-desk::filament-help-desk.resource.ticket.tabs.resolved'))
+            'resolved' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.resolved'))
                 ->modifyQueryUsing(fn (Builder $query): Builder => $query->byStatus(TicketStatus::Resolved))
                 ->badge(Ticket::query()->byStatus(TicketStatus::Resolved)->count()),
 
-            'closed' => Tab::make(__('filament-help-desk::filament-help-desk.resource.ticket.tabs.closed'))
+            'closed' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.closed'))
                 ->modifyQueryUsing(fn (Builder $query): Builder => $query->byStatus(TicketStatus::Closed))
                 ->badge(Ticket::query()->byStatus(TicketStatus::Closed)->count()),
         ];

@@ -9,6 +9,7 @@ use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketForm;
@@ -27,6 +28,8 @@ class TicketResource extends Resource
     use HasTicketTable;
 
     protected static ?string $model = Ticket::class;
+
+    protected static ?string $recordRouteKeyName = 'uuid';
 
     public static function getNavigationGroup(): ?string
     {
@@ -66,7 +69,7 @@ class TicketResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $user = auth()->user();
+        $user = Filament::auth()->user();
 
         $count = Ticket::query()
             ->where('assigned_to_type', get_class($user))
@@ -102,7 +105,7 @@ class TicketResource extends Resource
                     ->action(function (\Illuminate\Database\Eloquent\Collection $records): void {
                         /** @var TicketService $ticketService */
                         $ticketService = app(TicketService::class);
-                        $operator = auth()->user();
+                        $operator = Filament::auth()->user();
 
                         foreach ($records as $record) {
                             $ticketService->assign($record, $operator, $operator);
@@ -134,7 +137,7 @@ class TicketResource extends Resource
                         /** @var TicketService $ticketService */
                         $ticketService = app(TicketService::class);
                         $newStatus = TicketStatus::from($data['status']);
-                        $performer = auth()->user();
+                        $performer = Filament::auth()->user();
 
                         foreach ($records as $record) {
                             if ($record->status->canTransitionTo($newStatus)) {
@@ -167,7 +170,7 @@ class TicketResource extends Resource
                     ->action(function (\Illuminate\Database\Eloquent\Collection $records, array $data): void {
                         /** @var TicketService $ticketService */
                         $ticketService = app(TicketService::class);
-                        $performer = auth()->user();
+                        $performer = Filament::auth()->user();
 
                         foreach ($records as $record) {
                             $ticketService->update($record, ['priority' => $data['priority']], $performer);

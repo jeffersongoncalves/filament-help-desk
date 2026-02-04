@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource\Pages;
 
+use Filament\Facades\Filament;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,7 +17,7 @@ class ListTickets extends ListRecords
 
     public function getTabs(): array
     {
-        $user = auth()->user();
+        $user = Filament::auth()->user();
         $userType = get_class($user);
         $userId = $user->getAuthIdentifier();
 

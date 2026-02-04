@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Operator\Widgets;
 
+use Filament\Facades\Filament;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -29,10 +30,9 @@ class AssignedTicketsWidget extends BaseWidget
         return $table
             ->query(
                 Ticket::query()
-                    ->where('assigned_to_type', get_class(auth()->user()))
-                    ->where('assigned_to_id', auth()->id())
+                    ->where('assigned_to_type', get_class(Filament::auth()->user()))
+                    ->where('assigned_to_id', Filament::auth()->id())
                     ->open()
-                    ->latest()
                     ->limit(5)
             )
             ->columns([

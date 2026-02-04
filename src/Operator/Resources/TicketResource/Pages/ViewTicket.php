@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource\Pages;
 
 use Filament\Actions;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -91,7 +92,7 @@ class ViewTicket extends ViewRecord
         /** @var CommentService $commentService */
         $commentService = app(CommentService::class);
 
-        $author = auth()->user();
+        $author = Filament::auth()->user();
 
         $options = [];
 
@@ -125,9 +126,9 @@ class ViewTicket extends ViewRecord
         $this->dispatch('$refresh');
     }
 
-    public function getComments(): array
+    public function getComments(): \Illuminate\Database\Eloquent\Collection
     {
-        return $this->getCommentsForTimeline()->toArray();
+        return $this->getCommentsForTimeline();
     }
 
     protected function getHeaderActions(): array
@@ -138,13 +139,13 @@ class ViewTicket extends ViewRecord
                 ->icon('heroicon-o-user-plus')
                 ->color('primary')
                 ->requiresConfirmation()
-                ->visible(fn (): bool => $this->record->assigned_to_id !== auth()->id()
-                    || $this->record->assigned_to_type !== get_class(auth()->user()))
+                ->visible(fn (): bool => $this->record->assigned_to_id !== Filament::auth()->id()
+                    || $this->record->assigned_to_type !== get_class(Filament::auth()->user()))
                 ->action(function (): void {
                     /** @var TicketService $ticketService */
                     $ticketService = app(TicketService::class);
 
-                    $operator = auth()->user();
+                    $operator = Filament::auth()->user();
 
                     $ticketService->assign(
                         ticket: $this->record,
@@ -157,7 +158,8 @@ class ViewTicket extends ViewRecord
                         ->success()
                         ->send();
 
-                    $this->refreshFormData(['assigned_to_type', 'assigned_to_id']);
+                    $this->record->refresh();
+                    $this->dispatch('$refresh');
                 }),
 
             Actions\Action::make('change_status')
@@ -186,7 +188,7 @@ class ViewTicket extends ViewRecord
                     $ticketService->changeStatus(
                         ticket: $this->record,
                         newStatus: TicketStatus::from($data['status']),
-                        performer: auth()->user(),
+                        performer: Filament::auth()->user(),
                     );
 
                     Notification::make()
@@ -194,7 +196,8 @@ class ViewTicket extends ViewRecord
                         ->success()
                         ->send();
 
-                    $this->refreshFormData(['status']);
+                    $this->record->refresh();
+                    $this->dispatch('$refresh');
                 }),
 
             Actions\Action::make('change_priority')
@@ -221,7 +224,7 @@ class ViewTicket extends ViewRecord
                     $ticketService->update(
                         ticket: $this->record,
                         data: ['priority' => $data['priority']],
-                        performer: auth()->user(),
+                        performer: Filament::auth()->user(),
                     );
 
                     Notification::make()
@@ -229,14 +232,15 @@ class ViewTicket extends ViewRecord
                         ->success()
                         ->send();
 
-                    $this->refreshFormData(['priority']);
+                    $this->record->refresh();
+                    $this->dispatch('$refresh');
                 }),
 
             Actions\Action::make('use_canned_response')
                 ->label(__('filament-help-desk::filament-help-desk.actions.use_canned_response'))
                 ->icon('heroicon-o-document-text')
                 ->color('gray')
-                ->visible(fn (): bool => $this->record->isOpen())
+                ->visible(fn (): bool => ! in_array($this->record->status, [TicketStatus::Closed, TicketStatus::Resolved]))
                 ->form([
                     Select::make('canned_response_id')
                         ->label(__('filament-help-desk::filament-help-desk.placeholders.select_canned_response'))
@@ -264,7 +268,7 @@ class ViewTicket extends ViewRecord
 
                     $commentService->addReply(
                         ticket: $this->record,
-                        author: auth()->user(),
+                        author: Filament::auth()->user(),
                         body: $cannedResponse->body,
                     );
 
@@ -281,14 +285,14 @@ class ViewTicket extends ViewRecord
                 ->icon('heroicon-o-x-circle')
                 ->color('danger')
                 ->requiresConfirmation()
-                ->visible(fn (): bool => $this->record->isOpen())
+                ->visible(fn (): bool => ! in_array($this->record->status, [TicketStatus::Closed, TicketStatus::Resolved]))
                 ->action(function (): void {
                     /** @var TicketService $ticketService */
                     $ticketService = app(TicketService::class);
 
                     $ticketService->close(
                         ticket: $this->record,
-                        performer: auth()->user(),
+                        performer: Filament::auth()->user(),
                     );
 
                     Notification::make()
@@ -296,7 +300,8 @@ class ViewTicket extends ViewRecord
                         ->success()
                         ->send();
 
-                    $this->refreshFormData(['status']);
+                    $this->record->refresh();
+                    $this->dispatch('$refresh');
                 }),
 
             Actions\Action::make('reopen')
@@ -314,7 +319,7 @@ class ViewTicket extends ViewRecord
 
                     $ticketService->reopen(
                         ticket: $this->record,
-                        performer: auth()->user(),
+                        performer: Filament::auth()->user(),
                     );
 
                     Notification::make()
@@ -322,7 +327,8 @@ class ViewTicket extends ViewRecord
                         ->success()
                         ->send();
 
-                    $this->refreshFormData(['status']);
+                    $this->record->refresh();
+                    $this->dispatch('$refresh');
                 }),
 
             Actions\EditAction::make(),

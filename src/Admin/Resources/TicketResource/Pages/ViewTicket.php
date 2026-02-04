@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\TicketResource\Pages;
 
 use Filament\Actions;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -63,7 +64,7 @@ class ViewTicket extends ViewRecord
 
                 Toggle::make('is_internal')
                     ->label(__('filament-help-desk::filament-help-desk.fields.internal_note'))
-                    ->helperText(__('filament-help-desk::filament-help-desk.helpers.internal_note'))
+                    ->helperText(__('filament-help-desk::filament-help-desk.comments.internal_note_help'))
                     ->default(false),
 
                 FileUpload::make('attachments')
@@ -94,7 +95,7 @@ class ViewTicket extends ViewRecord
 
         return [
             Actions\Action::make('assign')
-                ->label(__('filament-help-desk::filament-help-desk.resource.ticket.actions.assign'))
+                ->label(__('filament-help-desk::filament-help-desk.actions.assign'))
                 ->icon('heroicon-o-user-plus')
                 ->color('info')
                 ->form([
@@ -110,22 +111,28 @@ class ViewTicket extends ViewRecord
                 ])
                 ->action(function (array $data): void {
                     $operatorModel = config('help-desk.models.operator');
+                    $operator = $operatorModel::find($data['assigned_to_id']);
 
-                    $this->record->update([
-                        'assigned_to_type' => $operatorModel,
-                        'assigned_to_id' => $data['assigned_to_id'],
-                    ]);
+                    /** @var TicketService $ticketService */
+                    $ticketService = app(TicketService::class);
+
+                    $ticketService->assign(
+                        ticket: $this->record,
+                        operator: $operator,
+                        assignedBy: Filament::auth()->user(),
+                    );
 
                     Notification::make()
-                        ->title(__('filament-help-desk::filament-help-desk.resource.ticket.notifications.ticket_assigned'))
+                        ->title(__('filament-help-desk::filament-help-desk.notifications.ticket_assigned'))
                         ->success()
                         ->send();
 
-                    $this->refreshFormData(['assigned_to_id', 'assigned_to_type']);
+                    $this->record->refresh();
+                    $this->dispatch('$refresh');
                 }),
 
             Actions\Action::make('change_status')
-                ->label(__('filament-help-desk::filament-help-desk.resource.ticket.actions.change_status'))
+                ->label(__('filament-help-desk::filament-help-desk.actions.change_status'))
                 ->icon('heroicon-o-arrow-path')
                 ->color('warning')
                 ->form([
@@ -142,18 +149,26 @@ class ViewTicket extends ViewRecord
                         ->required(),
                 ])
                 ->action(function (array $data): void {
-                    $this->record->update(['status' => $data['status']]);
+                    /** @var TicketService $ticketService */
+                    $ticketService = app(TicketService::class);
+
+                    $ticketService->changeStatus(
+                        ticket: $this->record,
+                        newStatus: TicketStatus::from($data['status']),
+                        performer: Filament::auth()->user(),
+                    );
 
                     Notification::make()
-                        ->title(__('filament-help-desk::filament-help-desk.resource.ticket.notifications.status_changed'))
+                        ->title(__('filament-help-desk::filament-help-desk.notifications.status_changed'))
                         ->success()
                         ->send();
 
-                    $this->refreshFormData(['status']);
+                    $this->record->refresh();
+                    $this->dispatch('$refresh');
                 }),
 
             Actions\Action::make('change_priority')
-                ->label(__('filament-help-desk::filament-help-desk.resource.ticket.actions.change_priority'))
+                ->label(__('filament-help-desk::filament-help-desk.actions.change_priority'))
                 ->icon('heroicon-o-flag')
                 ->color('gray')
                 ->form([
@@ -170,18 +185,26 @@ class ViewTicket extends ViewRecord
                         ->required(),
                 ])
                 ->action(function (array $data): void {
-                    $this->record->update(['priority' => $data['priority']]);
+                    /** @var TicketService $ticketService */
+                    $ticketService = app(TicketService::class);
+
+                    $ticketService->update(
+                        ticket: $this->record,
+                        data: ['priority' => $data['priority']],
+                        performer: Filament::auth()->user(),
+                    );
 
                     Notification::make()
-                        ->title(__('filament-help-desk::filament-help-desk.resource.ticket.notifications.priority_changed'))
+                        ->title(__('filament-help-desk::filament-help-desk.notifications.priority_changed'))
                         ->success()
                         ->send();
 
-                    $this->refreshFormData(['priority']);
+                    $this->record->refresh();
+                    $this->dispatch('$refresh');
                 }),
 
             Actions\Action::make('close')
-                ->label(__('filament-help-desk::filament-help-desk.resource.ticket.actions.close'))
+                ->label(__('filament-help-desk::filament-help-desk.actions.close_ticket'))
                 ->icon('heroicon-o-x-circle')
                 ->color('danger')
                 ->requiresConfirmation()
@@ -195,19 +218,20 @@ class ViewTicket extends ViewRecord
 
                     $ticketService->close(
                         ticket: $this->record,
-                        user: auth()->user(),
+                        performer: Filament::auth()->user(),
                     );
 
                     Notification::make()
-                        ->title(__('filament-help-desk::filament-help-desk.resource.ticket.notifications.ticket_closed'))
+                        ->title(__('filament-help-desk::filament-help-desk.notifications.ticket_closed'))
                         ->success()
                         ->send();
 
-                    $this->refreshFormData(['status', 'closed_at']);
+                    $this->record->refresh();
+                    $this->dispatch('$refresh');
                 }),
 
             Actions\Action::make('reopen')
-                ->label(__('filament-help-desk::filament-help-desk.resource.ticket.actions.reopen'))
+                ->label(__('filament-help-desk::filament-help-desk.actions.reopen_ticket'))
                 ->icon('heroicon-o-arrow-path')
                 ->color('success')
                 ->requiresConfirmation()
@@ -221,15 +245,16 @@ class ViewTicket extends ViewRecord
 
                     $ticketService->reopen(
                         ticket: $this->record,
-                        user: auth()->user(),
+                        performer: Filament::auth()->user(),
                     );
 
                     Notification::make()
-                        ->title(__('filament-help-desk::filament-help-desk.resource.ticket.notifications.ticket_reopened'))
+                        ->title(__('filament-help-desk::filament-help-desk.notifications.ticket_reopened'))
                         ->success()
                         ->send();
 
-                    $this->refreshFormData(['status', 'closed_at']);
+                    $this->record->refresh();
+                    $this->dispatch('$refresh');
                 }),
 
             Actions\DeleteAction::make()
@@ -239,9 +264,7 @@ class ViewTicket extends ViewRecord
 
     public function getTitle(): string
     {
-        return __('filament-help-desk::filament-help-desk.resource.ticket.pages.view.title', [
-            'reference' => $this->record->reference_number,
-        ]);
+        return __('filament-help-desk::filament-help-desk.actions.view_ticket') . ': ' . $this->record->reference_number;
     }
 
     protected function getForms(): array

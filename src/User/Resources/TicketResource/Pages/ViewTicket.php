@@ -5,11 +5,14 @@ declare(strict_types=1);
 namespace JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource\Pages;
 
 use Filament\Actions;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\InteractsWithTicketComments;
 use JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
@@ -44,7 +47,7 @@ class ViewTicket extends ViewRecord
         return $form
             ->schema([
                 RichEditor::make('body')
-                    ->label(__('filament-help-desk::filament-help-desk.resource.ticket.fields.comment_body'))
+                    ->label(__('filament-help-desk::filament-help-desk.comments.reply'))
                     ->required()
                     ->toolbarButtons([
                         'bold',
@@ -60,7 +63,7 @@ class ViewTicket extends ViewRecord
                     ->columnSpanFull(),
 
                 FileUpload::make('attachments')
-                    ->label(__('filament-help-desk::filament-help-desk.resource.ticket.fields.attachments'))
+                    ->label(__('filament-help-desk::filament-help-desk.fields.attachments'))
                     ->multiple()
                     ->maxFiles(config('help-desk.ticket.max_attachments_per_comment', 5))
                     ->maxSize(config('help-desk.ticket.max_file_size', 10240))
@@ -80,12 +83,14 @@ class ViewTicket extends ViewRecord
             return;
         }
 
+        $user = Filament::auth()->user();
+
         /** @var CommentService $commentService */
         $commentService = app(CommentService::class);
 
         $comment = $commentService->addReply(
             ticket: $this->record,
-            author: auth()->user(),
+            author: $user,
             body: $data['body'],
         );
 
@@ -94,12 +99,17 @@ class ViewTicket extends ViewRecord
         if (! empty($attachments)) {
             /** @var AttachmentService $attachmentService */
             $attachmentService = app(AttachmentService::class);
+            $disk = config('help-desk.ticket.attachment_disk', 'public');
 
-            foreach ($attachments as $attachment) {
-                $attachmentService->store(
+            foreach ($attachments as $filePath) {
+                $storage = Storage::disk($disk);
+                $attachmentService->storeFromPath(
                     ticket: $this->record,
-                    file: $attachment,
-                    author: auth()->user(),
+                    filePath: $filePath,
+                    fileName: basename($filePath),
+                    mimeType: $storage->mimeType($filePath) ?: 'application/octet-stream',
+                    fileSize: $storage->size($filePath) ?: 0,
+                    uploadedBy: $user,
                     comment: $comment,
                 );
             }
@@ -108,12 +118,14 @@ class ViewTicket extends ViewRecord
         $this->commentForm->fill();
 
         Notification::make()
-            ->title(__('filament-help-desk::filament-help-desk.resource.ticket.notifications.comment_added'))
+            ->title(__('filament-help-desk::filament-help-desk.notifications.comment_added'))
             ->success()
             ->send();
+
+        $this->dispatch('$refresh');
     }
 
-    public function getComments(): array
+    public function getComments(): Collection
     {
         return $this->getCommentsForTimeline();
     }
@@ -122,12 +134,10 @@ class ViewTicket extends ViewRecord
     {
         return [
             Actions\Action::make('close')
-                ->label(__('filament-help-desk::filament-help-desk.resource.ticket.actions.close'))
+                ->label(__('filament-help-desk::filament-help-desk.actions.close_ticket'))
                 ->icon('heroicon-o-x-circle')
                 ->color('danger')
                 ->requiresConfirmation()
-                ->modalHeading(__('filament-help-desk::filament-help-desk.resource.ticket.actions.close_confirm_heading'))
-                ->modalDescription(__('filament-help-desk::filament-help-desk.resource.ticket.actions.close_confirm_description'))
                 ->visible(fn (): bool => in_array($this->record->status, [
                     TicketStatus::Open,
                     TicketStatus::InProgress,
@@ -140,11 +150,13 @@ class ViewTicket extends ViewRecord
 
                     $ticketService->close(
                         ticket: $this->record,
-                        user: auth()->user(),
+                        performer: Filament::auth()->user(),
                     );
 
+                    $this->record->refresh();
+
                     Notification::make()
-                        ->title(__('filament-help-desk::filament-help-desk.resource.ticket.notifications.ticket_closed'))
+                        ->title(__('filament-help-desk::filament-help-desk.notifications.ticket_closed'))
                         ->success()
                         ->send();
 
@@ -152,12 +164,10 @@ class ViewTicket extends ViewRecord
                 }),
 
             Actions\Action::make('reopen')
-                ->label(__('filament-help-desk::filament-help-desk.resource.ticket.actions.reopen'))
+                ->label(__('filament-help-desk::filament-help-desk.actions.reopen_ticket'))
                 ->icon('heroicon-o-arrow-path')
                 ->color('warning')
                 ->requiresConfirmation()
-                ->modalHeading(__('filament-help-desk::filament-help-desk.resource.ticket.actions.reopen_confirm_heading'))
-                ->modalDescription(__('filament-help-desk::filament-help-desk.resource.ticket.actions.reopen_confirm_description'))
                 ->visible(fn (): bool => in_array($this->record->status, [
                     TicketStatus::Closed,
                     TicketStatus::Resolved,
@@ -168,11 +178,13 @@ class ViewTicket extends ViewRecord
 
                     $ticketService->reopen(
                         ticket: $this->record,
-                        user: auth()->user(),
+                        performer: Filament::auth()->user(),
                     );
 
+                    $this->record->refresh();
+
                     Notification::make()
-                        ->title(__('filament-help-desk::filament-help-desk.resource.ticket.notifications.ticket_reopened'))
+                        ->title(__('filament-help-desk::filament-help-desk.notifications.ticket_reopened'))
                         ->success()
                         ->send();
 
@@ -183,9 +195,7 @@ class ViewTicket extends ViewRecord
 
     public function getTitle(): string
     {
-        return __('filament-help-desk::filament-help-desk.resource.ticket.pages.view.title', [
-            'reference' => $this->record->reference_number,
-        ]);
+        return __('filament-help-desk::filament-help-desk.actions.view_ticket') . ': ' . $this->record->reference_number;
     }
 
     protected function getForms(): array

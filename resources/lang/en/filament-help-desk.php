@@ -131,6 +131,7 @@ return [
         'reply_placeholder' => 'Write your reply...',
         'internal_note_help' => 'Internal notes are only visible to operators and admins.',
         'submitted' => 'Comment submitted successfully.',
+        'ticket_closed_message' => 'This ticket is currently :status. Reopen it to add new replies.',
     ],
 
     /*

@@ -44,11 +44,6 @@ class EditTicket extends EditRecord
         return $form->schema($schema);
     }
 
-    protected function mutateFormDataBeforeFill(array $data): array
-    {
-        return $data;
-    }
-
     protected function mutateFormDataBeforeSave(array $data): array
     {
         if (array_key_exists('assigned_to_id', $data)) {

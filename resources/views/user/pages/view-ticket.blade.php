@@ -6,10 +6,13 @@
 
     {{-- Comments Timeline --}}
     <x-filament::section
-        :heading="__('filament-help-desk::filament-help-desk.resource.ticket.sections.comments')"
+        :heading="__('filament-help-desk::filament-help-desk.comments.reply')"
         icon="heroicon-o-chat-bubble-left-right"
     >
-        @include('filament-help-desk::ticket.timeline', ['comments' => $this->getComments()])
+        @include('filament-help-desk::ticket.timeline', [
+            'comments' => $this->getComments(),
+            'showInternal' => false,
+        ])
     </x-filament::section>
 
     {{-- Reply Form --}}
@@ -20,7 +23,7 @@
         \JeffersonGoncalves\HelpDesk\Enums\TicketStatus::OnHold,
     ]))
         <x-filament::section
-            :heading="__('filament-help-desk::filament-help-desk.resource.ticket.sections.reply')"
+            :heading="__('filament-help-desk::filament-help-desk.actions.add_comment')"
             icon="heroicon-o-paper-airplane"
         >
             <form wire:submit="submitComment">
@@ -28,7 +31,7 @@
 
                 <div class="mt-4 flex justify-end">
                     <x-filament::button type="submit">
-                        {{ __('filament-help-desk::filament-help-desk.resource.ticket.actions.submit_reply') }}
+                        {{ __('filament-help-desk::filament-help-desk.actions.submit_reply') }}
                     </x-filament::button>
                 </div>
             </form>
@@ -36,7 +39,9 @@
     @else
         <x-filament::section>
             <div class="text-center text-sm text-gray-500 dark:text-gray-400">
-                {{ __('filament-help-desk::filament-help-desk.resource.ticket.messages.ticket_closed_no_reply') }}
+                {{ __('filament-help-desk::filament-help-desk.comments.ticket_closed_message', [
+                    'status' => $this->record->status->label(),
+                ]) }}
             </div>
         </x-filament::section>
     @endif

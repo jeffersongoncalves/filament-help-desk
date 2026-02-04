@@ -69,14 +69,12 @@ trait HasTicketTable
 
             TextColumn::make('assignedTo.name')
                 ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
-                ->sortable()
                 ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.unassigned')),
         ];
 
         if ($showUser) {
             $columns[] = TextColumn::make('user.name')
-                ->label(__('filament-help-desk::filament-help-desk.fields.requester'))
-                ->sortable();
+                ->label(__('filament-help-desk::filament-help-desk.fields.requester'));
         }
 
         $columns[] = TextColumn::make('created_at')

@@ -53,8 +53,7 @@ trait HasTicketForm
                 )
                 ->required()
                 ->searchable()
-                ->preload()
-                ->reactive()
+                ->live()
                 ->afterStateUpdated(function (Set $set): void {
                     $set('category_id', null);
                 }),
@@ -76,7 +75,6 @@ trait HasTicketForm
                         ->toArray();
                 })
                 ->searchable()
-                ->preload()
                 ->visible(fn (Get $get): bool => filled($get('department_id'))),
 
             Select::make('priority')
@@ -113,9 +111,12 @@ trait HasTicketForm
         return array_merge($schema, [
             Select::make('assigned_to_id')
                 ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
-                ->relationship('assignedTo', 'name')
+                ->options(function (): array {
+                    $operatorModel = config('help-desk.models.operator');
+
+                    return $operatorModel::query()->pluck('name', 'id')->toArray();
+                })
                 ->searchable()
-                ->preload()
                 ->nullable(),
 
             Select::make('status')
@@ -161,8 +162,7 @@ trait HasTicketForm
                 )
                 ->required()
                 ->searchable()
-                ->preload()
-                ->reactive()
+                ->live()
                 ->afterStateUpdated(function (Set $set): void {
                     $set('category_id', null);
                 }),
@@ -183,8 +183,7 @@ trait HasTicketForm
                         ->pluck('name', 'id')
                         ->toArray();
                 })
-                ->searchable()
-                ->preload(),
+                ->searchable(),
 
             Select::make('priority')
                 ->label(__('filament-help-desk::filament-help-desk.fields.priority'))

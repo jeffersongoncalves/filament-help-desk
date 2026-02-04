@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\User\Resources;
 
+use Filament\Facades\Filament;
 use Filament\Forms\Form;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
@@ -23,6 +24,8 @@ class TicketResource extends Resource
 
     protected static ?string $model = Ticket::class;
 
+    protected static ?string $recordRouteKeyName = 'uuid';
+
     public static function getNavigationGroup(): ?string
     {
         return __(config('filament-help-desk.user.navigation_group', 'Support'));
@@ -41,17 +44,17 @@ class TicketResource extends Resource
     public static function getNavigationLabel(): string
     {
         return config('filament-help-desk.user.navigation_label')
-            ?? __('filament-help-desk::filament-help-desk.resource.ticket.navigation_label');
+            ?? __('filament-help-desk::filament-help-desk.navigation.tickets');
     }
 
     public static function getModelLabel(): string
     {
-        return __('filament-help-desk::filament-help-desk.resource.ticket.model_label');
+        return __('filament-help-desk::filament-help-desk.navigation.tickets');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('filament-help-desk::filament-help-desk.resource.ticket.plural_model_label');
+        return __('filament-help-desk::filament-help-desk.navigation.tickets');
     }
 
     public static function getSlug(): string
@@ -72,7 +75,7 @@ class TicketResource extends Resource
             ->filters(static::getTicketTableFilters())
             ->defaultSort('created_at', 'desc')
             ->modifyQueryUsing(function (Builder $query): Builder {
-                $user = auth()->user();
+                $user = Filament::auth()->user();
 
                 return $query
                     ->where('user_type', get_class($user))

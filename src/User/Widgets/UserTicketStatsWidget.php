@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\User\Widgets;
 
+use Filament\Facades\Filament;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
@@ -13,7 +14,7 @@ class UserTicketStatsWidget extends StatsOverviewWidget
 {
     protected function getStats(): array
     {
-        $user = auth()->user();
+        $user = Filament::auth()->user();
 
         $baseQuery = Ticket::query()
             ->where('user_type', get_class($user))

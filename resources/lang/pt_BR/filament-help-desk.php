@@ -131,6 +131,7 @@ return [
         'reply_placeholder' => 'Escreva sua resposta...',
         'internal_note_help' => 'Notas internas são visíveis apenas para operadores e administradores.',
         'submitted' => 'Comentário enviado com sucesso.',
+        'ticket_closed_message' => 'Este ticket está atualmente :status. Reabra-o para adicionar novas respostas.',
     ],
 
     /*

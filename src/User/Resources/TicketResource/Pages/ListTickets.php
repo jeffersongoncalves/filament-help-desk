@@ -16,7 +16,7 @@ class ListTickets extends ListRecords
     {
         return [
             Actions\CreateAction::make()
-                ->label(__('filament-help-desk::filament-help-desk.resource.ticket.actions.create')),
+                ->label(__('filament-help-desk::filament-help-desk.actions.create_ticket')),
         ];
     }
 }

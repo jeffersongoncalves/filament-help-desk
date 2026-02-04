@@ -4,7 +4,7 @@
         {{ $this->infolist }}
     </div>
 
-    {{-- Comments Timeline (operators can see internal notes) --}}
+    {{-- Comments Timeline (admins can see internal notes) --}}
     <x-filament::section
         :heading="__('filament-help-desk::filament-help-desk.comments.reply')"
         icon="heroicon-o-chat-bubble-left-right"
