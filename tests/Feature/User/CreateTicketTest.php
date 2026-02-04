@@ -1,7 +1,5 @@
 <?php
 
-use Filament\Panel;
-use JeffersonGoncalves\FilamentHelpDesk\FilamentHelpDeskUserPlugin;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\DepartmentFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\UserFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Models\User;
@@ -13,15 +11,7 @@ use function Pest\Livewire\livewire;
 beforeEach(function () {
     $this->user = UserFactory::new()->create();
 
-    $panel = Panel::make()
-        ->default()
-        ->id('user')
-        ->path('user')
-        ->login()
-        ->plugin(FilamentHelpDeskUserPlugin::make());
-
-    filament()->registerPanel($panel);
-    filament()->setCurrentPanel($panel);
+    filament()->setCurrentPanel(filament()->getPanel('user'));
 
     $this->actingAs($this->user);
 });

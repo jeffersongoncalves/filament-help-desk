@@ -15,6 +15,9 @@ use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use JeffersonGoncalves\FilamentHelpDesk\FilamentHelpDeskServiceProvider;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Models\User;
+use JeffersonGoncalves\FilamentHelpDesk\Tests\Panel\AdminPanelProvider;
+use JeffersonGoncalves\FilamentHelpDesk\Tests\Panel\OperatorPanelProvider;
+use JeffersonGoncalves\FilamentHelpDesk\Tests\Panel\UserPanelProvider;
 use JeffersonGoncalves\HelpDesk\HelpDeskServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -48,6 +51,9 @@ class TestCase extends Orchestra
             WidgetsServiceProvider::class,
             HelpDeskServiceProvider::class,
             FilamentHelpDeskServiceProvider::class,
+            UserPanelProvider::class,
+            OperatorPanelProvider::class,
+            AdminPanelProvider::class,
         ];
     }
 

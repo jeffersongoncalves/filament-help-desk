@@ -1,9 +1,7 @@
 <?php
 
-use Filament\Panel;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CannedResponseResource\Pages\CreateCannedResponse;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CannedResponseResource\Pages\ListCannedResponses;
-use JeffersonGoncalves\FilamentHelpDesk\FilamentHelpDeskAdminPlugin;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\UserFactory;
 use JeffersonGoncalves\HelpDesk\Models\CannedResponse;
 
@@ -12,15 +10,7 @@ use function Pest\Livewire\livewire;
 beforeEach(function () {
     $this->admin = UserFactory::new()->create();
 
-    $panel = Panel::make()
-        ->default()
-        ->id('admin')
-        ->path('admin')
-        ->login()
-        ->plugin(FilamentHelpDeskAdminPlugin::make());
-
-    filament()->registerPanel($panel);
-    filament()->setCurrentPanel($panel);
+    filament()->setCurrentPanel(filament()->getPanel('admin'));
 
     $this->actingAs($this->admin);
 });

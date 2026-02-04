@@ -1,9 +1,7 @@
 <?php
 
-use Filament\Panel;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CategoryResource\Pages\CreateCategory;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CategoryResource\Pages\ListCategories;
-use JeffersonGoncalves\FilamentHelpDesk\FilamentHelpDeskAdminPlugin;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\DepartmentFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\UserFactory;
 use JeffersonGoncalves\HelpDesk\Models\Category;
@@ -13,15 +11,7 @@ use function Pest\Livewire\livewire;
 beforeEach(function () {
     $this->admin = UserFactory::new()->create();
 
-    $panel = Panel::make()
-        ->default()
-        ->id('admin')
-        ->path('admin')
-        ->login()
-        ->plugin(FilamentHelpDeskAdminPlugin::make());
-
-    filament()->registerPanel($panel);
-    filament()->setCurrentPanel($panel);
+    filament()->setCurrentPanel(filament()->getPanel('admin'));
 
     $this->actingAs($this->admin);
 });
