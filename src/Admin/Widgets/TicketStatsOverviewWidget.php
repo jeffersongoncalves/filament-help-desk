@@ -132,7 +132,7 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
         string $color,
     ): Stat {
         $diff = $current - $previous;
-        $trend = $diff > 0 ? '+' . $diff : (string) $diff;
+        $trend = $diff > 0 ? '+'.$diff : (string) $diff;
 
         $description = __('filament-help-desk::filament-help-desk.widgets.admin_stats.trend_description', [
             'trend' => $trend,

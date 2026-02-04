@@ -8,7 +8,6 @@ use Filament\Facades\Filament;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
-use Illuminate\Database\Eloquent\Builder;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource;
 use JeffersonGoncalves\HelpDesk\Enums\TicketPriority;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;

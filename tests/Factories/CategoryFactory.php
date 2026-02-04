@@ -5,7 +5,6 @@ namespace JeffersonGoncalves\FilamentHelpDesk\Tests\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use JeffersonGoncalves\HelpDesk\Models\Category;
-use JeffersonGoncalves\HelpDesk\Models\Department;
 
 class CategoryFactory extends Factory
 {

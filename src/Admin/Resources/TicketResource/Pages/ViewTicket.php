@@ -74,7 +74,7 @@ class ViewTicket extends ViewRecord
                     ->maxSize(config('help-desk.ticket.max_file_size', 10240))
                     ->acceptedFileTypes(
                         collect(config('help-desk.ticket.allowed_extensions', []))
-                            ->map(fn (string $ext): string => '.' . $ext)
+                            ->map(fn (string $ext): string => '.'.$ext)
                             ->toArray()
                     )
                     ->disk(config('help-desk.ticket.attachment_disk', 'local'))
@@ -264,7 +264,7 @@ class ViewTicket extends ViewRecord
 
     public function getTitle(): string
     {
-        return __('filament-help-desk::filament-help-desk.actions.view_ticket') . ': ' . $this->record->reference_number;
+        return __('filament-help-desk::filament-help-desk.actions.view_ticket').': '.$this->record->reference_number;
     }
 
     protected function getForms(): array

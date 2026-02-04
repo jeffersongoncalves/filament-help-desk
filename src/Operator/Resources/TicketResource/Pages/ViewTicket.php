@@ -13,12 +13,11 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
+use Illuminate\Support\Facades\Storage;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\InteractsWithTicketComments;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource;
 use JeffersonGoncalves\HelpDesk\Enums\TicketPriority;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Storage;
 use JeffersonGoncalves\HelpDesk\Models\CannedResponse;
 use JeffersonGoncalves\HelpDesk\Models\Ticket;
 use JeffersonGoncalves\HelpDesk\Services\AttachmentService;
@@ -78,7 +77,7 @@ class ViewTicket extends ViewRecord
                     ->maxSize(config('help-desk.ticket.max_file_size', 10240))
                     ->acceptedFileTypes(
                         collect(config('help-desk.ticket.allowed_extensions', []))
-                            ->map(fn (string $ext): string => '.' . $ext)
+                            ->map(fn (string $ext): string => '.'.$ext)
                             ->toArray()
                     )
                     ->disk(config('help-desk.ticket.attachment_disk', 'public'))
@@ -360,7 +359,7 @@ class ViewTicket extends ViewRecord
 
     public function getTitle(): string
     {
-        return __('filament-help-desk::filament-help-desk.actions.view_ticket') . ': ' . $this->record->reference_number;
+        return __('filament-help-desk::filament-help-desk.actions.view_ticket').': '.$this->record->reference_number;
     }
 
     protected function getForms(): array

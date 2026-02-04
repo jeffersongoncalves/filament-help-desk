@@ -195,7 +195,7 @@ class ViewTicket extends ViewRecord
 
     public function getTitle(): string
     {
-        return __('filament-help-desk::filament-help-desk.actions.view_ticket') . ': ' . $this->record->reference_number;
+        return __('filament-help-desk::filament-help-desk.actions.view_ticket').': '.$this->record->reference_number;
     }
 
     protected function getForms(): array

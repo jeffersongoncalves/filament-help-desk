@@ -30,7 +30,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'JeffersonGoncalves\\FilamentHelpDesk\\Tests\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => 'JeffersonGoncalves\\FilamentHelpDesk\\Tests\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 
@@ -59,7 +59,7 @@ class TestCase extends Orchestra
 
     protected function defineDatabaseMigrations(): void
     {
-        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
     }
 
     protected function getEnvironmentSetUp($app): void
@@ -75,6 +75,6 @@ class TestCase extends Orchestra
         config()->set('help-desk.models.operator', User::class);
         config()->set('help-desk.register_default_listeners', false);
 
-        config()->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
+        config()->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
     }
 }

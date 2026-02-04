@@ -1,6 +1,5 @@
 <?php
 
-use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\DepartmentResource;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\DepartmentResource\Pages\CreateDepartment;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\DepartmentResource\Pages\EditDepartment;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\DepartmentResource\Pages\ListDepartments;

@@ -6,7 +6,6 @@ namespace JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource\Page
 
 use Filament\Facades\Filament;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource;
 use JeffersonGoncalves\HelpDesk\Models\Ticket;

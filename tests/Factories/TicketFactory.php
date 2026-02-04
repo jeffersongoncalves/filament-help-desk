@@ -17,7 +17,7 @@ class TicketFactory extends Factory
     {
         return [
             'uuid' => (string) Str::uuid(),
-            'reference_number' => 'HD-' . str_pad((string) fake()->unique()->numberBetween(1, 99999), 5, '0', STR_PAD_LEFT),
+            'reference_number' => 'HD-'.str_pad((string) fake()->unique()->numberBetween(1, 99999), 5, '0', STR_PAD_LEFT),
             'department_id' => DepartmentFactory::new(),
             'category_id' => null,
             'user_type' => User::class,

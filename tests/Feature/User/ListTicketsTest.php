@@ -4,7 +4,6 @@ use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\DepartmentFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\TicketFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\UserFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Models\User;
-use JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource;
 use JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource\Pages\ListTickets;
 
 use function Pest\Livewire\livewire;

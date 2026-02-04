@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Operator\Resources;
 
+use Filament\Facades\Filament;
 use Filament\Forms\Form;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Facades\Filament;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketForm;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketInfolist;

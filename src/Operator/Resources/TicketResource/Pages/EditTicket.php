@@ -12,7 +12,6 @@ use Filament\Resources\Pages\EditRecord;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketForm;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource;
 use JeffersonGoncalves\HelpDesk\Models\Ticket;
-use JeffersonGoncalves\HelpDesk\Services\TicketService;
 
 /**
  * @property-read Ticket $record
@@ -80,6 +79,6 @@ class EditTicket extends EditRecord
 
     public function getTitle(): string
     {
-        return __('filament-help-desk::filament-help-desk.actions.edit_ticket') . ': ' . $this->record->reference_number;
+        return __('filament-help-desk::filament-help-desk.actions.edit_ticket').': '.$this->record->reference_number;
     }
 }
