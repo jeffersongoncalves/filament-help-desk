@@ -42,7 +42,7 @@ class TicketsByPriorityWidget extends ChartWidget
             $counts[] = Ticket::query()
                 ->byPriority($priority)
                 ->count();
-            $colors[] = $colorMap[$priority->value] ?? 'rgb(156, 163, 175)';
+            $colors[] = $colorMap[$priority->value];
         }
 
         return [

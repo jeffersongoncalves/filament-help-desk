@@ -27,7 +27,7 @@ class EditTicket extends EditRecord
     {
         $schema = static::getTicketEditFormSchema();
 
-        $operatorModel = config('help-desk.models.operator', \App\Models\User::class);
+        $operatorModel = config('help-desk.models.operator');
 
         $schema[] = Select::make('assigned_to_id')
             ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
@@ -48,7 +48,7 @@ class EditTicket extends EditRecord
     {
         if (array_key_exists('assigned_to_id', $data)) {
             if ($data['assigned_to_id'] !== null) {
-                $operatorModel = config('help-desk.models.operator', \App\Models\User::class);
+                $operatorModel = config('help-desk.models.operator');
                 $data['assigned_to_type'] = $operatorModel;
             } else {
                 $data['assigned_to_type'] = null;

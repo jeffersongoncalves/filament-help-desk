@@ -51,7 +51,7 @@ class TicketsByStatusWidget extends ChartWidget
 
             $labels[] = $status->label();
             $data[] = $count;
-            $colors[] = $colorMap[$status->value] ?? '#9ca3af';
+            $colors[] = $colorMap[$status->value];
         }
 
         return [
