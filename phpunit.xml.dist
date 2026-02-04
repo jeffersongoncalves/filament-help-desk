@@ -28,12 +28,12 @@
         </include>
     </source>
     <php>
-        <env name="APP_KEY" value="base64:dGVzdGluZ2tleXRoYXRpc2V4YWN0bHkzMmJ5dA=="/>
+        <env name="APP_KEY" value="base64:dGVzdGluZ2tleXRoYXRpc2Z1bGwzMmJ5dGVzbG9uZyE="/>
         <env name="DB_CONNECTION" value="testing"/>
         <env name="DB_DATABASE" value=":memory:"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>
-        <env name="QUEUE_DRIVER" value="sync"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="MAIL_MAILER" value="array"/>
     </php>
 </phpunit>

@@ -9,15 +9,11 @@ use Filament\FilamentServiceProvider;
 use Filament\Forms\FormsServiceProvider;
 use Filament\Infolists\InfolistsServiceProvider;
 use Filament\Notifications\NotificationsServiceProvider;
-use Filament\Panel;
 use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use JeffersonGoncalves\FilamentHelpDesk\FilamentHelpDeskAdminPlugin;
-use JeffersonGoncalves\FilamentHelpDesk\FilamentHelpDeskOperatorPlugin;
 use JeffersonGoncalves\FilamentHelpDesk\FilamentHelpDeskServiceProvider;
-use JeffersonGoncalves\FilamentHelpDesk\FilamentHelpDeskUserPlugin;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Models\User;
 use JeffersonGoncalves\HelpDesk\HelpDeskServiceProvider;
 use Livewire\LivewireServiceProvider;
@@ -74,31 +70,5 @@ class TestCase extends Orchestra
         config()->set('help-desk.register_default_listeners', false);
 
         config()->set('app.key', 'base64:' . base64_encode(random_bytes(32)));
-    }
-
-    protected function registerTestPanels(): void
-    {
-        $userPanel = Panel::make()
-            ->default()
-            ->id('user')
-            ->path('user')
-            ->login()
-            ->plugin(FilamentHelpDeskUserPlugin::make());
-
-        $operatorPanel = Panel::make()
-            ->id('operator')
-            ->path('operator')
-            ->login()
-            ->plugin(FilamentHelpDeskOperatorPlugin::make());
-
-        $adminPanel = Panel::make()
-            ->id('admin')
-            ->path('admin')
-            ->login()
-            ->plugin(FilamentHelpDeskAdminPlugin::make());
-
-        filament()->registerPanel($userPanel);
-        filament()->registerPanel($operatorPanel);
-        filament()->registerPanel($adminPanel);
     }
 }
