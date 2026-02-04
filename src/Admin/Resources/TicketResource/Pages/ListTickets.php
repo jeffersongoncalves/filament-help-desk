@@ -33,6 +33,10 @@ class ListTickets extends ListRecords
                 ->modifyQueryUsing(fn (Builder $query): Builder => $query->byStatus(TicketStatus::InProgress))
                 ->badge(Ticket::query()->byStatus(TicketStatus::InProgress)->count()),
 
+            'on_hold' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.on_hold'))
+                ->modifyQueryUsing(fn (Builder $query): Builder => $query->byStatus(TicketStatus::OnHold))
+                ->badge(Ticket::query()->byStatus(TicketStatus::OnHold)->count()),
+
             'resolved' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.resolved'))
                 ->modifyQueryUsing(fn (Builder $query): Builder => $query->byStatus(TicketStatus::Resolved))
                 ->badge(Ticket::query()->byStatus(TicketStatus::Resolved)->count()),

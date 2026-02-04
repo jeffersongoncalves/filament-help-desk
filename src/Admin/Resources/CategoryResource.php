@@ -69,7 +69,7 @@ class CategoryResource extends Resource
                     ->required()
                     ->searchable()
                     ->preload()
-                    ->reactive()
+                    ->live()
                     ->afterStateUpdated(function (Set $set): void {
                         $set('parent_id', null);
                     }),
@@ -114,6 +114,7 @@ class CategoryResource extends Resource
                     ->label(__('filament-help-desk::filament-help-desk.fields.slug'))
                     ->disabled(fn (string $operation): bool => $operation === 'edit')
                     ->dehydrated()
+                    ->required()
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
 

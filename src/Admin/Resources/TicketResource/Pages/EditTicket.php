@@ -12,6 +12,20 @@ class EditTicket extends EditRecord
 {
     protected static string $resource = TicketResource::class;
 
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        if (array_key_exists('assigned_to_id', $data)) {
+            if ($data['assigned_to_id'] !== null) {
+                $operatorModel = config('help-desk.models.operator', \App\Models\User::class);
+                $data['assigned_to_type'] = $operatorModel;
+            } else {
+                $data['assigned_to_type'] = null;
+            }
+        }
+
+        return $data;
+    }
+
     protected function getHeaderActions(): array
     {
         return [

@@ -60,8 +60,8 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
             ->whereNotNull('due_at')
             ->where('due_at', '<', Carbon::now())
             ->whereNotIn('status', [
-                TicketStatus::Closed,
-                TicketStatus::Resolved,
+                TicketStatus::Closed->value,
+                TicketStatus::Resolved->value,
             ])
             ->count();
         $overdueLastWeek = Ticket::query()
@@ -69,8 +69,8 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
             ->where('due_at', '<', Carbon::now())
             ->where('due_at', '>=', $sevenDaysAgo)
             ->whereNotIn('status', [
-                TicketStatus::Closed,
-                TicketStatus::Resolved,
+                TicketStatus::Closed->value,
+                TicketStatus::Resolved->value,
             ])
             ->count();
         $overduePreviousWeek = Ticket::query()
@@ -79,8 +79,8 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
             ->where('due_at', '>=', $fourteenDaysAgo)
             ->where('due_at', '<', $sevenDaysAgo)
             ->whereNotIn('status', [
-                TicketStatus::Closed,
-                TicketStatus::Resolved,
+                TicketStatus::Closed->value,
+                TicketStatus::Resolved->value,
             ])
             ->count();
 
