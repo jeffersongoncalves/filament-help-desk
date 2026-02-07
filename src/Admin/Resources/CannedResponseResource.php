@@ -99,7 +99,7 @@ class CannedResponseResource extends Resource
 
                 TextColumn::make('department.name')
                     ->label(__('filament-help-desk::filament-help-desk.fields.department'))
-                    ->default(__('filament-help-desk::filament-help-desk.placeholders.all_departments'))
+                    ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.all_departments'))
                     ->sortable(),
 
                 IconColumn::make('is_active')

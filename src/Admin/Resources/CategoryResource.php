@@ -148,7 +148,7 @@ class CategoryResource extends Resource
 
                 TextColumn::make('parent.name')
                     ->label(__('filament-help-desk::filament-help-desk.fields.parent_category'))
-                    ->default(__('filament-help-desk::filament-help-desk.placeholders.root'))
+                    ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.root'))
                     ->sortable(),
 
                 IconColumn::make('is_active')

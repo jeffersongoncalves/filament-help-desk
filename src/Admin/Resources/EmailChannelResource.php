@@ -124,7 +124,7 @@ class EmailChannelResource extends Resource
 
                 TextColumn::make('department.name')
                     ->label(__('filament-help-desk::filament-help-desk.fields.department'))
-                    ->default(__('filament-help-desk::filament-help-desk.placeholders.none'))
+                    ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.none'))
                     ->sortable(),
 
                 IconColumn::make('is_active')
