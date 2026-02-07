@@ -2,6 +2,8 @@
 
 namespace JeffersonGoncalves\FilamentHelpDesk;
 
+use Filament\Support\Assets\Css;
+use Filament\Support\Facades\FilamentAsset;
 use JeffersonGoncalves\HelpDesk\Models\Department;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -21,6 +23,10 @@ class FilamentHelpDeskServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        FilamentAsset::register([
+            Css::make('filament-help-desk', __DIR__.'/../resources/dist/filament-help-desk.css'),
+        ], 'jeffersongoncalves/filament-help-desk');
+
         $this->registerDepartmentOperatorsRelationship();
     }
 
