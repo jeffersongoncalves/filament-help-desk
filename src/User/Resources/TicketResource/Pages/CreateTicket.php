@@ -45,7 +45,7 @@ class CreateTicket extends CreateRecord
             $storage = Storage::disk($disk);
             $attachmentService->storeFromPath(
                 ticket: $ticket,
-                filePath: $filePath,
+                filePath: $storage->path($filePath),
                 fileName: basename($filePath),
                 mimeType: $storage->mimeType($filePath) ?: 'application/octet-stream',
                 fileSize: $storage->size($filePath) ?: 0,
