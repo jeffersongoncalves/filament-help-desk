@@ -47,7 +47,7 @@ class ViewTicket extends ViewRecord
         return $form
             ->schema([
                 RichEditor::make('body')
-                    ->label(__('filament-help-desk::filament-help-desk.fields.reply'))
+                    ->label(__('filament-help-desk::filament-help-desk.comments.reply'))
                     ->required()
                     ->toolbarButtons([
                         'bold',
@@ -170,7 +170,7 @@ class ViewTicket extends ViewRecord
             Actions\Action::make('change_priority')
                 ->label(__('filament-help-desk::filament-help-desk.actions.change_priority'))
                 ->icon('heroicon-o-flag')
-                ->color('gray')
+                ->color('info')
                 ->form([
                     Select::make('priority')
                         ->label(__('filament-help-desk::filament-help-desk.fields.priority'))
@@ -233,7 +233,7 @@ class ViewTicket extends ViewRecord
             Actions\Action::make('reopen')
                 ->label(__('filament-help-desk::filament-help-desk.actions.reopen_ticket'))
                 ->icon('heroicon-o-arrow-path')
-                ->color('success')
+                ->color('warning')
                 ->requiresConfirmation()
                 ->visible(fn (): bool => in_array($this->record->status, [
                     TicketStatus::Closed,

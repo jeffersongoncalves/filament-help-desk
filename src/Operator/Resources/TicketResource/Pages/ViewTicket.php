@@ -80,7 +80,7 @@ class ViewTicket extends ViewRecord
                             ->map(fn (string $ext): string => '.'.$ext)
                             ->toArray()
                     )
-                    ->disk(config('help-desk.ticket.attachment_disk', 'public'))
+                    ->disk(config('help-desk.ticket.attachment_disk', 'local'))
                     ->directory(config('help-desk.ticket.attachment_path', 'help-desk/attachments'))
                     ->columnSpanFull(),
             ])
