@@ -18,9 +18,10 @@ use JeffersonGoncalves\FilamentHelpDesk\Concerns\InteractsWithTicketComments;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource;
 use JeffersonGoncalves\HelpDesk\Enums\TicketPriority;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
+use JeffersonGoncalves\HelpDesk\Events\AttachmentAdded;
 use JeffersonGoncalves\HelpDesk\Models\CannedResponse;
 use JeffersonGoncalves\HelpDesk\Models\Ticket;
-use JeffersonGoncalves\HelpDesk\Services\AttachmentService;
+use JeffersonGoncalves\HelpDesk\Models\TicketAttachment;
 use JeffersonGoncalves\HelpDesk\Services\CommentService;
 use JeffersonGoncalves\HelpDesk\Services\TicketService;
 
@@ -122,21 +123,30 @@ class ViewTicket extends ViewRecord
         $attachments = $data['attachments'] ?? [];
 
         if (! empty($attachments)) {
-            /** @var AttachmentService $attachmentService */
-            $attachmentService = app(AttachmentService::class);
             $disk = config('help-desk.ticket.attachment_disk', 'local');
+            $storage = Storage::disk($disk);
+            $storagePath = config('help-desk.ticket.attachment_path', 'help-desk/attachments');
 
             foreach ($attachments as $filePath) {
-                $storage = Storage::disk($disk);
-                $attachmentService->storeFromPath(
-                    ticket: $ticket,
-                    filePath: $storage->path($filePath),
-                    fileName: basename($filePath),
-                    mimeType: $storage->mimeType($filePath) ?: 'application/octet-stream',
-                    fileSize: $storage->size($filePath) ?: 0,
-                    uploadedBy: $author,
-                    comment: $comment,
-                );
+                $mimeType = $storage->mimeType($filePath) ?: 'application/octet-stream';
+                $fileSize = $storage->size($filePath) ?: 0;
+                $destination = $storagePath.'/'.$ticket->uuid.'/'.basename($filePath);
+
+                $storage->move($filePath, $destination);
+
+                $attachment = TicketAttachment::create([
+                    'ticket_id' => $ticket->id,
+                    'comment_id' => $comment->id,
+                    'uploaded_by_type' => $author->getMorphClass(),
+                    'uploaded_by_id' => $author->getKey(),
+                    'file_name' => basename($filePath),
+                    'file_path' => $destination,
+                    'disk' => $disk,
+                    'mime_type' => $mimeType,
+                    'file_size' => $fileSize,
+                ]);
+
+                event(new AttachmentAdded($ticket, $attachment));
             }
         }
 
