@@ -67,9 +67,8 @@ trait HasTicketTable
                 ->label(__('filament-help-desk::filament-help-desk.fields.department'))
                 ->sortable(),
 
-            TextColumn::make('assigned_to_name')
+            TextColumn::make('assignedTo.name')
                 ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
-                ->getStateUsing(fn ($record): ?string => $record->assignedTo?->name)
                 ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.unassigned')),
         ];
 

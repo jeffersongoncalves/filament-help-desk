@@ -65,9 +65,8 @@ trait HasTicketInfolist
                         ->label(__('filament-help-desk::filament-help-desk.fields.category'))
                         ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.na')),
 
-                    TextEntry::make('assigned_to_name')
+                    TextEntry::make('assignedTo.name')
                         ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
-                        ->getStateUsing(fn ($record): ?string => $record->assignedTo?->name)
                         ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.unassigned')),
 
                     TextEntry::make('user.name')
