@@ -67,7 +67,11 @@ class ViewTicket extends ViewRecord
                     ->multiple()
                     ->maxFiles(config('help-desk.ticket.max_attachments_per_comment', 5))
                     ->maxSize(config('help-desk.ticket.max_file_size', 10240))
-                    ->acceptedFileTypes(config('help-desk.ticket.allowed_extensions', []))
+                    ->acceptedFileTypes(
+                        collect(config('help-desk.ticket.allowed_extensions', []))
+                            ->map(fn (string $ext): string => '.'.$ext)
+                            ->toArray()
+                    )
                     ->disk(config('help-desk.ticket.attachment_disk', 'public'))
                     ->directory(config('help-desk.ticket.attachment_path', 'help-desk/attachments'))
                     ->columnSpanFull(),
