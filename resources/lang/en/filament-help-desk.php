@@ -174,6 +174,7 @@ return [
     */
     'sections' => [
         'ticket_details' => 'Ticket Details',
+        'attachments' => 'Attachments',
     ],
 
     /*

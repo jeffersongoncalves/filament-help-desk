@@ -174,6 +174,7 @@ return [
     */
     'sections' => [
         'ticket_details' => 'Detalhes do Ticket',
+        'attachments' => 'Anexos',
     ],
 
     /*
