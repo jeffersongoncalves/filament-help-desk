@@ -69,7 +69,7 @@ trait HasTicketTable
 
             TextColumn::make('assignedTo.name')
                 ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
-                ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.unassigned')),
+                ->default(__('filament-help-desk::filament-help-desk.placeholders.unassigned')),
         ];
 
         if ($showUser) {

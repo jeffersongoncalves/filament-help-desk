@@ -63,11 +63,11 @@ trait HasTicketInfolist
 
                     TextEntry::make('category.name')
                         ->label(__('filament-help-desk::filament-help-desk.fields.category'))
-                        ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.na')),
+                        ->default(__('filament-help-desk::filament-help-desk.placeholders.na')),
 
                     TextEntry::make('assignedTo.name')
                         ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
-                        ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.unassigned')),
+                        ->default(__('filament-help-desk::filament-help-desk.placeholders.unassigned')),
 
                     TextEntry::make('user.name')
                         ->label(__('filament-help-desk::filament-help-desk.fields.requester')),
