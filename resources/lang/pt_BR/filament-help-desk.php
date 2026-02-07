@@ -17,6 +17,37 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Labels de Recursos
+    |--------------------------------------------------------------------------
+    */
+    'resource' => [
+        'department' => [
+            'navigation_label' => 'Departamentos',
+            'model_label' => 'Departamento',
+            'plural_model_label' => 'Departamentos',
+            'relation_managers' => [
+                'operators' => 'Operadores',
+            ],
+        ],
+        'category' => [
+            'navigation_label' => 'Categorias',
+            'model_label' => 'Categoria',
+            'plural_model_label' => 'Categorias',
+        ],
+        'canned_response' => [
+            'navigation_label' => 'Respostas Prontas',
+            'model_label' => 'Resposta Pronta',
+            'plural_model_label' => 'Respostas Prontas',
+        ],
+        'email_channel' => [
+            'navigation_label' => 'Canais de Email',
+            'model_label' => 'Canal de Email',
+            'plural_model_label' => 'Canais de Email',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Campos
     |--------------------------------------------------------------------------
     */
@@ -42,7 +73,7 @@ return [
         'email_address' => 'Endereço de Email',
         'is_active' => 'Ativo',
         'sort_order' => 'Ordem',
-        'parent' => 'Categoria Pai',
+        'parent_category' => 'Categoria Pai',
         'body' => 'Conteúdo',
         'driver' => 'Driver',
         'settings' => 'Configurações',
@@ -50,6 +81,12 @@ return [
         'last_error' => 'Último Erro',
         'role' => 'Função',
         'is_internal' => 'Nota Interna',
+        'internal_note' => 'Nota Interna',
+        'reply' => 'Resposta',
+        'tickets_count' => 'Tickets',
+        'setting_key' => 'Chave',
+        'setting_value' => 'Valor',
+        'operator' => 'Operador',
     ],
 
     /*
@@ -76,6 +113,18 @@ return [
         'medium' => 'Média',
         'high' => 'Alta',
         'urgent' => 'Urgente',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enums
+    |--------------------------------------------------------------------------
+    */
+    'enums' => [
+        'department_role' => [
+            'operator' => 'Operador',
+            'manager' => 'Gerente',
+        ],
     ],
 
     /*
@@ -113,8 +162,18 @@ return [
         'open' => 'Abertos',
         'pending' => 'Pendentes',
         'in_progress' => 'Em Andamento',
+        'on_hold' => 'Em Espera',
         'resolved' => 'Resolvidos',
         'closed' => 'Fechados',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Seções
+    |--------------------------------------------------------------------------
+    */
+    'sections' => [
+        'ticket_details' => 'Detalhes do Ticket',
     ],
 
     /*
@@ -140,14 +199,29 @@ return [
     |--------------------------------------------------------------------------
     */
     'widgets' => [
-        'open_tickets' => 'Tickets Abertos',
-        'pending_tickets' => 'Tickets Pendentes',
-        'resolved_tickets' => 'Tickets Resolvidos',
-        'total_tickets' => 'Total de Tickets',
-        'unassigned_tickets' => 'Tickets Não Atribuídos',
-        'overdue_tickets' => 'Tickets Atrasados',
+        'admin_stats' => [
+            'total_tickets' => 'Total de Tickets',
+            'open_tickets' => 'Tickets Abertos',
+            'unassigned_tickets' => 'Tickets Não Atribuídos',
+            'overdue_tickets' => 'Tickets Atrasados',
+            'trend_description' => ':trend em relação aos :period',
+            'last_7_days' => 'últimos 7 dias',
+        ],
+        'user_stats' => [
+            'open_tickets' => 'Tickets Abertos',
+            'open_tickets_description' => 'Tickets aguardando resposta',
+            'pending_tickets' => 'Tickets Pendentes',
+            'pending_tickets_description' => 'Tickets em processamento',
+            'resolved_tickets' => 'Tickets Resolvidos',
+            'resolved_tickets_description' => 'Tickets resolvidos com sucesso',
+            'total_tickets' => 'Total de Tickets',
+            'total_tickets_description' => 'Todos os seus tickets',
+        ],
         'tickets_by_status' => 'Tickets por Status',
-        'tickets_by_priority' => 'Tickets por Prioridade',
+        'tickets_by_priority' => [
+            'heading' => 'Tickets por Prioridade',
+            'dataset_label' => 'Tickets',
+        ],
         'my_assigned_tickets' => 'Meus Tickets Atribuídos',
     ],
 
@@ -183,6 +257,9 @@ return [
         'select_status' => 'Selecione um status',
         'select_operator' => 'Selecione um operador',
         'select_canned_response' => 'Selecione uma resposta pronta',
+        'root' => 'Raiz',
+        'na' => 'N/A',
+        'none' => 'Nenhum',
     ],
 
     /*

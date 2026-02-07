@@ -75,11 +75,11 @@ class EmailChannelResource extends Resource
                 Select::make('driver')
                     ->label(__('filament-help-desk::filament-help-desk.fields.driver'))
                     ->options([
-                        'imap' => 'IMAP',
-                        'mailgun' => 'Mailgun',
-                        'sendgrid' => 'SendGrid',
-                        'resend' => 'Resend',
-                        'postmark' => 'Postmark',
+                        'imap' => __('filament-help-desk::filament-help-desk.drivers.imap'),
+                        'mailgun' => __('filament-help-desk::filament-help-desk.drivers.mailgun'),
+                        'sendgrid' => __('filament-help-desk::filament-help-desk.drivers.sendgrid'),
+                        'resend' => __('filament-help-desk::filament-help-desk.drivers.resend'),
+                        'postmark' => __('filament-help-desk::filament-help-desk.drivers.postmark'),
                     ])
                     ->required()
                     ->searchable(),

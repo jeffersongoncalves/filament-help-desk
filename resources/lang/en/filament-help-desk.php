@@ -17,6 +17,37 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Resource Labels
+    |--------------------------------------------------------------------------
+    */
+    'resource' => [
+        'department' => [
+            'navigation_label' => 'Departments',
+            'model_label' => 'Department',
+            'plural_model_label' => 'Departments',
+            'relation_managers' => [
+                'operators' => 'Operators',
+            ],
+        ],
+        'category' => [
+            'navigation_label' => 'Categories',
+            'model_label' => 'Category',
+            'plural_model_label' => 'Categories',
+        ],
+        'canned_response' => [
+            'navigation_label' => 'Canned Responses',
+            'model_label' => 'Canned Response',
+            'plural_model_label' => 'Canned Responses',
+        ],
+        'email_channel' => [
+            'navigation_label' => 'Email Channels',
+            'model_label' => 'Email Channel',
+            'plural_model_label' => 'Email Channels',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Fields
     |--------------------------------------------------------------------------
     */
@@ -42,7 +73,7 @@ return [
         'email_address' => 'Email Address',
         'is_active' => 'Active',
         'sort_order' => 'Sort Order',
-        'parent' => 'Parent Category',
+        'parent_category' => 'Parent Category',
         'body' => 'Content',
         'driver' => 'Driver',
         'settings' => 'Settings',
@@ -50,6 +81,12 @@ return [
         'last_error' => 'Last Error',
         'role' => 'Role',
         'is_internal' => 'Internal Note',
+        'internal_note' => 'Internal Note',
+        'reply' => 'Reply',
+        'tickets_count' => 'Tickets',
+        'setting_key' => 'Key',
+        'setting_value' => 'Value',
+        'operator' => 'Operator',
     ],
 
     /*
@@ -76,6 +113,18 @@ return [
         'medium' => 'Medium',
         'high' => 'High',
         'urgent' => 'Urgent',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Enums
+    |--------------------------------------------------------------------------
+    */
+    'enums' => [
+        'department_role' => [
+            'operator' => 'Operator',
+            'manager' => 'Manager',
+        ],
     ],
 
     /*
@@ -113,8 +162,18 @@ return [
         'open' => 'Open',
         'pending' => 'Pending',
         'in_progress' => 'In Progress',
+        'on_hold' => 'On Hold',
         'resolved' => 'Resolved',
         'closed' => 'Closed',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Sections
+    |--------------------------------------------------------------------------
+    */
+    'sections' => [
+        'ticket_details' => 'Ticket Details',
     ],
 
     /*
@@ -140,14 +199,29 @@ return [
     |--------------------------------------------------------------------------
     */
     'widgets' => [
-        'open_tickets' => 'Open Tickets',
-        'pending_tickets' => 'Pending Tickets',
-        'resolved_tickets' => 'Resolved Tickets',
-        'total_tickets' => 'Total Tickets',
-        'unassigned_tickets' => 'Unassigned Tickets',
-        'overdue_tickets' => 'Overdue Tickets',
+        'admin_stats' => [
+            'total_tickets' => 'Total Tickets',
+            'open_tickets' => 'Open Tickets',
+            'unassigned_tickets' => 'Unassigned Tickets',
+            'overdue_tickets' => 'Overdue Tickets',
+            'trend_description' => ':trend from :period',
+            'last_7_days' => 'last 7 days',
+        ],
+        'user_stats' => [
+            'open_tickets' => 'Open Tickets',
+            'open_tickets_description' => 'Tickets awaiting response',
+            'pending_tickets' => 'Pending Tickets',
+            'pending_tickets_description' => 'Tickets being processed',
+            'resolved_tickets' => 'Resolved Tickets',
+            'resolved_tickets_description' => 'Successfully resolved tickets',
+            'total_tickets' => 'Total Tickets',
+            'total_tickets_description' => 'All your tickets',
+        ],
         'tickets_by_status' => 'Tickets by Status',
-        'tickets_by_priority' => 'Tickets by Priority',
+        'tickets_by_priority' => [
+            'heading' => 'Tickets by Priority',
+            'dataset_label' => 'Tickets',
+        ],
         'my_assigned_tickets' => 'My Assigned Tickets',
     ],
 
@@ -183,6 +257,9 @@ return [
         'select_status' => 'Select a status',
         'select_operator' => 'Select an operator',
         'select_canned_response' => 'Select a canned response',
+        'root' => 'Root',
+        'na' => 'N/A',
+        'none' => 'None',
     ],
 
     /*
