@@ -40,7 +40,7 @@ class EditTicket extends EditRecord
             ->nullable()
             ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.select_operator'));
 
-        return $schema->schema($formSchema);
+        return $schema->columns(null)->schema($formSchema);
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
