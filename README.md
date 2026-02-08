@@ -17,14 +17,14 @@ Filament plugins for [jeffersongoncalves/laravel-help-desk](https://github.com/j
 ## Requirements
 
 - PHP `^8.2`
-- Laravel `^11.0`
-- Filament `^4.0`
+- Laravel `^11.28`
+- Filament `^5.0`
 - [jeffersongoncalves/laravel-help-desk](https://github.com/jeffersongoncalves/laravel-help-desk) `^1.0`
 
 ## Installation
 
 ```bash
-composer require jeffersongoncalves/filament-help-desk:^2.0
+composer require jeffersongoncalves/filament-help-desk:^3.0
 ```
 
 ### Publish config (optional)
