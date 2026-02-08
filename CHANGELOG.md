@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-XX-XX
+
+### Changed
+- **BREAKING:** Requires PHP ^8.2, Laravel ^11.0, Filament ^4.0
+- Updated `Form`/`Infolist` method signatures to use `Schema` parameter
+- Moved `Forms\Get`/`Forms\Set` to `Schemas\Components\Utilities` namespace
+- Moved `Infolists\Components\Section` to `Schemas\Components\Section` namespace
+- Renamed table `->actions()` to `->recordActions()` and `->bulkActions()` to `->toolbarActions()`
+- Moved table action imports from `Filament\Tables\Actions` to `Filament\Actions` namespace
+- Converted heroicon strings to `Filament\Support\Icons\Heroicon` enum
+- Removed `static` keyword from `$view` property in ViewTicket pages
+- Replaced Tailwind utility classes in Blade views with custom `fi-hd-*` CSS classes for Tailwind v4 compatibility
+- Simplified TestCase service providers for Filament v4
+
+### Added
+- GitHub Actions CI workflow for automated testing across PHP 8.2/8.3/8.4
+- Custom CSS with Filament CSS variables for dark mode support
+
+### Removed
+- Tailwind CSS, autoprefixer, and @tailwindcss/* build dependencies
+- tailwind.config.js (no longer needed)
+
 ## [1.0.0] - 2025-XX-XX
 
 ### Added
