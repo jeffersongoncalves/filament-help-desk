@@ -6,9 +6,9 @@ namespace JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource\
 
 use Filament\Actions;
 use Filament\Forms\Components\Select;
-use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Schemas\Schema;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketForm;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource;
 use JeffersonGoncalves\HelpDesk\Models\Ticket;
