@@ -55,6 +55,7 @@ class CannedResponseResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema
+            ->columns(null)
             ->schema([
                 Select::make('department_id')
                     ->label(__('filament-help-desk::filament-help-desk.fields.department'))

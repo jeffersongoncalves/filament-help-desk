@@ -86,7 +86,7 @@ class TicketResource extends Resource
             ->nullable()
             ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.unassigned'));
 
-        return $schema->schema($formSchema);
+        return $schema->columns(null)->schema($formSchema);
     }
 
     public static function table(Table $table): Table
@@ -206,6 +206,7 @@ class TicketResource extends Resource
     public static function infolist(Schema $schema): Schema
     {
         return $schema
+            ->columns(null)
             ->schema(static::getTicketInfolistSchema());
     }
 

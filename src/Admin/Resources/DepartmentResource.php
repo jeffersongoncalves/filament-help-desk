@@ -56,6 +56,7 @@ class DepartmentResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema
+            ->columns(null)
             ->schema([
                 TextInput::make('name')
                     ->label(__('filament-help-desk::filament-help-desk.fields.name'))

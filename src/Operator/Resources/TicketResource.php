@@ -84,6 +84,7 @@ class TicketResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return $schema
+            ->columns(null)
             ->schema(static::getTicketEditFormSchema());
     }
 
@@ -188,6 +189,7 @@ class TicketResource extends Resource
     public static function infolist(Schema $schema): Schema
     {
         return $schema
+            ->columns(null)
             ->schema(static::getTicketInfolistSchema());
     }
 

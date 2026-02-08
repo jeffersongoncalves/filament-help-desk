@@ -47,6 +47,7 @@ class ViewTicket extends ViewRecord
     public function commentForm(Schema $schema): Schema
     {
         return $schema
+            ->columns(null)
             ->schema([
                 RichEditor::make('body')
                     ->label(__('filament-help-desk::filament-help-desk.comments.reply'))
