@@ -10,8 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.0.0] - 2026-XX-XX
 
 ### Changed
-- **BREAKING:** Requires Laravel ^11.28, Filament ^5.0 (Livewire v4)
+- **BREAKING:** Requires PHP ^8.3, Laravel ^11.28, Filament ^5.0 (Livewire v4)
 - Updated `orchestra/testbench` to `^10.0|^11.0`
+- Upgraded Pest to v4 (`pestphp/pest: ^4.0`, `pest-plugin-laravel: ^4.0`, `pest-plugin-livewire: ^4.0`) for Livewire v4 compatibility
 
 ## [2.0.0] - 2026-XX-XX
 

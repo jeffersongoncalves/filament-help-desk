@@ -12,11 +12,11 @@ Filament plugins for [jeffersongoncalves/laravel-help-desk](https://github.com/j
 |---------------|----------|---------|-----|
 | 1.x | ^3.0 | ^10 \| ^11 \| ^12 | ^8.1 |
 | 2.x | ^4.0 | ^11.0 | ^8.2 |
-| 3.x | ^5.0 | ^11.28 | ^8.2 |
+| 3.x | ^5.0 | ^11.28 | ^8.3 |
 
 ## Requirements
 
-- PHP `^8.2`
+- PHP `^8.3`
 - Laravel `^11.28`
 - Filament `^5.0`
 - [jeffersongoncalves/laravel-help-desk](https://github.com/jeffersongoncalves/laravel-help-desk) `^1.0`
