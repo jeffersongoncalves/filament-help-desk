@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Operator\Widgets;
 
+use Filament\Actions\Action;
 use Filament\Facades\Filament;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -74,10 +76,10 @@ class AssignedTicketsWidget extends BaseWidget
                     ->dateTime()
                     ->sortable(),
             ])
-            ->actions([
-                Tables\Actions\Action::make('view')
+            ->recordActions([
+                Action::make('view')
                     ->label(__('filament-help-desk::filament-help-desk.actions.view_ticket'))
-                    ->icon('heroicon-o-eye')
+                    ->icon(Heroicon::OutlinedEye)
                     ->url(fn (Ticket $record): string => TicketResource::getUrl('view', ['record' => $record])),
             ])
             ->paginated(false)

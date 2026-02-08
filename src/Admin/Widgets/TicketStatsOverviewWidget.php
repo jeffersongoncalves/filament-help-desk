@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets;
 
 use Carbon\Carbon;
+use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
@@ -90,7 +91,7 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
                 value: $totalTickets,
                 current: $totalLastWeek,
                 previous: $totalPreviousWeek,
-                icon: 'heroicon-m-hashtag',
+                icon: Heroicon::MiniHashtag,
                 color: 'gray',
             ),
 
@@ -99,7 +100,7 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
                 value: $openTickets,
                 current: $openLastWeek,
                 previous: $openPreviousWeek,
-                icon: 'heroicon-m-inbox',
+                icon: Heroicon::MiniInbox,
                 color: 'warning',
             ),
 
@@ -108,7 +109,7 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
                 value: $unassignedTickets,
                 current: $unassignedLastWeek,
                 previous: $unassignedPreviousWeek,
-                icon: 'heroicon-m-user-minus',
+                icon: Heroicon::MiniUserMinus,
                 color: 'info',
             ),
 
@@ -117,7 +118,7 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
                 value: $overdueTickets,
                 current: $overdueLastWeek,
                 previous: $overduePreviousWeek,
-                icon: 'heroicon-m-exclamation-triangle',
+                icon: Heroicon::MiniExclamationTriangle,
                 color: 'danger',
             ),
         ];
@@ -128,7 +129,7 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
         int $value,
         int $current,
         int $previous,
-        string $icon,
+        string|Heroicon $icon,
         string $color,
     ): Stat {
         $diff = $current - $previous;
@@ -145,9 +146,9 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
             ->color($color);
 
         if ($diff > 0) {
-            $stat->descriptionIcon('heroicon-m-arrow-trending-up');
+            $stat->descriptionIcon(Heroicon::MiniArrowTrendingUp);
         } elseif ($diff < 0) {
-            $stat->descriptionIcon('heroicon-m-arrow-trending-down');
+            $stat->descriptionIcon(Heroicon::MiniArrowTrendingDown);
         }
 
         return $stat;

@@ -2,16 +2,8 @@
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Tests;
 
-use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
-use BladeUI\Icons\BladeIconsServiceProvider;
-use Filament\Actions\ActionsServiceProvider;
 use Filament\FilamentServiceProvider;
-use Filament\Forms\FormsServiceProvider;
-use Filament\Infolists\InfolistsServiceProvider;
-use Filament\Notifications\NotificationsServiceProvider;
 use Filament\Support\SupportServiceProvider;
-use Filament\Tables\TablesServiceProvider;
-use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use JeffersonGoncalves\FilamentHelpDesk\FilamentHelpDeskServiceProvider;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Models\User;
@@ -21,7 +13,6 @@ use JeffersonGoncalves\FilamentHelpDesk\Tests\Panel\UserPanelProvider;
 use JeffersonGoncalves\HelpDesk\HelpDeskServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
-use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -38,17 +29,8 @@ class TestCase extends Orchestra
     {
         return [
             LivewireServiceProvider::class,
-            BladeIconsServiceProvider::class,
-            BladeHeroiconsServiceProvider::class,
-            BladeCaptureDirectiveServiceProvider::class,
             SupportServiceProvider::class,
             FilamentServiceProvider::class,
-            FormsServiceProvider::class,
-            TablesServiceProvider::class,
-            ActionsServiceProvider::class,
-            InfolistsServiceProvider::class,
-            NotificationsServiceProvider::class,
-            WidgetsServiceProvider::class,
             HelpDeskServiceProvider::class,
             FilamentHelpDeskServiceProvider::class,
             UserPanelProvider::class,

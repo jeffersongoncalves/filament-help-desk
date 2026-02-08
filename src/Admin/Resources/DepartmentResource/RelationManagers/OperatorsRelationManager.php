@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\DepartmentResource\RelationManagers;
 
+use Filament\Actions\AttachAction;
+use Filament\Actions\DetachAction;
+use Filament\Actions\DetachBulkAction;
 use Filament\Forms\Components\Select;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Actions\AttachAction;
-use Filament\Tables\Actions\DetachAction;
-use Filament\Tables\Actions\DetachBulkAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -75,11 +75,11 @@ class OperatorsRelationManager extends RelationManager
                             ->required(),
                     ]),
             ])
-            ->actions([
+            ->recordActions([
                 DetachAction::make()
                     ->requiresConfirmation(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 DetachBulkAction::make(),
             ]);
     }

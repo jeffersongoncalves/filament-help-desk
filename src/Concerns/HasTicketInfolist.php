@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Concerns;
 
-use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
+use Filament\Schemas\Components\Section;
 use JeffersonGoncalves\HelpDesk\Enums\TicketPriority;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JeffersonGoncalves\FilamentHelpDesk\User\Widgets;
 
 use Filament\Facades\Filament;
+use Filament\Support\Icons\Heroicon;
 use Filament\Widgets\StatsOverviewWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
@@ -44,7 +45,7 @@ class UserTicketStatsWidget extends StatsOverviewWidget
                 $openCount,
             )
                 ->description(__('filament-help-desk::filament-help-desk.widgets.user_stats.open_tickets_description'))
-                ->descriptionIcon('heroicon-m-inbox')
+                ->descriptionIcon(Heroicon::MiniInbox)
                 ->color('warning'),
 
             Stat::make(
@@ -52,7 +53,7 @@ class UserTicketStatsWidget extends StatsOverviewWidget
                 $pendingCount,
             )
                 ->description(__('filament-help-desk::filament-help-desk.widgets.user_stats.pending_tickets_description'))
-                ->descriptionIcon('heroicon-m-clock')
+                ->descriptionIcon(Heroicon::MiniClock)
                 ->color('info'),
 
             Stat::make(
@@ -60,7 +61,7 @@ class UserTicketStatsWidget extends StatsOverviewWidget
                 $resolvedCount,
             )
                 ->description(__('filament-help-desk::filament-help-desk.widgets.user_stats.resolved_tickets_description'))
-                ->descriptionIcon('heroicon-m-check-circle')
+                ->descriptionIcon(Heroicon::MiniCheckCircle)
                 ->color('success'),
 
             Stat::make(
@@ -68,7 +69,7 @@ class UserTicketStatsWidget extends StatsOverviewWidget
                 $totalCount,
             )
                 ->description(__('filament-help-desk::filament-help-desk.widgets.user_stats.total_tickets_description'))
-                ->descriptionIcon('heroicon-m-hashtag')
+                ->descriptionIcon(Heroicon::MiniHashtag)
                 ->color('gray'),
         ];
     }

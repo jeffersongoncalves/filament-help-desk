@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\User\Resources;
 
+use BackedEnum;
 use Filament\Facades\Filament;
-use Filament\Forms\Form;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketForm;
@@ -31,9 +32,9 @@ class TicketResource extends Resource
         return __(config('filament-help-desk.user.navigation_group', 'Support'));
     }
 
-    public static function getNavigationIcon(): ?string
+    public static function getNavigationIcon(): string|BackedEnum|null
     {
-        return config('filament-help-desk.user.navigation_icon', 'heroicon-o-ticket');
+        return config('filament-help-desk.user.navigation_icon', Heroicon::OutlinedTicket);
     }
 
     public static function getNavigationSort(): ?int
@@ -62,9 +63,9 @@ class TicketResource extends Resource
         return config('filament-help-desk.user.slug', 'tickets');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema(static::getTicketFormSchema(isUser: true));
     }
 
@@ -83,9 +84,9 @@ class TicketResource extends Resource
             });
     }
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->schema(static::getTicketInfolistSchema());
     }
 

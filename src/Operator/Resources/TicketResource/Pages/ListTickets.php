@@ -7,6 +7,7 @@ namespace JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource\
 use Filament\Facades\Filament;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Builder;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource;
 use JeffersonGoncalves\HelpDesk\Models\Ticket;
@@ -23,7 +24,7 @@ class ListTickets extends ListRecords
 
         return [
             'my' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.my_tickets'))
-                ->icon('heroicon-o-user')
+                ->icon(Heroicon::OutlinedUser)
                 ->badge(
                     Ticket::query()
                         ->where('assigned_to_type', $userType)
@@ -36,7 +37,7 @@ class ListTickets extends ListRecords
                 ),
 
             'unassigned' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.unassigned'))
-                ->icon('heroicon-o-user-minus')
+                ->icon(Heroicon::OutlinedUserMinus)
                 ->badge(
                     Ticket::query()
                         ->whereNull('assigned_to_id')
@@ -47,7 +48,7 @@ class ListTickets extends ListRecords
                 ),
 
             'all' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.all'))
-                ->icon('heroicon-o-inbox-stack')
+                ->icon(Heroicon::OutlinedInboxStack)
                 ->badge(Ticket::query()->count()),
         ];
     }

@@ -10,9 +10,10 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Collection;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\TicketResource;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\InteractsWithTicketComments;
@@ -23,7 +24,7 @@ use JeffersonGoncalves\HelpDesk\Services\TicketService;
 
 /**
  * @property-read Ticket $record
- * @property Form $commentForm
+ * @property Schema $commentForm
  */
 class ViewTicket extends ViewRecord
 {
@@ -31,7 +32,7 @@ class ViewTicket extends ViewRecord
 
     protected static string $resource = TicketResource::class;
 
-    protected static string $view = 'filament-help-desk::admin.pages.view-ticket';
+    protected string $view = 'filament-help-desk::admin.pages.view-ticket';
 
     public ?array $commentData = [];
 
@@ -42,9 +43,9 @@ class ViewTicket extends ViewRecord
         $this->commentForm->fill();
     }
 
-    public function commentForm(Form $form): Form
+    public function commentForm(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 RichEditor::make('body')
                     ->label(__('filament-help-desk::filament-help-desk.comments.reply'))
@@ -96,7 +97,7 @@ class ViewTicket extends ViewRecord
         return [
             Actions\Action::make('assign')
                 ->label(__('filament-help-desk::filament-help-desk.actions.assign'))
-                ->icon('heroicon-o-user-plus')
+                ->icon(Heroicon::OutlinedUserPlus)
                 ->color('info')
                 ->form([
                     Select::make('assigned_to_id')
@@ -133,7 +134,7 @@ class ViewTicket extends ViewRecord
 
             Actions\Action::make('change_status')
                 ->label(__('filament-help-desk::filament-help-desk.actions.change_status'))
-                ->icon('heroicon-o-arrow-path')
+                ->icon(Heroicon::OutlinedArrowPath)
                 ->color('warning')
                 ->form([
                     Select::make('status')
@@ -169,7 +170,7 @@ class ViewTicket extends ViewRecord
 
             Actions\Action::make('change_priority')
                 ->label(__('filament-help-desk::filament-help-desk.actions.change_priority'))
-                ->icon('heroicon-o-flag')
+                ->icon(Heroicon::OutlinedFlag)
                 ->color('info')
                 ->form([
                     Select::make('priority')
@@ -205,7 +206,7 @@ class ViewTicket extends ViewRecord
 
             Actions\Action::make('close')
                 ->label(__('filament-help-desk::filament-help-desk.actions.close_ticket'))
-                ->icon('heroicon-o-x-circle')
+                ->icon(Heroicon::OutlinedXCircle)
                 ->color('danger')
                 ->requiresConfirmation()
                 ->visible(fn (): bool => ! in_array($this->record->status, [
@@ -232,7 +233,7 @@ class ViewTicket extends ViewRecord
 
             Actions\Action::make('reopen')
                 ->label(__('filament-help-desk::filament-help-desk.actions.reopen_ticket'))
-                ->icon('heroicon-o-arrow-path')
+                ->icon(Heroicon::OutlinedArrowPath)
                 ->color('warning')
                 ->requiresConfirmation()
                 ->visible(fn (): bool => in_array($this->record->status, [

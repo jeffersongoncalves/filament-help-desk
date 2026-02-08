@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Admin\Resources;
 
+use BackedEnum;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -23,7 +25,7 @@ class CannedResponseResource extends Resource
 {
     protected static ?string $model = CannedResponse::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-chat-bubble-bottom-center-text';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleBottomCenterText;
 
     public static function getNavigationGroup(): ?string
     {
@@ -50,9 +52,9 @@ class CannedResponseResource extends Resource
         return __('filament-help-desk::filament-help-desk.resource.canned_response.plural_model_label');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 Select::make('department_id')
                     ->label(__('filament-help-desk::filament-help-desk.fields.department'))
@@ -112,7 +114,7 @@ class CannedResponseResource extends Resource
                     ->sortable(),
             ])
             ->defaultSort('sort_order')
-            ->actions([
+            ->recordActions([
                 EditAction::make(),
                 DeleteAction::make()
                     ->requiresConfirmation(),

@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Admin\Resources;
 
+use BackedEnum;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
-use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\BulkAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\ViewAction;
+use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Collection;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\TicketResource\Pages;
@@ -36,7 +37,7 @@ class TicketResource extends Resource
 
     protected static ?string $recordRouteKeyName = 'uuid';
 
-    protected static ?string $navigationIcon = 'heroicon-o-inbox-stack';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedInboxStack;
 
     public static function getNavigationGroup(): ?string
     {
@@ -68,13 +69,13 @@ class TicketResource extends Resource
         return false;
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
         $operatorModel = config('help-desk.models.operator');
 
-        $schema = static::getTicketEditFormSchema();
+        $formSchema = static::getTicketEditFormSchema();
 
-        $schema[] = Select::make('assigned_to_id')
+        $formSchema[] = Select::make('assigned_to_id')
             ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
             ->options(fn (): array => $operatorModel::query()
                 ->pluck('name', 'id')
@@ -85,7 +86,7 @@ class TicketResource extends Resource
             ->nullable()
             ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.unassigned'));
 
-        return $form->schema($schema);
+        return $schema->schema($formSchema);
     }
 
     public static function table(Table $table): Table
@@ -94,17 +95,17 @@ class TicketResource extends Resource
             ->columns(static::getTicketTableColumns(showUser: true))
             ->filters(static::getTicketTableFilters())
             ->defaultSort('created_at', 'desc')
-            ->actions([
+            ->recordActions([
                 ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make()
                     ->requiresConfirmation(),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     BulkAction::make('change_status')
                         ->label(__('filament-help-desk::filament-help-desk.actions.change_status'))
-                        ->icon('heroicon-o-arrow-path')
+                        ->icon(Heroicon::OutlinedArrowPath)
                         ->form([
                             Select::make('status')
                                 ->label(__('filament-help-desk::filament-help-desk.fields.status'))
@@ -134,7 +135,7 @@ class TicketResource extends Resource
 
                     BulkAction::make('change_priority')
                         ->label(__('filament-help-desk::filament-help-desk.actions.change_priority'))
-                        ->icon('heroicon-o-flag')
+                        ->icon(Heroicon::OutlinedFlag)
                         ->form([
                             Select::make('priority')
                                 ->label(__('filament-help-desk::filament-help-desk.fields.priority'))
@@ -164,7 +165,7 @@ class TicketResource extends Resource
 
                     BulkAction::make('assign')
                         ->label(__('filament-help-desk::filament-help-desk.actions.assign'))
-                        ->icon('heroicon-o-user')
+                        ->icon(Heroicon::OutlinedUser)
                         ->form([
                             Select::make('assigned_to_id')
                                 ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
@@ -202,9 +203,9 @@ class TicketResource extends Resource
             ]);
     }
 
-    public static function infolist(Infolist $infolist): Infolist
+    public static function infolist(Schema $schema): Schema
     {
-        return $infolist
+        return $schema
             ->schema(static::getTicketInfolistSchema());
     }
 

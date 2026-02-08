@@ -6,7 +6,7 @@ namespace JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource\
 
 use Filament\Actions;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketForm;
@@ -22,13 +22,13 @@ class EditTicket extends EditRecord
 
     protected static string $resource = TicketResource::class;
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        $schema = static::getTicketEditFormSchema();
+        $formSchema = static::getTicketEditFormSchema();
 
         $operatorModel = config('help-desk.models.operator');
 
-        $schema[] = Select::make('assigned_to_id')
+        $formSchema[] = Select::make('assigned_to_id')
             ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
             ->options(function () use ($operatorModel): array {
                 return $operatorModel::query()
@@ -40,7 +40,7 @@ class EditTicket extends EditRecord
             ->nullable()
             ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.select_operator'));
 
-        return $form->schema($schema);
+        return $schema->schema($formSchema);
     }
 
     protected function mutateFormDataBeforeSave(array $data): array
