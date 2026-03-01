@@ -7,8 +7,6 @@ parameters:
     level: 5
     ignoreErrors:
         - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::(byStatus|byPriority|open|unassigned)\(\)#'
-        - '#does not accept default value of type string#'
         - '#Parameter \#1 \$callback of method Illuminate\\Support\\Collection.+::each\(\) expects#'
         - '#Access to an undefined property Illuminate\\Database\\Eloquent\\Model::#'
         - '#Parameter \#1 \$ticket of method JeffersonGoncalves\\HelpDesk\\Services\\TicketService::.+ expects JeffersonGoncalves\\HelpDesk\\Models\\Ticket, Illuminate\\Database\\Eloquent\\Model given#'
-        - '#should return Illuminate\\Database\\Eloquent\\Collection<int, JeffersonGoncalves\\HelpDesk\\Models\\TicketComment> but returns Illuminate\\Database\\Eloquent\\Collection<int, Illuminate\\Database\\Eloquent\\Model>#'

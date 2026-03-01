@@ -28,7 +28,7 @@ trait HasTicketForm
      * Get the form schema for creating a new ticket.
      *
      * @param  bool  $isUser  When true, hides operator-only fields (assigned_to, status).
-     * @return array<int, \Filament\Forms\Components\Component>
+     * @return array<int, \Filament\Schemas\Components\Component>
      */
     public static function getTicketFormSchema(bool $isUser = false): array
     {
@@ -139,7 +139,7 @@ trait HasTicketForm
      *
      * Includes all editable ticket fields plus the status selector.
      *
-     * @return array<int, \Filament\Forms\Components\Component>
+     * @return array<int, \Filament\Schemas\Components\Component>
      */
     public static function getTicketEditFormSchema(): array
     {

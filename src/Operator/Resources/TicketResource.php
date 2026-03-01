@@ -6,11 +6,13 @@ namespace JeffersonGoncalves\FilamentHelpDesk\Operator\Resources;
 
 use BackedEnum;
 use Filament\Actions\BulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Facades\Filament;
+use Filament\Panel;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketForm;
@@ -63,7 +65,7 @@ class TicketResource extends Resource
         return __('filament-help-desk::filament-help-desk.navigation.tickets');
     }
 
-    public static function getSlug(): string
+    public static function getSlug(?Panel $panel = null): string
     {
         return config('filament-help-desk.operator.slug', 'tickets');
     }
@@ -95,8 +97,8 @@ class TicketResource extends Resource
             ->filters(static::getTicketTableFilters())
             ->defaultSort('created_at', 'desc')
             ->recordActions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
             ])
             ->toolbarActions([
                 BulkAction::make('assign_to_me')

@@ -21,7 +21,7 @@ trait HasTicketInfolist
     /**
      * Get the infolist schema for displaying ticket details.
      *
-     * @return array<int, \Filament\Infolists\Components\Component>
+     * @return array<int, \Filament\Schemas\Components\Component>
      */
     public static function getTicketInfolistSchema(): array
     {
