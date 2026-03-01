@@ -45,7 +45,7 @@ class UserTicketStatsWidget extends StatsOverviewWidget
                 $openCount,
             )
                 ->description(__('filament-help-desk::filament-help-desk.widgets.user_stats.open_tickets_description'))
-                ->descriptionIcon(Heroicon::MiniInbox)
+                ->descriptionIcon(Heroicon::Inbox)
                 ->color('warning'),
 
             Stat::make(
@@ -53,7 +53,7 @@ class UserTicketStatsWidget extends StatsOverviewWidget
                 $pendingCount,
             )
                 ->description(__('filament-help-desk::filament-help-desk.widgets.user_stats.pending_tickets_description'))
-                ->descriptionIcon(Heroicon::MiniClock)
+                ->descriptionIcon(Heroicon::Clock)
                 ->color('info'),
 
             Stat::make(
@@ -61,7 +61,7 @@ class UserTicketStatsWidget extends StatsOverviewWidget
                 $resolvedCount,
             )
                 ->description(__('filament-help-desk::filament-help-desk.widgets.user_stats.resolved_tickets_description'))
-                ->descriptionIcon(Heroicon::MiniCheckCircle)
+                ->descriptionIcon(Heroicon::CheckCircle)
                 ->color('success'),
 
             Stat::make(
@@ -69,7 +69,7 @@ class UserTicketStatsWidget extends StatsOverviewWidget
                 $totalCount,
             )
                 ->description(__('filament-help-desk::filament-help-desk.widgets.user_stats.total_tickets_description'))
-                ->descriptionIcon(Heroicon::MiniHashtag)
+                ->descriptionIcon(Heroicon::Hashtag)
                 ->color('gray'),
         ];
     }

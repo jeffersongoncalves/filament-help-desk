@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource\Pages;
 
 use Filament\Facades\Filament;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Database\Eloquent\Builder;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource;

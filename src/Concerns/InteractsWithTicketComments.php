@@ -30,7 +30,7 @@ trait InteractsWithTicketComments
     /**
      * Get the form schema for the comment/reply form.
      *
-     * @return array<int, \Filament\Forms\Components\Component>
+     * @return array<int, \Filament\Schemas\Components\Component>
      */
     public function getCommentFormSchema(): array
     {

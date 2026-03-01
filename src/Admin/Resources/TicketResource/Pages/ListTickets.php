@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\TicketResource\Pages;
 
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\TicketResource;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;

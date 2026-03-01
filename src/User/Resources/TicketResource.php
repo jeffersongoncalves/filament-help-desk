@@ -6,11 +6,13 @@ namespace JeffersonGoncalves\FilamentHelpDesk\User\Resources;
 
 use BackedEnum;
 use Filament\Facades\Filament;
+use Filament\Panel;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketForm;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketInfolist;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketTable;
@@ -58,7 +60,7 @@ class TicketResource extends Resource
         return __('filament-help-desk::filament-help-desk.navigation.tickets');
     }
 
-    public static function getSlug(): string
+    public static function getSlug(?Panel $panel = null): string
     {
         return config('filament-help-desk.user.slug', 'tickets');
     }
@@ -92,12 +94,12 @@ class TicketResource extends Resource
             ->schema(static::getTicketInfolistSchema());
     }
 
-    public static function canEdit($record): bool
+    public static function canEdit(Model $record): bool
     {
         return false;
     }
 
-    public static function canDelete($record): bool
+    public static function canDelete(Model $record): bool
     {
         return false;
     }

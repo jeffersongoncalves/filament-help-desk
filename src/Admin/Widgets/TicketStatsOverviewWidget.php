@@ -91,7 +91,7 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
                 value: $totalTickets,
                 current: $totalLastWeek,
                 previous: $totalPreviousWeek,
-                icon: Heroicon::MiniHashtag,
+                icon: Heroicon::Hashtag,
                 color: 'gray',
             ),
 
@@ -100,7 +100,7 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
                 value: $openTickets,
                 current: $openLastWeek,
                 previous: $openPreviousWeek,
-                icon: Heroicon::MiniInbox,
+                icon: Heroicon::Inbox,
                 color: 'warning',
             ),
 
@@ -109,7 +109,7 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
                 value: $unassignedTickets,
                 current: $unassignedLastWeek,
                 previous: $unassignedPreviousWeek,
-                icon: Heroicon::MiniUserMinus,
+                icon: Heroicon::UserMinus,
                 color: 'info',
             ),
 
@@ -118,7 +118,7 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
                 value: $overdueTickets,
                 current: $overdueLastWeek,
                 previous: $overduePreviousWeek,
-                icon: Heroicon::MiniExclamationTriangle,
+                icon: Heroicon::ExclamationTriangle,
                 color: 'danger',
             ),
         ];
@@ -146,9 +146,9 @@ class TicketStatsOverviewWidget extends StatsOverviewWidget
             ->color($color);
 
         if ($diff > 0) {
-            $stat->descriptionIcon(Heroicon::MiniArrowTrendingUp);
+            $stat->descriptionIcon(Heroicon::ArrowTrendingUp);
         } elseif ($diff < 0) {
-            $stat->descriptionIcon(Heroicon::MiniArrowTrendingDown);
+            $stat->descriptionIcon(Heroicon::ArrowTrendingDown);
         }
 
         return $stat;
