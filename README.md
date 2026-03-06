@@ -7,6 +7,7 @@
 # Filament Help Desk
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/jeffersongoncalves/filament-help-desk.svg?style=flat-square)](https://packagist.org/packages/jeffersongoncalves/filament-help-desk)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/jeffersongoncalves/filament-help-desk/tests.yml?branch=2.x&label=tests&style=flat-square)](https://github.com/jeffersongoncalves/filament-help-desk/actions?query=workflow%3Atests+branch%3A2.x)
 [![Total Downloads](https://img.shields.io/packagist/dt/jeffersongoncalves/filament-help-desk.svg?style=flat-square)](https://packagist.org/packages/jeffersongoncalves/filament-help-desk)
 [![License](https://img.shields.io/packagist/l/jeffersongoncalves/filament-help-desk.svg?style=flat-square)](LICENSE.md)
 
@@ -28,6 +29,8 @@ Filament plugins for [jeffersongoncalves/laravel-help-desk](https://github.com/j
 - [jeffersongoncalves/laravel-help-desk](https://github.com/jeffersongoncalves/laravel-help-desk) `^1.0`
 
 ## Installation
+
+You can install the package via composer:
 
 ```bash
 composer require jeffersongoncalves/filament-help-desk:^2.0
