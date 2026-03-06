@@ -21,6 +21,8 @@ Filament plugins for [jeffersongoncalves/laravel-help-desk](https://github.com/j
 
 ## Installation
 
+You can install the package via composer:
+
 ```bash
 composer require jeffersongoncalves/filament-help-desk:^1.0
 ```
