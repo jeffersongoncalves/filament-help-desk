@@ -211,6 +211,37 @@ class CustomTicketResource extends BaseResource
 }
 ```
 
+### Disabling Resources
+
+You can disable any resource by removing or commenting out its key in the config file. The navigation item will automatically be hidden for any resource whose config key is not present.
+
+For example, to disable the email channel resource in the admin panel:
+
+```php
+'admin' => [
+    'resources' => [
+        'ticket' => \JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\TicketResource::class,
+        'department' => \JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\DepartmentResource::class,
+        'category' => \JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CategoryResource::class,
+        'canned_response' => \JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CannedResponseResource::class,
+        // 'email_channel' => \JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\EmailChannelResource::class,
+    ],
+],
+```
+
+To disable the entire User or Operator panel resource, set the `resource` key to `null`:
+
+```php
+'user' => [
+    'resource' => null, // Disables the user ticket resource
+    // ...
+],
+'operator' => [
+    'resource' => null, // Disables the operator ticket resource
+    // ...
+],
+```
+
 ## Translations
 
 The package includes translations for:
