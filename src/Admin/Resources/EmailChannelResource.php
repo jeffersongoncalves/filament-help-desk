@@ -168,9 +168,4 @@ class EmailChannelResource extends Resource
             'edit' => Pages\EditEmailChannel::route('/{record}/edit'),
         ];
     }
-
-    public static function shouldRegisterNavigation(): bool
-    {
-        return config('filament-help-desk.admin.resources.email_channel') !== null;
-    }
 }

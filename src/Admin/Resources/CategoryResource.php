@@ -184,9 +184,4 @@ class CategoryResource extends Resource
             'edit' => Pages\EditCategory::route('/{record}/edit'),
         ];
     }
-
-    public static function shouldRegisterNavigation(): bool
-    {
-        return config('filament-help-desk.admin.resources.category') !== null;
-    }
 }
