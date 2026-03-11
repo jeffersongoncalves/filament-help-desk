@@ -155,4 +155,9 @@ class DepartmentResource extends Resource
             'edit' => Pages\EditDepartment::route('/{record}/edit'),
         ];
     }
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return config('filament-help-desk.admin.resources.department') !== null;
+    }
 }
