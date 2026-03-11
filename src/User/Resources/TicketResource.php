@@ -99,6 +99,11 @@ class TicketResource extends Resource
         return false;
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return config('filament-help-desk.user.resource') !== null;
+    }
+
     public static function getPages(): array
     {
         return [

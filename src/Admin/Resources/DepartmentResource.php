@@ -144,6 +144,11 @@ class DepartmentResource extends Resource
         ];
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return config('filament-help-desk.admin.resources.department') !== null;
+    }
+
     public static function getPages(): array
     {
         return [

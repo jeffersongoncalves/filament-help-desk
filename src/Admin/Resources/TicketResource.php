@@ -208,6 +208,11 @@ class TicketResource extends Resource
             ->schema(static::getTicketInfolistSchema());
     }
 
+    public static function shouldRegisterNavigation(): bool
+    {
+        return config('filament-help-desk.admin.resources.ticket') !== null;
+    }
+
     public static function getPages(): array
     {
         return [
