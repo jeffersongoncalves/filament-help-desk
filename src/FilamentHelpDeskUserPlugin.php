@@ -7,7 +7,6 @@ namespace JeffersonGoncalves\FilamentHelpDesk;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource;
-use JeffersonGoncalves\FilamentHelpDesk\User\Widgets\UserTicketStatsWidget;
 
 class FilamentHelpDeskUserPlugin implements Plugin
 {
@@ -22,9 +21,7 @@ class FilamentHelpDeskUserPlugin implements Plugin
             config('filament-help-desk.user.resource', TicketResource::class),
         ]);
 
-        $panel->widgets([
-            UserTicketStatsWidget::class,
-        ]);
+        $panel->widgets(config('filament-help-desk.user.widgets', []));
     }
 
     public function boot(Panel $panel): void

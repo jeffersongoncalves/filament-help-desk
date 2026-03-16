@@ -7,8 +7,6 @@ namespace JeffersonGoncalves\FilamentHelpDesk;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource;
-use JeffersonGoncalves\FilamentHelpDesk\Operator\Widgets\AssignedTicketsWidget;
-use JeffersonGoncalves\FilamentHelpDesk\Operator\Widgets\TicketsByStatusWidget;
 
 class FilamentHelpDeskOperatorPlugin implements Plugin
 {
@@ -23,10 +21,7 @@ class FilamentHelpDeskOperatorPlugin implements Plugin
             config('filament-help-desk.operator.resource', TicketResource::class),
         ]);
 
-        $panel->widgets([
-            TicketsByStatusWidget::class,
-            AssignedTicketsWidget::class,
-        ]);
+        $panel->widgets(config('filament-help-desk.operator.widgets', []));
     }
 
     public function boot(Panel $panel): void
