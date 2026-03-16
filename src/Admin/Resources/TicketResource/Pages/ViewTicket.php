@@ -76,7 +76,9 @@ class ViewTicket extends ViewRecord
                     ->maxSize(config('help-desk.ticket.max_file_size', 10240))
                     ->acceptedFileTypes(
                         collect(config('help-desk.ticket.allowed_extensions', []))
-                            ->map(fn (string $ext): string => '.'.$ext)
+                            ->flatMap(fn (string $ext): array => \Symfony\Component\Mime\MimeTypes::getDefault()->getMimeTypes($ext))
+                            ->unique()
+                            ->values()
                             ->toArray()
                     )
                     ->disk(config('help-desk.ticket.attachment_disk', 'local'))
