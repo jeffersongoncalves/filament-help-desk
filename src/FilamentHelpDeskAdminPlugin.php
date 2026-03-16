@@ -11,8 +11,6 @@ use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CategoryResource;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\DepartmentResource;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\EmailChannelResource;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\TicketResource;
-use JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets\TicketsByPriorityWidget;
-use JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets\TicketStatsOverviewWidget;
 
 class FilamentHelpDeskAdminPlugin implements Plugin
 {
@@ -33,10 +31,7 @@ class FilamentHelpDeskAdminPlugin implements Plugin
             $resources['email_channel'] ?? EmailChannelResource::class,
         ]);
 
-        $panel->widgets([
-            TicketStatsOverviewWidget::class,
-            TicketsByPriorityWidget::class,
-        ]);
+        $panel->widgets(config('filament-help-desk.admin.widgets', []));
     }
 
     public function boot(Panel $panel): void
