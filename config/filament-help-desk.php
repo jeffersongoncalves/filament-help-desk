@@ -9,6 +9,9 @@ return [
     */
     'user' => [
         'resource' => \JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource::class,
+        'widgets' => [
+            \JeffersonGoncalves\FilamentHelpDesk\User\Widgets\UserTicketStatsWidget::class,
+        ],
         'navigation_group' => 'Support',
         'navigation_icon' => 'heroicon-o-ticket',
         'navigation_sort' => null,
@@ -23,6 +26,10 @@ return [
     */
     'operator' => [
         'resource' => \JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource::class,
+        'widgets' => [
+            \JeffersonGoncalves\FilamentHelpDesk\Operator\Widgets\TicketsByStatusWidget::class,
+            \JeffersonGoncalves\FilamentHelpDesk\Operator\Widgets\AssignedTicketsWidget::class,
+        ],
         'navigation_group' => 'Help Desk',
         'navigation_icon' => 'heroicon-o-inbox-stack',
         'navigation_sort' => null,
@@ -45,6 +52,10 @@ return [
             'category' => \JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CategoryResource::class,
             'canned_response' => \JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CannedResponseResource::class,
             'email_channel' => \JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\EmailChannelResource::class,
+        ],
+        'widgets' => [
+            \JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets\TicketsByPriorityWidget::class,
+            \JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets\TicketStatsOverviewWidget::class,
         ],
     ],
 
