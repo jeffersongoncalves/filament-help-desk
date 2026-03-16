@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource\Pages;
 
+use Filament\Actions;
 use Filament\Facades\Filament;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -15,6 +16,14 @@ use JeffersonGoncalves\HelpDesk\Models\Ticket;
 class ListTickets extends ListRecords
 {
     protected static string $resource = TicketResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\CreateAction::make()
+                ->label(__('filament-help-desk::filament-help-desk.actions.create_ticket')),
+        ];
+    }
 
     public function getTabs(): array
     {
