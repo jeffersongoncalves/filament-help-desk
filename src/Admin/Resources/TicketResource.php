@@ -63,29 +63,9 @@ class TicketResource extends Resource
         return __('filament-help-desk::filament-help-desk.navigation.tickets');
     }
 
-    public static function canCreate(): bool
-    {
-        return false;
-    }
-
     public static function form(Form $form): Form
     {
-        $operatorModel = config('help-desk.models.operator');
-
-        $schema = static::getTicketEditFormSchema();
-
-        $schema[] = Select::make('assigned_to_id')
-            ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
-            ->options(fn (): array => $operatorModel::query()
-                ->pluck('name', 'id')
-                ->toArray()
-            )
-            ->searchable()
-            ->preload()
-            ->nullable()
-            ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.unassigned'));
-
-        return $form->schema($schema);
+        return $form->schema(static::getTicketFormSchema());
     }
 
     public static function table(Table $table): Table
@@ -217,6 +197,7 @@ class TicketResource extends Resource
     {
         return [
             'index' => Pages\ListTickets::route('/'),
+            'create' => Pages\CreateTicket::route('/create'),
             'view' => Pages\ViewTicket::route('/{record}'),
             'edit' => Pages\EditTicket::route('/{record}/edit'),
         ];
