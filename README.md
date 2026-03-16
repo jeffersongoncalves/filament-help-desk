@@ -157,6 +157,9 @@ The configuration file `config/filament-help-desk.php` allows you to customize:
 return [
     'user' => [
         'resource' => \JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource::class,
+        'widgets' => [
+            \JeffersonGoncalves\FilamentHelpDesk\User\Widgets\UserTicketStatsWidget::class,
+        ],
         'navigation_group' => 'Support',
         'navigation_icon' => 'heroicon-o-ticket',
         'navigation_sort' => null,
@@ -164,6 +167,10 @@ return [
     ],
     'operator' => [
         'resource' => \JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource::class,
+        'widgets' => [
+            \JeffersonGoncalves\FilamentHelpDesk\Operator\Widgets\TicketsByStatusWidget::class,
+            \JeffersonGoncalves\FilamentHelpDesk\Operator\Widgets\AssignedTicketsWidget::class,
+        ],
         'navigation_group' => 'Help Desk',
         'navigation_icon' => 'heroicon-o-inbox-stack',
         'slug' => 'tickets',
@@ -177,6 +184,10 @@ return [
             'category' => \JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CategoryResource::class,
             'canned_response' => \JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CannedResponseResource::class,
             'email_channel' => \JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\EmailChannelResource::class,
+        ],
+        'widgets' => [
+            \JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets\TicketsByPriorityWidget::class,
+            \JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets\TicketStatsOverviewWidget::class,
         ],
     ],
 ];
@@ -209,6 +220,28 @@ class CustomTicketResource extends BaseResource
         ]);
     }
 }
+```
+
+### Customizing Widgets
+
+Each panel registers dashboard widgets that can be customized via the `widgets` config key. You can reorder, remove, or add your own widgets:
+
+```php
+'admin' => [
+    'widgets' => [
+        \JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets\TicketStatsOverviewWidget::class,
+        // Remove TicketsByPriorityWidget by not including it
+        \App\Filament\Widgets\CustomDashboardWidget::class, // Add your own
+    ],
+],
+```
+
+To disable all widgets for a panel, set it to an empty array:
+
+```php
+'user' => [
+    'widgets' => [],
+],
 ```
 
 ### Disabling Resources
