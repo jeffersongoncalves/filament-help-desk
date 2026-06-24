@@ -30,15 +30,18 @@ class ListTickets extends ListRecords
         $userType = get_class($user);
         $userId = $user->getAuthIdentifier();
 
+        // Single query (conditional aggregation) instead of one COUNT per tab.
+        $counts = Ticket::query()
+            ->toBase()
+            ->selectRaw('count(*) as all_count')
+            ->selectRaw('sum(case when assigned_to_type = ? and assigned_to_id = ? then 1 else 0 end) as my_count', [$userType, $userId])
+            ->selectRaw('sum(case when assigned_to_id is null then 1 else 0 end) as unassigned_count')
+            ->first();
+
         return [
             'my' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.my_tickets'))
                 ->icon('heroicon-o-user')
-                ->badge(
-                    Ticket::query()
-                        ->where('assigned_to_type', $userType)
-                        ->where('assigned_to_id', $userId)
-                        ->count()
-                )
+                ->badge((int) ($counts->my_count ?? 0))
                 ->modifyQueryUsing(fn (Builder $query): Builder => $query
                     ->where('assigned_to_type', $userType)
                     ->where('assigned_to_id', $userId)
@@ -46,18 +49,14 @@ class ListTickets extends ListRecords
 
             'unassigned' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.unassigned'))
                 ->icon('heroicon-o-user-minus')
-                ->badge(
-                    Ticket::query()
-                        ->whereNull('assigned_to_id')
-                        ->count()
-                )
+                ->badge((int) ($counts->unassigned_count ?? 0))
                 ->modifyQueryUsing(fn (Builder $query): Builder => $query
                     ->whereNull('assigned_to_id')
                 ),
 
             'all' => Tab::make(__('filament-help-desk::filament-help-desk.tabs.all'))
                 ->icon('heroicon-o-inbox-stack')
-                ->badge(Ticket::query()->count()),
+                ->badge((int) ($counts->all_count ?? 0)),
         ];
     }
 
