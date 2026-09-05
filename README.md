@@ -6,6 +6,8 @@
 
 # Filament Help Desk
 
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-support-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeffersongoncalves)
+
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/jeffersongoncalves/filament-help-desk.svg?style=flat-square)](https://packagist.org/packages/jeffersongoncalves/filament-help-desk)
 [![Total Downloads](https://img.shields.io/packagist/dt/jeffersongoncalves/filament-help-desk.svg?style=flat-square)](https://packagist.org/packages/jeffersongoncalves/filament-help-desk)
 [![License](https://img.shields.io/packagist/l/jeffersongoncalves/filament-help-desk.svg?style=flat-square)](LICENSE.md)
