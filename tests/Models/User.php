@@ -6,6 +6,7 @@ use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\UserFactory;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -25,8 +26,8 @@ class User extends Authenticatable implements FilamentUser
         return true;
     }
 
-    protected static function newFactory(): \JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\UserFactory
+    protected static function newFactory(): UserFactory
     {
-        return \JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\UserFactory::new();
+        return UserFactory::new();
     }
 }
