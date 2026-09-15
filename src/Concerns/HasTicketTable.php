@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Concerns;
 
+use Filament\Tables\Columns\Column;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\BaseFilter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use JeffersonGoncalves\HelpDesk\Enums\TicketPriority;
@@ -23,7 +25,7 @@ trait HasTicketTable
      * Get the table columns for ticket listings.
      *
      * @param  bool  $showUser  When true, includes the requester (user) column.
-     * @return array<int, \Filament\Tables\Columns\Column>
+     * @return array<int, Column>
      */
     public static function getTicketTableColumns(bool $showUser = true): array
     {
@@ -88,7 +90,7 @@ trait HasTicketTable
     /**
      * Get the table filters for ticket listings.
      *
-     * @return array<int, \Filament\Tables\Filters\BaseFilter>
+     * @return array<int, BaseFilter>
      */
     public static function getTicketTableFilters(): array
     {

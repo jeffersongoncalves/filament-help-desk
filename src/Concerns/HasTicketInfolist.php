@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Concerns;
 
+use Filament\Infolists\Components\Component;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\TextEntry;
 use JeffersonGoncalves\HelpDesk\Enums\TicketPriority;
@@ -21,7 +22,7 @@ trait HasTicketInfolist
     /**
      * Get the infolist schema for displaying ticket details.
      *
-     * @return array<int, \Filament\Infolists\Components\Component>
+     * @return array<int, Component>
      */
     public static function getTicketInfolistSchema(): array
     {

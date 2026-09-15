@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JeffersonGoncalves\FilamentHelpDesk\Concerns;
 
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Toggle;
@@ -16,6 +17,7 @@ use JeffersonGoncalves\HelpDesk\Models\Ticket;
 use JeffersonGoncalves\HelpDesk\Models\TicketAttachment;
 use JeffersonGoncalves\HelpDesk\Models\TicketComment;
 use JeffersonGoncalves\HelpDesk\Services\CommentService;
+use Symfony\Component\Mime\MimeTypes;
 
 /**
  * Provides comment form schema, submission logic, and timeline retrieval for ticket views.
@@ -30,7 +32,7 @@ trait InteractsWithTicketComments
     /**
      * Get the form schema for the comment/reply form.
      *
-     * @return array<int, \Filament\Forms\Components\Component>
+     * @return array<int, Component>
      */
     public function getCommentFormSchema(): array
     {
@@ -52,7 +54,7 @@ trait InteractsWithTicketComments
                 ->directory(config('help-desk.ticket.attachment_path', 'help-desk/attachments'))
                 ->acceptedFileTypes(
                     collect(config('help-desk.ticket.allowed_extensions', []))
-                        ->flatMap(fn (string $ext): array => \Symfony\Component\Mime\MimeTypes::getDefault()->getMimeTypes($ext))
+                        ->flatMap(fn (string $ext): array => MimeTypes::getDefault()->getMimeTypes($ext))
                         ->unique()
                         ->values()
                         ->toArray()
