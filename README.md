@@ -14,12 +14,13 @@
 
 Filament plugins for [jeffersongoncalves/laravel-help-desk](https://github.com/jeffersongoncalves/laravel-help-desk) — providing User, Operator, and Admin panels for ticket management.
 
-## Requirements
+## Version Compatibility
 
-- PHP `^8.1`
-- Laravel `^10 | ^11 | ^12`
-- Filament `^3.0`
-- [jeffersongoncalves/laravel-help-desk](https://github.com/jeffersongoncalves/laravel-help-desk) `^1.0`
+| `filament-help-desk` | `laravel-help-desk` | Filament |
+| --- | --- | --- |
+| `1.x` | `^2.0` | `v3` |
+| `2.x` | `^2.0` | `v4` |
+| `3.x` | `^2.0` | `v5` |
 
 ## Installation
 
