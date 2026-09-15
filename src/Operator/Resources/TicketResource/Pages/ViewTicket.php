@@ -14,6 +14,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\InteractsWithTicketComments;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource;
@@ -25,6 +26,7 @@ use JeffersonGoncalves\HelpDesk\Models\Ticket;
 use JeffersonGoncalves\HelpDesk\Models\TicketAttachment;
 use JeffersonGoncalves\HelpDesk\Services\CommentService;
 use JeffersonGoncalves\HelpDesk\Services\TicketService;
+use Symfony\Component\Mime\MimeTypes;
 
 /**
  * @property-read Ticket $record
@@ -80,7 +82,7 @@ class ViewTicket extends ViewRecord
                     ->maxSize(config('help-desk.ticket.max_file_size', 10240))
                     ->acceptedFileTypes(
                         collect(config('help-desk.ticket.allowed_extensions', []))
-                            ->flatMap(fn (string $ext): array => \Symfony\Component\Mime\MimeTypes::getDefault()->getMimeTypes($ext))
+                            ->flatMap(fn (string $ext): array => MimeTypes::getDefault()->getMimeTypes($ext))
                             ->unique()
                             ->values()
                             ->toArray()
@@ -162,7 +164,7 @@ class ViewTicket extends ViewRecord
         $this->dispatch('$refresh');
     }
 
-    public function getComments(): \Illuminate\Database\Eloquent\Collection
+    public function getComments(): Collection
     {
         return $this->getCommentsForTimeline();
     }

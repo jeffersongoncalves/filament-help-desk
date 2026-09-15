@@ -8,12 +8,14 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
 use JeffersonGoncalves\HelpDesk\Enums\TicketPriority;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
 use JeffersonGoncalves\HelpDesk\Models\Category;
 use JeffersonGoncalves\HelpDesk\Models\Department;
+use Symfony\Component\Mime\MimeTypes;
 
 /**
  * Provides reusable Filament form schemas for ticket creation and editing.
@@ -28,7 +30,7 @@ trait HasTicketForm
      * Get the form schema for creating a new ticket.
      *
      * @param  bool  $isUser  When true, hides operator-only fields (assigned_to, status).
-     * @return array<int, \Filament\Schemas\Components\Component>
+     * @return array<int, Component>
      */
     public static function getTicketFormSchema(bool $isUser = false): array
     {
@@ -96,7 +98,7 @@ trait HasTicketForm
                 ->directory(config('help-desk.ticket.attachment_path', 'help-desk/attachments'))
                 ->acceptedFileTypes(
                     collect(config('help-desk.ticket.allowed_extensions', []))
-                        ->flatMap(fn (string $ext): array => \Symfony\Component\Mime\MimeTypes::getDefault()->getMimeTypes($ext))
+                        ->flatMap(fn (string $ext): array => MimeTypes::getDefault()->getMimeTypes($ext))
                         ->unique()
                         ->values()
                         ->toArray()
@@ -139,7 +141,7 @@ trait HasTicketForm
      *
      * Includes all editable ticket fields plus the status selector.
      *
-     * @return array<int, \Filament\Schemas\Components\Component>
+     * @return array<int, Component>
      */
     public static function getTicketEditFormSchema(): array
     {

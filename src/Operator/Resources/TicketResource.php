@@ -9,11 +9,14 @@ use Filament\Actions\BulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Select;
+use Filament\Notifications\Notification;
 use Filament\Panel;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketForm;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketInfolist;
@@ -106,7 +109,7 @@ class TicketResource extends Resource
                     ->icon(Heroicon::OutlinedUserPlus)
                     ->requiresConfirmation()
                     ->deselectRecordsAfterCompletion()
-                    ->action(function (\Illuminate\Database\Eloquent\Collection $records): void {
+                    ->action(function (Collection $records): void {
                         /** @var TicketService $ticketService */
                         $ticketService = app(TicketService::class);
                         $operator = Filament::auth()->user();
@@ -115,7 +118,7 @@ class TicketResource extends Resource
                             $ticketService->assign($record, $operator, $operator);
                         }
 
-                        \Filament\Notifications\Notification::make()
+                        Notification::make()
                             ->title(__('filament-help-desk::filament-help-desk.notifications.ticket_assigned'))
                             ->success()
                             ->send();
@@ -125,7 +128,7 @@ class TicketResource extends Resource
                     ->label(__('filament-help-desk::filament-help-desk.actions.change_status'))
                     ->icon(Heroicon::OutlinedArrowPath)
                     ->form([
-                        \Filament\Forms\Components\Select::make('status')
+                        Select::make('status')
                             ->label(__('filament-help-desk::filament-help-desk.fields.status'))
                             ->options(
                                 collect(TicketStatus::cases())
@@ -137,7 +140,7 @@ class TicketResource extends Resource
                             ->required(),
                     ])
                     ->deselectRecordsAfterCompletion()
-                    ->action(function (\Illuminate\Database\Eloquent\Collection $records, array $data): void {
+                    ->action(function (Collection $records, array $data): void {
                         /** @var TicketService $ticketService */
                         $ticketService = app(TicketService::class);
                         $newStatus = TicketStatus::from($data['status']);
@@ -149,7 +152,7 @@ class TicketResource extends Resource
                             }
                         }
 
-                        \Filament\Notifications\Notification::make()
+                        Notification::make()
                             ->title(__('filament-help-desk::filament-help-desk.notifications.status_changed'))
                             ->success()
                             ->send();
@@ -159,7 +162,7 @@ class TicketResource extends Resource
                     ->label(__('filament-help-desk::filament-help-desk.actions.change_priority'))
                     ->icon(Heroicon::OutlinedFlag)
                     ->form([
-                        \Filament\Forms\Components\Select::make('priority')
+                        Select::make('priority')
                             ->label(__('filament-help-desk::filament-help-desk.fields.priority'))
                             ->options(
                                 collect(TicketPriority::cases())
@@ -171,7 +174,7 @@ class TicketResource extends Resource
                             ->required(),
                     ])
                     ->deselectRecordsAfterCompletion()
-                    ->action(function (\Illuminate\Database\Eloquent\Collection $records, array $data): void {
+                    ->action(function (Collection $records, array $data): void {
                         /** @var TicketService $ticketService */
                         $ticketService = app(TicketService::class);
                         $performer = Filament::auth()->user();
@@ -180,7 +183,7 @@ class TicketResource extends Resource
                             $ticketService->update($record, ['priority' => $data['priority']], $performer);
                         }
 
-                        \Filament\Notifications\Notification::make()
+                        Notification::make()
                             ->title(__('filament-help-desk::filament-help-desk.notifications.priority_changed'))
                             ->success()
                             ->send();
