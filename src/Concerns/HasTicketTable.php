@@ -75,7 +75,7 @@ trait HasTicketTable
         ];
 
         if ($showUser) {
-            $columns[] = TextColumn::make('user.name')
+            $columns[] = TextColumn::make('requester_name')
                 ->label(__('filament-help-desk::filament-help-desk.fields.requester'));
         }
 
