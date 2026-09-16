@@ -189,7 +189,7 @@ class TicketResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
-            ->schema(static::getTicketInfolistSchema());
+            ->schema(static::getTicketInfolistSchema(showApplication: true));
     }
 
     public static function canCreate(): bool
