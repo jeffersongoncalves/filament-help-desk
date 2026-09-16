@@ -178,7 +178,7 @@ class ViewTicket extends ViewRecord
                 ->color('primary')
                 ->requiresConfirmation()
                 ->visible(fn (): bool => $this->record->assigned_to_id !== Filament::auth()->id()
-                    || $this->record->assigned_to_type !== get_class(Filament::auth()->user()))
+                    || $this->record->assigned_to_type !== Filament::auth()->user()->getMorphClass())
                 ->action(function (): void {
                     /** @var TicketService $ticketService */
                     $ticketService = app(TicketService::class);

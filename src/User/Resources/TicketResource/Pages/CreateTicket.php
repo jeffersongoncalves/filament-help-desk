@@ -20,7 +20,7 @@ class CreateTicket extends CreateRecord
     {
         $user = Filament::auth()->user();
 
-        $data['user_type'] = get_class($user);
+        $data['user_type'] = $user->getMorphClass();
         $data['user_id'] = $user->getAuthIdentifier();
         $data['source'] = 'web';
 

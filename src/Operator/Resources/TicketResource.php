@@ -78,7 +78,7 @@ class TicketResource extends Resource
         $user = Filament::auth()->user();
 
         $count = Ticket::query()
-            ->where('assigned_to_type', get_class($user))
+            ->where('assigned_to_type', $user->getMorphClass())
             ->where('assigned_to_id', $user->getAuthIdentifier())
             ->open()
             ->count();
