@@ -148,6 +148,7 @@ class ViewTicket extends ViewRecord
                     'disk' => $disk,
                     'mime_type' => $mimeType,
                     'file_size' => $fileSize,
+                    'metadata' => ['uploader' => TicketAttachment::snapshotOf($author)],
                 ]);
 
                 event(new AttachmentAdded($ticket, $attachment));
