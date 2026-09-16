@@ -7,24 +7,27 @@ description: Skill for developing with and extending the filament-help-desk pack
 
 Use this skill when:
 - Setting up the filament-help-desk package in a Laravel application
-- Customizing ticket forms, tables, or views
+- Customizing ticket forms, tables, infolists or views
 - Extending resources or creating custom pages
 - Integrating help desk functionality into existing Filament panels
+- Wiring several applications to one central Help Desk panel
 - Troubleshooting plugin registration issues
 
 # Installation
 
 ```bash
-composer require jeffersongoncalves/filament-help-desk:^1.0
+composer require jeffersongoncalves/filament-help-desk:^3.0
 ```
 
 Publish and run migrations from the base package:
+
 ```bash
 php artisan vendor:publish --tag="help-desk-migrations"
 php artisan migrate
 ```
 
 Publish the config:
+
 ```bash
 php artisan vendor:publish --tag="filament-help-desk-config"
 ```
@@ -47,15 +50,15 @@ class User extends Authenticatable
 ## 2. Register plugins in your panels
 
 ```php
-// In your UserPanelProvider
+// UserPanelProvider
 ->plugins([
     FilamentHelpDeskUserPlugin::make(),
 ])
 
-// In your AdminPanelProvider
+// AdminPanelProvider
 ->plugins([
     FilamentHelpDeskAdminPlugin::make(),
-    FilamentHelpDeskOperatorPlugin::make(), // Can combine admin + operator
+    FilamentHelpDeskOperatorPlugin::make(), // admin + operator combine freely
 ])
 ```
 
@@ -70,11 +73,78 @@ $ticket = HelpDesk::create([
     'department_id' => 1,
     'priority' => 'high',
 ], $user);
+
+HelpDesk::comments()->addReply($ticket, auth()->user(), 'Additional details...');
+HelpDesk::assign($ticket, $operator, auth()->user());
+HelpDesk::changeStatus($ticket, TicketStatus::InProgress, auth()->user());
 ```
 
-# Customizing Forms
+# Reading People Off a Ticket
 
-Override the form schema by extending the resource:
+Tickets, comments and attachments reference people through morph pairs. When several applications share one Help Desk database, a row can carry a morph type whose class this application does not have installed — and reading the relation is fatal, not blank, because Eloquent instantiates the stored class name.
+
+```php
+// WRONG: raises Class "satellite-app-user" not found
+TextColumn::make('user.name')
+$comment->author?->name
+->with(['author', 'attachments'])   // eager loading a morphTo instantiates every stored type
+
+// RIGHT: live model where it resolves, identity snapshot where it does not
+$ticket->requester_name;      // requester_email, requester()
+$comment->author_name;        // author_email, resolvedAuthor()
+$attachment->uploader_name;   // uploader_email, resolvedUploadedBy()
+```
+
+Write the type side through `getMorphClass()`, never `get_class()`, so a registered morph map is honoured:
+
+```php
+$data['user_type'] = $user->getMorphClass();
+
+$operatorModel = config('help-desk.models.operator');
+$data['assigned_to_type'] = (new $operatorModel)->getMorphClass();
+```
+
+Creating a `TicketAttachment` through the model rather than `AttachmentService` means writing the snapshot yourself:
+
+```php
+TicketAttachment::create([
+    // ...
+    'metadata' => ['uploader' => TicketAttachment::snapshotOf($user)],
+]);
+```
+
+# Several Applications, One Central Panel
+
+Satellite applications expose only the end-user side; one central application runs the queue and the administration.
+
+| | Satellite | Central |
+| --- | --- | --- |
+| Plugins | `FilamentHelpDeskUserPlugin` | `FilamentHelpDeskOperatorPlugin`, `FilamentHelpDeskAdminPlugin` |
+| Help desk migrations | never runs them | owns the schema |
+| `HELPDESK_APP_KEY` | its own key | unset |
+| `HELPDESK_SCOPE_TO_APP` | `true` | `false` |
+
+```dotenv
+# Satellite
+HELPDESK_DB_CONNECTION=help_desk
+HELPDESK_APP_KEY=app-a
+HELPDESK_APP_NAME="Application A"
+HELPDESK_SCOPE_TO_APP=true
+```
+
+Four things decide whether it works:
+
+- only the central application runs the help desk migrations — Laravel records them in each application's own default connection
+- every application registers its own morph alias, or requester keys collide:
+  `Relation::enforceMorphMap(['app-a-user' => User::class]);`
+- attachments need a shared disk; `attachment_disk` defaults to `local`
+- `HELPDESK_SCOPE_TO_APP` belongs on satellites only, or the central panels see nothing
+
+Once tickets carry an app key, the Admin and Operator tables gain an **Application** column and filter and the detail view names the originating application. Where none do, nothing appears.
+
+# Customizing Forms, Tables and Infolists
+
+Extend the resource and reuse the shared traits:
 
 ```php
 namespace App\Filament\User\Resources;
@@ -83,62 +153,37 @@ use JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource as BaseRes
 
 class TicketResource extends BaseResource
 {
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->schema([
-            // Your custom form schema
+        return $schema->schema([
             ...static::getTicketFormSchema(isUser: true),
-            // Add custom fields
-            Forms\Components\Select::make('custom_field')
-                ->options([...]),
+            Select::make('custom_field')->options([...]),
         ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns(static::getTicketTableColumns(showUser: false))
+            ->filters(static::getTicketTableFilters());
     }
 }
 ```
 
-Then update the config:
+Signatures:
+
+```php
+getTicketFormSchema(bool $isUser = false): array
+getTicketEditFormSchema(): array
+getTicketTableColumns(bool $showUser = true, bool $showApplication = false): array
+getTicketTableFilters(bool $showApplication = false): array
+getTicketInfolistSchema(bool $showApplication = false): array
+```
+
+Then point the config at your class:
+
 ```php
 'user' => [
     'resource' => \App\Filament\User\Resources\TicketResource::class,
 ],
-```
-
-# Customizing Tables
-
-Similarly, extend the resource and override the table method using the shared trait columns as a base.
-
-# Adding Custom Widgets
-
-Register additional widgets by extending the plugin or adding them directly to your panel.
-
-# Examples
-
-## Custom ticket creation with attachments
-```php
-use JeffersonGoncalves\HelpDesk\Facades\HelpDesk;
-
-$ticket = HelpDesk::create([
-    'title' => 'Bug report',
-    'description' => 'Steps to reproduce...',
-    'department_id' => $departmentId,
-    'category_id' => $categoryId,
-    'priority' => 'urgent',
-], auth()->user());
-
-// Add a comment
-HelpDesk::comments()->addReply($ticket, auth()->user(), 'Additional details...', [
-    'attachments' => $request->file('files'),
-]);
-```
-
-## Assigning tickets
-```php
-HelpDesk::assign($ticket, $operator, auth()->user());
-```
-
-## Changing status
-```php
-use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
-
-HelpDesk::changeStatus($ticket, TicketStatus::InProgress, auth()->user());
 ```
