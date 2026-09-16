@@ -1,12 +1,5 @@
 name: Tests
 
-# NOTE: until jeffersongoncalves/laravel-short-url has a tagged release on
-# Packagist, this workflow will fail in CI because composer.json points at a
-# local path repository (../../laravel/laravel-short-url) that only exists in
-# the monorepo dev environment. Switch the "jeffersongoncalves/laravel-short-url"
-# constraint to a real version and drop the "repositories" block once
-# laravel-short-url is published.
-
 on:
   push:
     branches:
@@ -23,9 +16,10 @@ jobs:
       fail-fast: true
       matrix:
         php: [8.4]
+        laravel: [13]
         stability: [prefer-stable]
 
-    name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.stability }}
 
     steps:
       - name: Checkout code
@@ -39,7 +33,7 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+        run: composer update --with "laravel/framework:^${{ matrix.laravel }}.0" --${{ matrix.stability }} --prefer-dist --no-interaction
 
       - name: Run Pint
         run: vendor/bin/pint --test

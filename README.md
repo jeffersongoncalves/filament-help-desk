@@ -152,6 +152,24 @@ class AdminPanelProvider extends PanelProvider
 
 > **Tip:** You can combine plugins in a single panel. For example, register both `FilamentHelpDeskAdminPlugin` and `FilamentHelpDeskOperatorPlugin` in your admin panel.
 
+### 3. Register a morph alias when sharing one Help Desk database
+
+Tickets store the requester and the assigned operator as polymorphic pairs (`user_type`/`user_id`, `assigned_to_type`/`assigned_to_id`). The plugin resolves the type side through `getMorphClass()`, so it honours any morph map you enforce.
+
+If several applications point at the **same** Help Desk database (see the configurable database connection in [`jeffersongoncalves/laravel-help-desk`](https://github.com/jeffersongoncalves/laravel-help-desk)), you **must** give each application its own morph alias. Every Laravel app calls its model `App\Models\User`, so without an alias user `#5` of app A and user `#5` of app B collapse into the same `(user_type, user_id)` pair and each one sees the other's tickets.
+
+```php
+// AppServiceProvider::boot() of each application
+use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\Relation;
+
+Relation::enforceMorphMap([
+    'app-a-user' => User::class,
+]);
+```
+
+Single-application installs need no change: with no morph map registered, `getMorphClass()` returns the class name, which is what is already stored.
+
 ## Configuration
 
 The configuration file `config/filament-help-desk.php` allows you to customize:
