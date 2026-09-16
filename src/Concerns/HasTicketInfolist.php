@@ -9,6 +9,7 @@ use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use JeffersonGoncalves\HelpDesk\Enums\TicketPriority;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
+use JeffersonGoncalves\HelpDesk\Models\Ticket;
 
 /**
  * Provides reusable Filament infolist schemas for ticket detail views.
@@ -72,6 +73,12 @@ trait HasTicketInfolist
 
                     TextEntry::make('requester_name')
                         ->label(__('filament-help-desk::filament-help-desk.fields.requester')),
+
+                    // Only tickets that came from an identified application
+                    // carry a key, so this stays hidden on a single-app install.
+                    TextEntry::make('app_name')
+                        ->label(__('filament-help-desk::filament-help-desk.fields.application'))
+                        ->visible(fn (Ticket $record): bool => filled($record->app_key)),
 
                     TextEntry::make('created_at')
                         ->label(__('filament-help-desk::filament-help-desk.fields.created_at'))
