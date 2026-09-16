@@ -9,6 +9,7 @@ use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use JeffersonGoncalves\HelpDesk\Enums\TicketPriority;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
+use JeffersonGoncalves\HelpDesk\Models\Ticket;
 
 /**
  * Provides reusable Filament infolist schemas for ticket detail views.
@@ -22,9 +23,12 @@ trait HasTicketInfolist
     /**
      * Get the infolist schema for displaying ticket details.
      *
+     * @param  bool  $showApplication  When true, includes the originating application
+     *                                 entry — shown only for a ticket that carries an
+     *                                 app key.
      * @return array<int, Component>
      */
-    public static function getTicketInfolistSchema(): array
+    public static function getTicketInfolistSchema(bool $showApplication = false): array
     {
         return [
             Section::make(__('filament-help-desk::filament-help-desk.sections.ticket_details'))
@@ -72,6 +76,14 @@ trait HasTicketInfolist
 
                     TextEntry::make('requester_name')
                         ->label(__('filament-help-desk::filament-help-desk.fields.requester')),
+
+                    // Only the panels that serve several applications ask for
+                    // this, and only tickets that came from an identified
+                    // application carry a key, so it also stays hidden on a
+                    // single-application install.
+                    TextEntry::make('app_name')
+                        ->label(__('filament-help-desk::filament-help-desk.fields.application'))
+                        ->visible(fn (Ticket $record): bool => $showApplication && filled($record->app_key)),
 
                     TextEntry::make('created_at')
                         ->label(__('filament-help-desk::filament-help-desk.fields.created_at'))

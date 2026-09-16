@@ -11,6 +11,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TrashedFilter;
 use JeffersonGoncalves\HelpDesk\Enums\TicketPriority;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
+use JeffersonGoncalves\HelpDesk\Models\Ticket;
 
 /**
  * Provides reusable Filament table columns and filters for ticket listings.
@@ -25,9 +26,11 @@ trait HasTicketTable
      * Get the table columns for ticket listings.
      *
      * @param  bool  $showUser  When true, includes the requester (user) column.
+     * @param  bool  $showApplication  When true, includes the originating application
+     *                                 column — provided any ticket carries an app key.
      * @return array<int, Column>
      */
-    public static function getTicketTableColumns(bool $showUser = true): array
+    public static function getTicketTableColumns(bool $showUser = true, bool $showApplication = false): array
     {
         $columns = [
             TextColumn::make('reference_number')
@@ -79,6 +82,12 @@ trait HasTicketTable
                 ->label(__('filament-help-desk::filament-help-desk.fields.requester'));
         }
 
+        if ($showApplication && static::getTicketApplicationOptions() !== []) {
+            $columns[] = TextColumn::make('app_name')
+                ->label(__('filament-help-desk::filament-help-desk.fields.application'))
+                ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.na'));
+        }
+
         $columns[] = TextColumn::make('created_at')
             ->label(__('filament-help-desk::filament-help-desk.fields.created_at'))
             ->dateTime()
@@ -90,11 +99,13 @@ trait HasTicketTable
     /**
      * Get the table filters for ticket listings.
      *
+     * @param  bool  $showApplication  When true, includes the originating application
+     *                                 filter — provided any ticket carries an app key.
      * @return array<int, BaseFilter>
      */
-    public static function getTicketTableFilters(): array
+    public static function getTicketTableFilters(bool $showApplication = false): array
     {
-        return [
+        $filters = [
             SelectFilter::make('status')
                 ->label(__('filament-help-desk::filament-help-desk.fields.status'))
                 ->options(
@@ -121,5 +132,42 @@ trait HasTicketTable
 
             TrashedFilter::make(),
         ];
+
+        if ($showApplication && ($applications = static::getTicketApplicationOptions()) !== []) {
+            $filters[] = SelectFilter::make('app_key')
+                ->label(__('filament-help-desk::filament-help-desk.fields.application'))
+                ->options($applications);
+        }
+
+        return $filters;
+    }
+
+    /**
+     * The applications that have opened a ticket, keyed by their app key and
+     * labelled with the name each ticket carries. Empty on a single-application
+     * install, which is what hides the column and the filter there.
+     *
+     * @return array<string, string>
+     */
+    protected static function getTicketApplicationOptions(): array
+    {
+        return Ticket::query()
+            ->whereNotNull('app_key')
+            ->distinct()
+            ->orderBy('app_key')
+            ->pluck('app_key')
+            ->mapWithKeys(function ($key): array {
+                $key = (string) $key;
+
+                // The label travels with the ticket, since the central
+                // application has no configuration describing the others.
+                $ticket = Ticket::query()
+                    ->where('app_key', $key)
+                    ->latest('id')
+                    ->first(['id', 'app_key', 'metadata']);
+
+                return [$key => $ticket->app_name ?? $key];
+            })
+            ->all();
     }
 }
