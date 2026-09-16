@@ -147,7 +147,11 @@ trait InteractsWithTicketComments
     {
         return $this->record
             ->comments()
-            ->with(['author', 'attachments'])
+            // The author is left out on purpose: eager loading a morphTo
+            // instantiates every stored type, which is fatal for a class
+            // another application owns. TicketComment::$author_name loads
+            // it only when it resolves here.
+            ->with('attachments')
             ->latest()
             ->get();
     }
