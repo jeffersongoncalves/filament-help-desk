@@ -187,7 +187,7 @@ class TicketResource extends Resource
     {
         return $schema
             ->columns(null)
-            ->schema(static::getTicketInfolistSchema());
+            ->schema(static::getTicketInfolistSchema(showApplication: true));
     }
 
     public static function shouldRegisterNavigation(): bool
