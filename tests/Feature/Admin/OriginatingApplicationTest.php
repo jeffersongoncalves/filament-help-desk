@@ -19,29 +19,9 @@ beforeEach(function () {
     $this->department = DepartmentFactory::new()->create();
 });
 
-function ticketFromApp(string $key, ?string $name, string $title): object
-{
-    $ticket = TicketFactory::new()->create([
-        'department_id' => test()->department->id,
-        'user_type' => User::class,
-        'user_id' => UserFactory::new()->create()->id,
-        'title' => $title,
-        'app_key' => $key,
-    ]);
-
-    // The creating hook stamps this application's own name. A ticket opened
-    // elsewhere arrives carrying the label of the application it came from,
-    // so overwrite it the way the satellite application would have written it.
-    $ticket->update([
-        'metadata' => $name === null ? null : ['app' => ['name' => $name]],
-    ]);
-
-    return $ticket->fresh();
-}
-
 it('shows the originating application column when tickets carry an app key', function () {
-    ticketFromApp('app-a', 'Application A', 'Ticket from A');
-    ticketFromApp('app-b', 'Application B', 'Ticket from B');
+    ticketFromApp($this->department->id, 'app-a', 'Application A', 'Ticket from A');
+    ticketFromApp($this->department->id, 'app-b', 'Application B', 'Ticket from B');
 
     livewire(ListTickets::class)
         ->assertSuccessful()
@@ -50,7 +30,7 @@ it('shows the originating application column when tickets carry an app key', fun
 });
 
 it('falls back to the app key when the ticket carries no application name', function () {
-    ticketFromApp('app-without-name', null, 'Unnamed application ticket');
+    ticketFromApp($this->department->id, 'app-without-name', null, 'Unnamed application ticket');
 
     livewire(ListTickets::class)
         ->assertSuccessful()
@@ -58,8 +38,8 @@ it('falls back to the app key when the ticket carries no application name', func
 });
 
 it('filters the ticket list by originating application', function () {
-    $fromA = ticketFromApp('app-a', 'Application A', 'Ticket from A');
-    $fromB = ticketFromApp('app-b', 'Application B', 'Ticket from B');
+    $fromA = ticketFromApp($this->department->id, 'app-a', 'Application A', 'Ticket from A');
+    $fromB = ticketFromApp($this->department->id, 'app-b', 'Application B', 'Ticket from B');
 
     livewire(ListTickets::class)
         ->filterTable('app_key', 'app-a')
@@ -68,7 +48,7 @@ it('filters the ticket list by originating application', function () {
 });
 
 it('shows the originating application on the ticket detail page', function () {
-    $ticket = ticketFromApp('app-a', 'Application A', 'Ticket from A');
+    $ticket = ticketFromApp($this->department->id, 'app-a', 'Application A', 'Ticket from A');
 
     livewire(ViewTicket::class, ['record' => $ticket->uuid])
         ->assertSuccessful()
