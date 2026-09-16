@@ -14,7 +14,7 @@
     <div class="fi-hd-comment-body">
         <div class="fi-hd-comment-header">
             <span class="fi-hd-comment-author">
-                {{ $comment->author?->name ?? __('filament-help-desk::filament-help-desk.comments.system') }}
+                {{ $comment->author_name ?? __('filament-help-desk::filament-help-desk.comments.system') }}
             </span>
 
             @if ($comment->is_internal)
