@@ -61,6 +61,7 @@ return [
         'category' => 'Categoria',
         'assigned_to' => 'Atribuído a',
         'requester' => 'Solicitante',
+        'application' => 'Aplicação',
         'created_at' => 'Criado em',
         'updated_at' => 'Atualizado em',
         'closed_at' => 'Fechado em',

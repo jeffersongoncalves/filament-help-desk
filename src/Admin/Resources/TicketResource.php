@@ -71,8 +71,8 @@ class TicketResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns(static::getTicketTableColumns(showUser: true))
-            ->filters(static::getTicketTableFilters())
+            ->columns(static::getTicketTableColumns(showUser: true, showApplication: true))
+            ->filters(static::getTicketTableFilters(showApplication: true))
             ->defaultSort('created_at', 'desc')
             ->actions([
                 ViewAction::make(),
@@ -185,7 +185,7 @@ class TicketResource extends Resource
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
-            ->schema(static::getTicketInfolistSchema());
+            ->schema(static::getTicketInfolistSchema(showApplication: true));
     }
 
     public static function shouldRegisterNavigation(): bool
