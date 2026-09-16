@@ -189,6 +189,42 @@ HELPDESK_APP_NAME="Application A"
 
 Tickets are stamped with the key on creation, and the label travels with the ticket, since the central application has no configuration describing the others. The Admin and Operator ticket tables then show an **Application** column and a filter, and the ticket detail view names the originating application. Where no ticket carries a key, none of that appears — a single-application install sees no change. The User panel never shows it: every ticket a requester sees comes from the application they are already in.
 
+### 5. Satellite applications with one central panel
+
+The three plugins are independent, which is what lets a whole support desk be split across applications: each satellite application exposes only the end-user side, and one central application runs the queue and the administration.
+
+| | Satellite application | Central application |
+| --- | --- | --- |
+| Plugins | `FilamentHelpDeskUserPlugin` | `FilamentHelpDeskOperatorPlugin`, `FilamentHelpDeskAdminPlugin` |
+| Help desk migrations | never runs them | owns the schema, runs them |
+| `HELPDESK_APP_KEY` | its own key | unset |
+| `HELPDESK_SCOPE_TO_APP` | `true` | `false` |
+
+```dotenv
+# Satellite application
+HELPDESK_DB_CONNECTION=help_desk
+HELPDESK_APP_KEY=app-a
+HELPDESK_APP_NAME="Application A"
+HELPDESK_SCOPE_TO_APP=true
+```
+
+```dotenv
+# Central application — sees every application's tickets
+HELPDESK_DB_CONNECTION=help_desk
+```
+
+Four things decide whether this works.
+
+**Only the central application migrates.** Laravel records applied migrations in each application's *own* default connection, so a satellite that publishes and runs the help desk migrations tries to create tables that already exist. Satellites install `jeffersongoncalves/laravel-help-desk`, point `HELPDESK_DB_CONNECTION` at the shared connection, and stop there.
+
+**Every application needs its own morph alias** — section 3 above. Without it the requester keys collide and each application's users read the other's tickets.
+
+**Attachments need a shared disk.** `help-desk.ticket.attachment_disk` defaults to `local`, which leaves each upload on the disk of whichever application received it, so the central panel cannot serve a file a satellite stored. Point every application at the same S3-style disk.
+
+**`HELPDESK_SCOPE_TO_APP` belongs on the satellites only.** It scopes *every* `Ticket` query to that application's key, which is what keeps a satellite's User panel honest even before the morph alias is considered. Leave it off centrally, or the Admin and Operator panels see nothing.
+
+See [Sharing One Help Desk Database Across Applications](https://github.com/jeffersongoncalves/laravel-help-desk#sharing-one-help-desk-database-across-applications) in the core package for the data side of the same topology.
+
 ## Configuration
 
 The configuration file `config/filament-help-desk.php` allows you to customize:
