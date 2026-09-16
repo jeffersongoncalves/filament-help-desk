@@ -17,7 +17,7 @@ class UserTicketStatsWidget extends StatsOverviewWidget
         $user = Filament::auth()->user();
 
         $baseQuery = Ticket::query()
-            ->where('user_type', get_class($user))
+            ->where('user_type', $user->getMorphClass())
             ->where('user_id', $user->getAuthIdentifier());
 
         $openCount = (clone $baseQuery)

@@ -29,7 +29,7 @@ class AssignedTicketsWidget extends BaseWidget
         return $table
             ->query(
                 Ticket::query()
-                    ->where('assigned_to_type', get_class(Filament::auth()->user()))
+                    ->where('assigned_to_type', Filament::auth()->user()->getMorphClass())
                     ->where('assigned_to_id', Filament::auth()->id())
                     ->open()
                     ->limit(5)

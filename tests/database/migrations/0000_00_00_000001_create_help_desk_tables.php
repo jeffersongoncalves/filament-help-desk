@@ -51,6 +51,7 @@ return new class extends Migration
             $table->string('status', 32)->default('open')->index();
             $table->string('priority', 16)->default('medium')->index();
             $table->string('source', 32)->default('web');
+            $table->string('app_key', 64)->nullable()->index();
             $table->string('email_message_id')->nullable()->index();
             $table->timestamp('closed_at')->nullable();
             $table->timestamp('due_at')->nullable();

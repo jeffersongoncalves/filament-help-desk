@@ -27,7 +27,7 @@ class ListTickets extends ListRecords
     public function getTabs(): array
     {
         $user = Filament::auth()->user();
-        $userType = get_class($user);
+        $userType = $user->getMorphClass();
         $userId = $user->getAuthIdentifier();
 
         // Single query (conditional aggregation) instead of one COUNT per tab.
