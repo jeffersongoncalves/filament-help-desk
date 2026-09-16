@@ -135,6 +135,7 @@ return new class extends Migration
             $table->foreignId('ticket_id')->constrained('help_desk_tickets')->cascadeOnDelete();
             $table->string('watcher_type');
             $table->unsignedBigInteger('watcher_id');
+            $table->json('metadata')->nullable();
             $table->timestamp('created_at')->nullable();
 
             $table->unique(['ticket_id', 'watcher_type', 'watcher_id'], 'ticket_watcher_unique');
