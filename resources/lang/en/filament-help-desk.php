@@ -61,6 +61,7 @@ return [
         'category' => 'Category',
         'assigned_to' => 'Assigned To',
         'requester' => 'Requester',
+        'application' => 'Application',
         'created_at' => 'Created At',
         'updated_at' => 'Updated At',
         'closed_at' => 'Closed At',
