@@ -18,9 +18,9 @@ Filament plugins for [jeffersongoncalves/laravel-help-desk](https://github.com/j
 
 | `filament-help-desk` | `laravel-help-desk` | Filament |
 | --- | --- | --- |
-| `1.x` | `^2.0` | `v3` |
-| `2.x` | `^2.0` | `v4` |
-| `3.x` | `^2.0` | `v5` |
+| `1.x` | `^1.5` | `v3` |
+| `2.x` | `^1.5` | `v4` |
+| `3.x` | `^1.5` | `v5` |
 
 ## Installation
 
@@ -169,6 +169,24 @@ Relation::enforceMorphMap([
 ```
 
 Single-application installs need no change: with no morph map registered, `getMorphClass()` returns the class name, which is what is already stored.
+
+### 4. What the panels show across applications
+
+Two more things follow from a shared database, and both work on their own once `jeffersongoncalves/laravel-help-desk` is at `^1.5`.
+
+**People from applications you do not have installed.** The central application cannot load a requester or comment author whose model lives elsewhere — touching that relation raises `Class "..." not found`. The core package copies each person's name and email onto the row as it is written, and the panels read `requester_name` and `author_name`, which return the live model where it resolves and the copy where it does not.
+
+The panels write that copy too, including for attachment uploaders, which the core package only does for attachments created through its own `AttachmentService`. Nothing displays the uploader today, but `$attachment->uploader_name` is there for anything that does. Rows written before `laravel-help-desk` 1.4 — 1.5 for uploaders — have no copy and read as blank.
+
+**Which application a ticket came from.** Give each application a key and a label:
+
+```dotenv
+# .env of each application
+HELPDESK_APP_KEY=app-a
+HELPDESK_APP_NAME="Application A"
+```
+
+Tickets are stamped with the key on creation, and the label travels with the ticket, since the central application has no configuration describing the others. The Admin and Operator ticket tables then show an **Application** column and a filter, and the ticket detail view names the originating application. Where no ticket carries a key, none of that appears — a single-application install sees no change. The User panel never shows it: every ticket a requester sees comes from the application they are already in.
 
 ## Configuration
 

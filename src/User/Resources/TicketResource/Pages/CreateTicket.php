@@ -58,6 +58,7 @@ class CreateTicket extends CreateRecord
                 'disk' => $disk,
                 'mime_type' => $mimeType,
                 'file_size' => $fileSize,
+                'metadata' => ['uploader' => TicketAttachment::snapshotOf($user)],
             ]);
 
             event(new AttachmentAdded($ticket, $attachment));
