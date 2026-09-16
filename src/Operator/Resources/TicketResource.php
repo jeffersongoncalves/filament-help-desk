@@ -91,8 +91,8 @@ class TicketResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->columns(static::getTicketTableColumns(showUser: true))
-            ->filters(static::getTicketTableFilters())
+            ->columns(static::getTicketTableColumns(showUser: true, showApplication: true))
+            ->filters(static::getTicketTableFilters(showApplication: true))
             ->defaultSort('created_at', 'desc')
             ->actions([
                 Tables\Actions\ViewAction::make(),
