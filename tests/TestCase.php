@@ -2,8 +2,17 @@
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Tests;
 
+use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
+use BladeUI\Icons\BladeIconsServiceProvider;
+use Filament\Actions\ActionsServiceProvider;
 use Filament\FilamentServiceProvider;
+use Filament\Forms\FormsServiceProvider;
+use Filament\Infolists\InfolistsServiceProvider;
+use Filament\Notifications\NotificationsServiceProvider;
+use Filament\Schemas\SchemasServiceProvider;
 use Filament\Support\SupportServiceProvider;
+use Filament\Tables\TablesServiceProvider;
+use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use JeffersonGoncalves\FilamentHelpDesk\FilamentHelpDeskServiceProvider;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Models\User;
@@ -28,9 +37,22 @@ class TestCase extends Orchestra
     protected function getPackageProviders($app): array
     {
         return [
-            LivewireServiceProvider::class,
-            SupportServiceProvider::class,
+            // Keep Laravel's package-discovery order: every filament/* provider sorts
+            // before livewire/livewire. Filament's SupportServiceProvider rebinds
+            // Livewire's DataStore with a non-shared binding, so registering Livewire
+            // first leaves every component with a throwaway store.
+            BladeHeroiconsServiceProvider::class,
+            BladeIconsServiceProvider::class,
+            ActionsServiceProvider::class,
             FilamentServiceProvider::class,
+            FormsServiceProvider::class,
+            InfolistsServiceProvider::class,
+            NotificationsServiceProvider::class,
+            SchemasServiceProvider::class,
+            SupportServiceProvider::class,
+            TablesServiceProvider::class,
+            WidgetsServiceProvider::class,
+            LivewireServiceProvider::class,
             HelpDeskServiceProvider::class,
             FilamentHelpDeskServiceProvider::class,
             UserPanelProvider::class,
