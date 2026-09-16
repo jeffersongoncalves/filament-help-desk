@@ -82,7 +82,7 @@ class TicketResource extends Resource
                 $user = Filament::auth()->user();
 
                 return $query
-                    ->where('user_type', get_class($user))
+                    ->where('user_type', $user->getMorphClass())
                     ->where('user_id', $user->getAuthIdentifier());
             });
     }
