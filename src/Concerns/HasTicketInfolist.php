@@ -70,7 +70,7 @@ trait HasTicketInfolist
                         ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
                         ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.unassigned')),
 
-                    TextEntry::make('user.name')
+                    TextEntry::make('requester_name')
                         ->label(__('filament-help-desk::filament-help-desk.fields.requester')),
 
                     TextEntry::make('created_at')

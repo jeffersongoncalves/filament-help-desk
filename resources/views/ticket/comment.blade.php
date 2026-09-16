@@ -14,7 +14,7 @@
     <div class="flex-1 min-w-0">
         <div class="flex items-center gap-x-2">
             <span class="text-sm font-semibold text-gray-950 dark:text-white">
-                {{ $comment->author?->name ?? __('filament-help-desk::filament-help-desk.comments.system') }}
+                {{ $comment->author_name ?? __('filament-help-desk::filament-help-desk.comments.system') }}
             </span>
 
             @if ($comment->is_internal)
