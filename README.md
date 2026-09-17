@@ -18,9 +18,9 @@ Filament plugins for [jeffersongoncalves/laravel-help-desk](https://github.com/j
 
 | `filament-help-desk` | `laravel-help-desk` | Filament |
 | --- | --- | --- |
-| `1.x` | `^1.5` | `v3` |
-| `2.x` | `^1.5` | `v4` |
-| `3.x` | `^1.5` | `v5` |
+| `1.x` | `^1.9` | `v3` |
+| `2.x` | `^1.9` | `v4` |
+| `3.x` | `^1.9` | `v5` |
 
 ## Installation
 
@@ -48,7 +48,7 @@ php artisan vendor:publish --tag="filament-help-desk-views"
 php artisan vendor:publish --tag="filament-help-desk-translations"
 ```
 
-> **Note:** Make sure you have already installed and configured [jeffersongoncalves/laravel-help-desk](https://github.com/jeffersongoncalves/laravel-help-desk) (migrations, config, etc.) before using this package.
+> **Note:** Make sure you have already installed and configured [jeffersongoncalves/laravel-help-desk](https://github.com/jeffersongoncalves/laravel-help-desk) (migrations, config, etc.) before using this package. On a satellite application running `HELPDESK_DRIVER=api` there are no migrations to run at all — see [Satellite applications](#satellite-applications-helpdesk_driverapi).
 
 ## Setup
 
@@ -67,7 +67,7 @@ class User extends Authenticatable
 
 ### 2. Register plugins in your Filament panels
 
-This package provides **3 independent plugins** that can be registered in any combination across your panels:
+This package provides **3 independent plugins** that can be registered in any combination across your panels — except on a satellite, where only the User plugin may be registered and the other two throw at boot.
 
 #### User Plugin
 
@@ -349,6 +349,28 @@ To disable the entire User or Operator panel resource, set the `resource` key to
     // ...
 ],
 ```
+
+## Satellite applications (`HELPDESK_DRIVER=api`)
+
+An application that reaches a central help desk over the signed API instead of sharing its database has no help desk tables at all. The User panel runs there unchanged:
+
+```env
+HELPDESK_DRIVER=api
+HELPDESK_API_URL=https://support.example.com
+HELPDESK_APP_KEY=app-a
+HELPDESK_API_SECRET=a-long-random-string
+```
+
+Everything the panel needs goes through the repositories, so the list, the create form, the timeline, replies and attachment downloads work on either transport with no configuration beyond the above.
+
+Four things differ on a satellite, each because the transport cannot honestly do otherwise:
+
+- **The Admin and Operator panels refuse to register.** They read operator, department and canned response data that no endpoint serves. Registering either throws at boot rather than rendering empty pages.
+- **Attachments are capped at `help-desk.api.max_inline_attachment`** (2 MB by default) rather than `help-desk.ticket.max_file_size`. A file travels base64 encoded inside the signed body, so it grows by a third and is held in memory on both ends.
+- **Attachments download through a package route**, not a disk URL. The file sits on the central disk, which the satellite has no credentials for. The route is registered on the panel, so it is behind the same authentication as the ticket page.
+- **The department, category and assignee are not shown**, and the list offers no department filter. The show response carries ids rather than records, and assignment is an operator concern not exposed to a satellite. Status, priority, search and sorting are all applied by the central application, never over the page already fetched.
+
+Internal notes, assignment, arbitrary status changes, watchers and deletion are operator actions and are not offered. Closing and reopening your own ticket are, on both transports.
 
 ## Translations
 

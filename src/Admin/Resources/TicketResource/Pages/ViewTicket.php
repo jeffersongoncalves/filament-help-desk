@@ -13,7 +13,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\TicketResource;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\InteractsWithTicketComments;
 use JeffersonGoncalves\HelpDesk\Enums\TicketPriority;
@@ -29,6 +29,16 @@ use Symfony\Component\Mime\MimeTypes;
 class ViewTicket extends ViewRecord
 {
     use InteractsWithTicketComments;
+
+    /**
+     * The record is always a model on this panel: the Admin and Operator
+     * panels refuse to register on the API driver, so there is nothing to
+     * resolve back.
+     */
+    public function getTicket(): Ticket
+    {
+        return $this->record;
+    }
 
     protected static string $resource = TicketResource::class;
 

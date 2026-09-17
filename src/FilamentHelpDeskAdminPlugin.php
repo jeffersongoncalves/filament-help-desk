@@ -11,6 +11,7 @@ use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CategoryResource;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\DepartmentResource;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\EmailChannelResource;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\TicketResource;
+use JeffersonGoncalves\FilamentHelpDesk\Exceptions\UnsupportedDriverException;
 
 class FilamentHelpDeskAdminPlugin implements Plugin
 {
@@ -21,6 +22,10 @@ class FilamentHelpDeskAdminPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
+        if (Driver::isApi()) {
+            throw UnsupportedDriverException::operatorPanel('Admin');
+        }
+
         $resources = config('filament-help-desk.admin.resources', []);
 
         $panel->resources([

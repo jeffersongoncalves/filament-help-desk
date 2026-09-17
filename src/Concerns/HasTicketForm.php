@@ -11,10 +11,10 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use JeffersonGoncalves\FilamentHelpDesk\Driver;
 use JeffersonGoncalves\HelpDesk\Enums\TicketPriority;
 use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
-use JeffersonGoncalves\HelpDesk\Models\Category;
-use JeffersonGoncalves\HelpDesk\Models\Department;
+use JeffersonGoncalves\HelpDesk\Facades\HelpDesk;
 use Symfony\Component\Mime\MimeTypes;
 
 /**
@@ -47,9 +47,8 @@ trait HasTicketForm
 
             Select::make('department_id')
                 ->label(__('filament-help-desk::filament-help-desk.fields.department'))
-                ->options(fn (): array => Department::query()
-                    ->active()
-                    ->ordered()
+                ->options(fn (): array => HelpDesk::departments()
+                    ->all()
                     ->pluck('name', 'id')
                     ->toArray()
                 )
@@ -69,10 +68,8 @@ trait HasTicketForm
                         return [];
                     }
 
-                    return Category::query()
-                        ->where('department_id', $departmentId)
-                        ->active()
-                        ->ordered()
+                    return HelpDesk::departments()
+                        ->categoriesFor((int) $departmentId)
                         ->pluck('name', 'id')
                         ->toArray();
                 })
@@ -103,7 +100,7 @@ trait HasTicketForm
                         ->values()
                         ->toArray()
                 )
-                ->maxSize(config('help-desk.ticket.max_file_size', 10240))
+                ->maxSize(Driver::maxAttachmentSize())
                 ->maxFiles(config('help-desk.ticket.max_attachments_per_comment', 5))
                 ->columnSpanFull(),
         ];
@@ -158,9 +155,8 @@ trait HasTicketForm
 
             Select::make('department_id')
                 ->label(__('filament-help-desk::filament-help-desk.fields.department'))
-                ->options(fn (): array => Department::query()
-                    ->active()
-                    ->ordered()
+                ->options(fn (): array => HelpDesk::departments()
+                    ->all()
                     ->pluck('name', 'id')
                     ->toArray()
                 )
@@ -180,10 +176,8 @@ trait HasTicketForm
                         return [];
                     }
 
-                    return Category::query()
-                        ->where('department_id', $departmentId)
-                        ->active()
-                        ->ordered()
+                    return HelpDesk::departments()
+                        ->categoriesFor((int) $departmentId)
                         ->pluck('name', 'id')
                         ->toArray();
                 })
