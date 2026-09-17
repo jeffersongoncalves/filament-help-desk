@@ -6,6 +6,7 @@ namespace JeffersonGoncalves\FilamentHelpDesk;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use JeffersonGoncalves\FilamentHelpDesk\Exceptions\UnsupportedDriverException;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource;
 
 class FilamentHelpDeskOperatorPlugin implements Plugin
@@ -17,6 +18,10 @@ class FilamentHelpDeskOperatorPlugin implements Plugin
 
     public function register(Panel $panel): void
     {
+        if (Driver::isApi()) {
+            throw UnsupportedDriverException::operatorPanel('Operator');
+        }
+
         $panel->resources([
             config('filament-help-desk.operator.resource', TicketResource::class),
         ]);

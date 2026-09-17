@@ -28,20 +28,26 @@ trait HasTicketTable
      * @param  bool  $showUser  When true, includes the requester (user) column.
      * @param  bool  $showApplication  When true, includes the originating application
      *                                 column — provided any ticket carries an app key.
+     * @param  bool  $forApi  When true, drops what the API transport cannot serve:
+     *                        the relation columns, and sorting by a column the
+     *                        central application will not sort on.
      * @return array<int, Column>
      */
-    public static function getTicketTableColumns(bool $showUser = true, bool $showApplication = false): array
+    public static function getTicketTableColumns(bool $showUser = true, bool $showApplication = false, bool $forApi = false): array
     {
         $columns = [
+            // Searchable on both transports: the API searches the title and
+            // the reference number, which is exactly this pair. Sortable only
+            // where a query can sort — Ticket::SORTABLE has neither.
             TextColumn::make('reference_number')
                 ->label(__('filament-help-desk::filament-help-desk.fields.reference_number'))
                 ->searchable()
-                ->sortable(),
+                ->sortable(! $forApi),
 
             TextColumn::make('title')
                 ->label(__('filament-help-desk::filament-help-desk.fields.title'))
                 ->searchable()
-                ->sortable()
+                ->sortable(! $forApi)
                 ->limit(50),
 
             TextColumn::make('status')
@@ -68,14 +74,21 @@ trait HasTicketTable
                 })
                 ->formatStateUsing(fn (TicketPriority $state): string => $state->label()),
 
-            TextColumn::make('department.name')
-                ->label(__('filament-help-desk::filament-help-desk.fields.department'))
-                ->sortable(),
-
-            TextColumn::make('assignedTo.name')
-                ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
-                ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.unassigned')),
         ];
+
+        // Both are relations, and an API-hydrated ticket throws for a relation
+        // the response did not carry. The department is not in the payload and
+        // assignment is withheld from satellites on purpose, so neither is
+        // rendered empty — it is left out.
+        if (! $forApi) {
+            $columns[] = TextColumn::make('department.name')
+                ->label(__('filament-help-desk::filament-help-desk.fields.department'))
+                ->sortable();
+
+            $columns[] = TextColumn::make('assignedTo.name')
+                ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
+                ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.unassigned'));
+        }
 
         if ($showUser) {
             $columns[] = TextColumn::make('requester_name')
@@ -101,9 +114,10 @@ trait HasTicketTable
      *
      * @param  bool  $showApplication  When true, includes the originating application
      *                                 filter — provided any ticket carries an app key.
+     * @param  bool  $forApi  When true, keeps only the filters the API accepts.
      * @return array<int, BaseFilter>
      */
-    public static function getTicketTableFilters(bool $showApplication = false): array
+    public static function getTicketTableFilters(bool $showApplication = false, bool $forApi = false): array
     {
         $filters = [
             SelectFilter::make('status')
@@ -126,12 +140,19 @@ trait HasTicketTable
                         ->toArray()
                 ),
 
-            SelectFilter::make('department_id')
-                ->label(__('filament-help-desk::filament-help-desk.fields.department'))
-                ->relationship('department', 'name'),
-
-            TrashedFilter::make(),
         ];
+
+        // GET tickets narrows by status and priority, and nothing else. A
+        // department filter would have to run over the page already fetched,
+        // which filters 25 rows out of 300 while looking like it filtered all
+        // of them; soft deletes are not exposed to a satellite at all.
+        if (! $forApi) {
+            $filters[] = SelectFilter::make('department_id')
+                ->label(__('filament-help-desk::filament-help-desk.fields.department'))
+                ->relationship('department', 'name');
+
+            $filters[] = TrashedFilter::make();
+        }
 
         if ($showApplication && ($applications = static::getTicketApplicationOptions()) !== []) {
             $filters[] = SelectFilter::make('app_key')

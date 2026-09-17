@@ -6,63 +6,48 @@ namespace JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource\Page
 
 use Filament\Facades\Filament;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Model;
+use JeffersonGoncalves\FilamentHelpDesk\Concerns\StoresTicketAttachments;
 use JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource;
-use JeffersonGoncalves\HelpDesk\Events\AttachmentAdded;
+use JeffersonGoncalves\HelpDesk\Facades\HelpDesk;
 use JeffersonGoncalves\HelpDesk\Models\Ticket;
-use JeffersonGoncalves\HelpDesk\Models\TicketAttachment;
 
 class CreateTicket extends CreateRecord
 {
+    use StoresTicketAttachments;
+
     protected static string $resource = TicketResource::class;
 
-    protected function mutateFormDataBeforeCreate(array $data): array
+    /**
+     * Create through the repository rather than the model.
+     *
+     * It stamps the requester, the identity snapshot and the source on either
+     * transport — which is also why `mutateFormDataBeforeCreate()` is gone:
+     * setting `user_type`, `user_id` and `source` here was doing by hand what
+     * the repository does, and a satellite has no model to save anyway.
+     *
+     * @param  array<string, mixed>  $data
+     */
+    protected function handleRecordCreation(array $data): Model
     {
-        $user = Filament::auth()->user();
+        // The uploads are handled afterwards, once there is a ticket to hang
+        // them off. Left in, they would travel to the central application as
+        // an unknown field.
+        unset($data['attachments']);
 
-        $data['user_type'] = $user->getMorphClass();
-        $data['user_id'] = $user->getAuthIdentifier();
-        $data['source'] = 'web';
-
-        return $data;
+        return HelpDesk::createTicket($data, Filament::auth()->user());
     }
 
     protected function afterCreate(): void
     {
         /** @var Ticket $ticket */
         $ticket = $this->record;
-        $attachments = $this->data['attachments'] ?? [];
 
-        if (empty($attachments)) {
-            return;
-        }
-
-        $disk = config('help-desk.ticket.attachment_disk', 'local');
-        $storage = Storage::disk($disk);
-        $storagePath = config('help-desk.ticket.attachment_path', 'help-desk/attachments');
-        $user = Filament::auth()->user();
-
-        foreach ($attachments as $filePath) {
-            $mimeType = $storage->mimeType($filePath) ?: 'application/octet-stream';
-            $fileSize = $storage->size($filePath) ?: 0;
-            $destination = $storagePath.'/'.$ticket->uuid.'/'.basename($filePath);
-
-            $storage->move($filePath, $destination);
-
-            $attachment = TicketAttachment::create([
-                'ticket_id' => $ticket->id,
-                'uploaded_by_type' => $user->getMorphClass(),
-                'uploaded_by_id' => $user->getKey(),
-                'file_name' => basename($filePath),
-                'file_path' => $destination,
-                'disk' => $disk,
-                'mime_type' => $mimeType,
-                'file_size' => $fileSize,
-                'metadata' => ['uploader' => TicketAttachment::snapshotOf($user)],
-            ]);
-
-            event(new AttachmentAdded($ticket, $attachment));
-        }
+        $this->storeTicketAttachments(
+            $ticket,
+            $this->data['attachments'] ?? [],
+            Filament::auth()->user(),
+        );
     }
 
     protected function getRedirectUrl(): string
