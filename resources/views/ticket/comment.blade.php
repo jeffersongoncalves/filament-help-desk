@@ -42,7 +42,7 @@
             <div class="fi-hd-comment-attachments">
                 @foreach ($comment->attachments as $attachment)
                     <a
-                        href="{{ $attachment->getUrl() }}"
+                        href="{{ isset($attachmentUrl) ? $attachmentUrl($attachment) : $attachment->getUrl() }}"
                         target="_blank"
                         class="fi-hd-attachment-link"
                     >
