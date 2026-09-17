@@ -54,6 +54,7 @@ it('submits a public reply by default, visible to the requester', function () {
         ->and($comment->is_internal)->toBeFalse();
 
     filament()->setCurrentPanel(filament()->getPanel('user'));
+    $this->actingAs($requester);
 
     livewire(UserViewTicket::class, ['record' => $ticket->uuid])
         ->assertSee('Public reply to the requester.');
@@ -79,6 +80,7 @@ it('submits a private note when toggled internal, hidden from the requester time
         ->and($comment->is_internal)->toBeTrue();
 
     filament()->setCurrentPanel(filament()->getPanel('user'));
+    $this->actingAs($requester);
 
     livewire(UserViewTicket::class, ['record' => $ticket->uuid])
         ->assertDontSee('Internal note, not for the requester.');
