@@ -5,18 +5,23 @@ declare(strict_types=1);
 namespace JeffersonGoncalves\FilamentHelpDesk\User\Resources;
 
 use BackedEnum;
+use Closure;
 use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketForm;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketInfolist;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketTable;
+use JeffersonGoncalves\FilamentHelpDesk\Driver;
 use JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource\Pages;
+use JeffersonGoncalves\HelpDesk\Exceptions\TicketNotFoundException;
+use JeffersonGoncalves\HelpDesk\Facades\HelpDesk;
 use JeffersonGoncalves\HelpDesk\Models\Ticket;
 
 class TicketResource extends Resource
@@ -74,24 +79,72 @@ class TicketResource extends Resource
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns(static::getTicketTableColumns(showUser: false))
-            ->filters(static::getTicketTableFilters())
-            ->defaultSort('created_at', 'desc')
-            ->modifyQueryUsing(function (Builder $query): Builder {
+        $table = $table
+            ->columns(static::getTicketTableColumns(showUser: false, forApi: Driver::isApi()))
+            ->filters(static::getTicketTableFilters(forApi: Driver::isApi()))
+            ->defaultSort('created_at', 'desc');
+
+        if (! Driver::isApi()) {
+            return $table->modifyQueryUsing(function (Builder $query): Builder {
                 $user = Filament::auth()->user();
 
                 return $query
                     ->where('user_type', $user->getMorphClass())
                     ->where('user_id', $user->getAuthIdentifier());
             });
+        }
+
+        // A satellite has no tickets table to query, so the table is fed from
+        // the repository instead. Filament hands the page, the page size, the
+        // search term, the sort and the active filters to this closure and
+        // takes a paginator back — which is exactly the shape forActor()
+        // returns, so nothing here pages or filters in memory.
+        return $table->records(fn (
+            int|string $page,
+            int|string $recordsPerPage,
+            ?string $search,
+            ?string $sortColumn,
+            ?string $sortDirection,
+            ?array $filters,
+        ): LengthAwarePaginator => HelpDesk::tickets()->forActor(
+            user: Filament::auth()->user(),
+            perPage: (int) $recordsPerPage,
+            page: (int) $page,
+            status: $filters['status']['value'] ?? null,
+            priority: $filters['priority']['value'] ?? null,
+            search: $search,
+            sort: $sortColumn,
+            direction: $sortDirection ?? 'desc',
+        ));
+    }
+
+    /**
+     * Resolve the record behind `/tickets/{uuid}`.
+     *
+     * Route model binding is a query, and a satellite has nothing to query.
+     * The repository throws when nothing matches — including for a ticket that
+     * belongs to another user or another application, which the central
+     * application refuses without saying which — and Filament turns the null
+     * into a 404 from there.
+     */
+    public static function resolveRecordRouteBinding(int|string $key, ?Closure $modifyQuery = null): ?Model
+    {
+        if (! Driver::isApi()) {
+            return parent::resolveRecordRouteBinding($key, $modifyQuery);
+        }
+
+        try {
+            return HelpDesk::tickets()->findByUuid((string) $key);
+        } catch (TicketNotFoundException) {
+            return null;
+        }
     }
 
     public static function infolist(Schema $schema): Schema
     {
         return $schema
             ->columns(null)
-            ->schema(static::getTicketInfolistSchema());
+            ->schema(static::getTicketInfolistSchema(forApi: Driver::isApi()));
     }
 
     public static function canEdit(Model $record): bool

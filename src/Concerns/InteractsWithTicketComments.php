@@ -10,13 +10,11 @@ use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Component;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Storage;
-use JeffersonGoncalves\HelpDesk\Events\AttachmentAdded;
+use Illuminate\Support\Collection;
+use JeffersonGoncalves\FilamentHelpDesk\Driver;
+use JeffersonGoncalves\HelpDesk\Facades\HelpDesk;
 use JeffersonGoncalves\HelpDesk\Models\Ticket;
-use JeffersonGoncalves\HelpDesk\Models\TicketAttachment;
 use JeffersonGoncalves\HelpDesk\Models\TicketComment;
-use JeffersonGoncalves\HelpDesk\Services\CommentService;
 use Symfony\Component\Mime\MimeTypes;
 
 /**
@@ -24,11 +22,21 @@ use Symfony\Component\Mime\MimeTypes;
  *
  * This trait is intended for use on Filament page classes (e.g. ViewTicket)
  * that display a ticket record and allow adding comments/replies.
- *
- * @property Ticket $record The ticket record associated with this page.
  */
 trait InteractsWithTicketComments
 {
+    use StoresTicketAttachments;
+
+    /**
+     * The ticket this page is showing.
+     *
+     * A method rather than $this->record, because on a satellite the record is
+     * not always a model: Livewire would restore one with a query against a
+     * table the application does not have, so the User page hands it on as a
+     * uuid between requests and resolves it back here.
+     */
+    abstract public function getTicket(): Ticket;
+
     /**
      * Get the form schema for the comment/reply form.
      *
@@ -45,6 +53,10 @@ trait InteractsWithTicketComments
             Toggle::make('is_internal')
                 ->label(__('filament-help-desk::filament-help-desk.fields.internal_note'))
                 ->helperText(__('filament-help-desk::filament-help-desk.comments.internal_note_help'))
+                // An internal note belongs to the operator side and the API
+                // refuses it. A toggle that throws when switched on is worse
+                // than no toggle.
+                ->visible(fn (): bool => ! Driver::isApi())
                 ->default(false),
 
             FileUpload::make('attachments')
@@ -59,7 +71,7 @@ trait InteractsWithTicketComments
                         ->values()
                         ->toArray()
                 )
-                ->maxSize(config('help-desk.ticket.max_file_size', 10240))
+                ->maxSize(Driver::maxAttachmentSize())
                 ->maxFiles(config('help-desk.ticket.max_attachments_per_comment', 5))
                 ->columnSpanFull(),
         ];
@@ -68,65 +80,34 @@ trait InteractsWithTicketComments
     /**
      * Submit a new comment on the current ticket.
      *
-     * Uses the CommentService to add either a reply or an internal note
-     * based on the is_internal toggle state. After submission, the form
-     * is reset and the page is refreshed.
+     * Routed through the comment repository rather than the database service,
+     * so the same page works on a satellite: what changes between transports
+     * is which implementation the contract resolves to, not what this does.
      */
     public function submitComment(): void
     {
         $data = $this->commentForm->getState();
 
-        /** @var CommentService $commentService */
-        $commentService = app(CommentService::class);
+        if (blank($data['body'] ?? null)) {
+            return;
+        }
 
         /** @var Ticket $ticket */
-        $ticket = $this->record;
+        $ticket = $this->getTicket();
 
         $author = Filament::auth()->user();
 
-        if ($data['is_internal'] ?? false) {
-            $comment = $commentService->addNote(
-                ticket: $ticket,
-                author: $author,
-                body: $data['body'],
-            );
-        } else {
-            $comment = $commentService->addReply(
-                ticket: $ticket,
-                author: $author,
-                body: $data['body'],
-            );
-        }
+        $comment = ($data['is_internal'] ?? false)
+            ? HelpDesk::comments()->addNote(ticket: $ticket, author: $author, body: $data['body'])
+            : HelpDesk::comments()->addReply(ticket: $ticket, author: $author, body: $data['body']);
 
-        $attachments = $data['attachments'] ?? [];
+        $this->storeTicketAttachments($ticket, $data['attachments'] ?? [], $author, $comment);
 
-        if (! empty($attachments)) {
-            $disk = config('help-desk.ticket.attachment_disk', 'local');
-            $storage = Storage::disk($disk);
-            $storagePath = config('help-desk.ticket.attachment_path', 'help-desk/attachments');
-
-            foreach ($attachments as $filePath) {
-                $mimeType = $storage->mimeType($filePath) ?: 'application/octet-stream';
-                $fileSize = $storage->size($filePath) ?: 0;
-                $destination = $storagePath.'/'.$ticket->uuid.'/'.basename($filePath);
-
-                $storage->move($filePath, $destination);
-
-                $attachment = TicketAttachment::create([
-                    'ticket_id' => $ticket->id,
-                    'comment_id' => $comment->id,
-                    'uploaded_by_type' => $author->getMorphClass(),
-                    'uploaded_by_id' => $author->getKey(),
-                    'file_name' => basename($filePath),
-                    'file_path' => $destination,
-                    'disk' => $disk,
-                    'mime_type' => $mimeType,
-                    'file_size' => $fileSize,
-                    'metadata' => ['uploader' => TicketAttachment::snapshotOf($author)],
-                ]);
-
-                event(new AttachmentAdded($ticket, $attachment));
-            }
+        if (Driver::isApi()) {
+            // The timeline reads relations the show response carried, so the
+            // reply just posted is not in them. A database driver re-queries
+            // on render and needs nothing here.
+            $this->record = HelpDesk::tickets()->findByUuid($ticket->uuid);
         }
 
         $this->commentForm->fill();
@@ -146,7 +127,16 @@ trait InteractsWithTicketComments
      */
     public function getCommentsForTimeline(): Collection
     {
-        return $this->record
+        if (Driver::isApi()) {
+            // The show response already carried them, along with the
+            // attachments hung off each one. Re-reading the relation would
+            // query a table the satellite does not have.
+            return $this->getTicket()->getRelation('comments')
+                ->sortByDesc('created_at')
+                ->values();
+        }
+
+        return $this->getTicket()
             ->comments()
             // The author is left out on purpose: eager loading a morphTo
             // instantiates every stored type, which is fatal for a class
