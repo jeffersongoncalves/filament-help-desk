@@ -283,3 +283,19 @@
 :is(.dark) .fi-hd-ticket-closed-message {
     color: var(--gray-400);
 }
+
+/* ========================
+   Comment Form (Public vs Internal)
+   ======================== */
+
+.fi-hd-comment-form-internal {
+    border-radius: 0.5rem;
+    background-color: var(--warning-50);
+    padding: 1rem;
+    box-shadow: inset 0 0 0 1px rgb(from var(--warning-600) r g b / 0.2);
+}
+
+:is(.dark) .fi-hd-comment-form-internal {
+    background-color: rgb(from var(--warning-400) r g b / 0.1);
+    box-shadow: inset 0 0 0 1px rgb(from var(--warning-400) r g b / 0.2);
+}
