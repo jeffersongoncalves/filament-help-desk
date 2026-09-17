@@ -52,8 +52,13 @@
                 {{ $this->commentForm }}
 
                 <div class="fi-hd-form-actions">
-                    <x-filament::button type="submit">
-                        {{ __('filament-help-desk::filament-help-desk.actions.submit_reply') }}
+                    <x-filament::button
+                        type="submit"
+                        :color="$this->isInternalNote() ? 'warning' : 'primary'"
+                    >
+                        {{ __($this->isInternalNote()
+                            ? 'filament-help-desk::filament-help-desk.actions.submit_note'
+                            : 'filament-help-desk::filament-help-desk.actions.submit_reply') }}
                     </x-filament::button>
                 </div>
             </form>
