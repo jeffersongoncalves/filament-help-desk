@@ -14,7 +14,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\InteractsWithTicketComments;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource;
@@ -35,6 +35,16 @@ use Symfony\Component\Mime\MimeTypes;
 class ViewTicket extends ViewRecord
 {
     use InteractsWithTicketComments;
+
+    /**
+     * The record is always a model on this panel: the Admin and Operator
+     * panels refuse to register on the API driver, so there is nothing to
+     * resolve back.
+     */
+    public function getTicket(): Ticket
+    {
+        return $this->record;
+    }
 
     protected static string $resource = TicketResource::class;
 
