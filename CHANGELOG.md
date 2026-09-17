@@ -5,6 +5,48 @@ All notable changes to `filament-help-desk` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.5.0 - 2026-09-16
+
+Requires `jeffersongoncalves/laravel-help-desk` `^1.6`, which closes the cross-application identity work.
+
+### laravel-help-desk 1.6
+
+`TicketHistory` and `TicketWatcher` now carry the same identity snapshot `Ticket`, `TicketComment` and `TicketAttachment` already had, so all five models share one contract: prefer the live model, fall back to the copy, never instantiate a class this application does not have.
+
+No panel code changed. Every history entry and watcher the panels create goes through `TicketService` with a `performer:` argument, so the base package writes those snapshots itself.
+
+**Upgrading needs one migration** from the base package, on the application that owns the schema:
+
+```bash
+composer update jeffersongoncalves/laravel-help-desk
+php artisan vendor:publish --tag=help-desk-migrations
+php artisan migrate
+
+```
+`add_metadata_to_help_desk_ticket_watchers_table` adds a nullable JSON column to `help_desk_ticket_watchers`, the last of the five tables without one. Satellite applications do not run it — see the README.
+
+### The changelog workflow no longer trusts the release tag
+
+`.github/workflows/update-changelog.yml` interpolated `${{ github.event.release.tag_name }}` straight into a `run:` block. GitHub substitutes that before the shell parses the script, so a tag containing shell metacharacters became code running with a `contents: write` token (CWE-78). The tag now travels through `env:` and is read as a quoted variable.
+
+The same workflow handed `release.target_commitish` to `git-auto-commit-action` as a branch name. A release can target a full commit SHA, which is not a branch; a new step verifies the target resolves to one and fails with a clear message otherwise.
+
+Both are the fixes `laravel-help-desk` reviewed and shipped in its own v1.4.1. Workflow only — nothing in the published package changed.
+
+### The Boost guidelines caught up
+
+They had not moved since the package shipped, so an agent reading them would write exactly the code the last few releases fixed: `TextColumn::make('user.name')`, `get_class()` on a morph type, an eager loaded `author` relation. The guidelines now lead with those, the accessors that replace them, the uploader snapshot the panels write themselves, the current shared-concern signatures, and the satellite plus central topology.
+
+They also move to `resources/boost/guidelines/core.blade.php`, the layout every other Filament plugin in this account uses.
+
+### Upgrading
+
+```bash
+composer update jeffersongoncalves/filament-help-desk
+
+```
+Plus the base package migration above. No configuration change.
+
 ## 1.4.1 - 2026-09-16
 
 Documentation only. No code changed since the previous release — upgrading is optional.
@@ -42,6 +84,7 @@ Class "satellite-app-user" not found
   at MorphTo::createModelByType()
 
 
+
 ```
 The ticket list, the ticket detail page and the comment timeline all went down together. Reads now go through `requester_name` and `author_name`, which return the live model where its class exists here and the identity snapshot in `metadata` where it does not. The comment timeline also stopped eager loading the author, since eager loading a `morphTo` instantiates every stored type up front.
 
@@ -60,6 +103,7 @@ Set a key and a label per application:
 ```dotenv
 HELPDESK_APP_KEY=app-a
 HELPDESK_APP_NAME="Application A"
+
 
 
 ```
@@ -81,6 +125,7 @@ CI now pins **PHP 8.4 and Laravel 13** across every branch, and PHPStan runs on 
 
 ```bash
 composer update jeffersongoncalves/filament-help-desk
+
 
 
 ```
