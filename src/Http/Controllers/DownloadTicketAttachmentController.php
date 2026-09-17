@@ -57,7 +57,13 @@ final class DownloadTicketAttachmentController
                 echo $contents;
             },
             $file->file_name,
-            ['Content-Type' => $file->mime_type ?: 'application/octet-stream'],
+            [
+                'Content-Type' => $file->mime_type ?: 'application/octet-stream',
+                // The bytes and the type both came from whoever uploaded the
+                // file, so the browser is told not to look for a second
+                // opinion in the content.
+                'X-Content-Type-Options' => 'nosniff',
+            ],
         );
     }
 }

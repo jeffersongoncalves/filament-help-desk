@@ -10,35 +10,30 @@ it('posts a reply over the API and shows it once the ticket is read back', funct
     $uuid = '5a4f0d5e-0f3c-4a1a-8f0e-2f7c0b6a1d11';
     $replied = false;
 
-    Http::fake([
-        "*/help-desk/api/tickets/{$uuid}/comments" => Http::response([
-            'data' => [
-                'id' => 2,
-                'body' => '<p>Any update on this?</p>',
-                'type' => 'reply',
-                'author_name' => 'Ada Lovelace',
-                'created_at' => now()->toIso8601String(),
-            ],
-        ], 201),
-        "*/help-desk/api/tickets/{$uuid}*" => function () use ($uuid, &$replied) {
-            // The show response is the only place the timeline reads from, so
-            // the reply has to come back from the central application before
-            // it can appear — which is what the page re-reads it for.
-            $comments = $replied
-                ? [[
-                    'id' => 2,
-                    'body' => '<p>Any update on this?</p>',
-                    'type' => 'reply',
-                    'author_name' => 'Ada Lovelace',
-                    'created_at' => now()->toIso8601String(),
-                ]]
-                : [];
+    $reply = [
+        'id' => 2,
+        'body' => '<p>Any update on this?</p>',
+        'type' => 'reply',
+        'author_name' => 'Ada Lovelace',
+        'created_at' => now()->toIso8601String(),
+    ];
 
+    Http::fake([
+        // Only the POST moves the central application forward. The show
+        // endpoint below reports what it finds and never advances it, so the
+        // reply can only reach the timeline through the re-read that
+        // submitComment() does after posting — which is the thing under test.
+        "*/help-desk/api/tickets/{$uuid}/comments" => function () use ($reply, &$replied) {
             $replied = true;
 
+            return Http::response(['data' => $reply], 201);
+        },
+        // A normal closure, not an arrow function: an arrow function would
+        // capture $replied by value and never see the POST land.
+        "*/help-desk/api/tickets/{$uuid}*" => function () use ($uuid, $reply, &$replied) {
             return Http::response(['data' => apiTicketPayload([
                 'uuid' => $uuid,
-                'comments' => $comments,
+                'comments' => $replied ? [$reply] : [],
                 'attachments' => [],
             ])]);
         },

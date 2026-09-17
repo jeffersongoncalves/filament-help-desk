@@ -72,6 +72,13 @@ it('caps an upload at what the transport can carry inline', function (): void {
     // third and both ends hold it in memory.
     expect(Driver::maxAttachmentSize())->toBe(2048)
         ->and(config('help-desk.ticket.max_file_size', 10240))->toBeGreaterThan(2048);
+
+    // A cap that cannot be read falls back to the transport's own default,
+    // never to the larger database one: the browser would otherwise accept an
+    // upload the central application then refuses.
+    config()->set('help-desk.api.max_inline_attachment', 'unlimited');
+
+    expect(Driver::maxAttachmentSize())->toBe(2048);
 });
 
 it('serves an attachment through the package route', function (): void {
@@ -106,7 +113,10 @@ it('serves an attachment through the package route', function (): void {
     ]));
 
     $response->assertOk()
-        ->assertDownload('report.pdf');
+        ->assertDownload('report.pdf')
+        // The bytes and the stored type both came from an uploader, so the
+        // browser is told not to second-guess the type from the content.
+        ->assertHeader('X-Content-Type-Options', 'nosniff');
 
     expect($response->streamedContent())->toBe('the file bytes');
 });
