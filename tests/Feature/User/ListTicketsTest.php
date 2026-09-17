@@ -45,3 +45,9 @@ it('only shows tickets belonging to the authenticated user', function () {
         ->assertCanSeeTableRecords([$myTicket])
         ->assertCanNotSeeTableRecords([$otherTicket]);
 });
+
+it('shows a create-first-ticket empty state when the requester has no tickets', function () {
+    livewire(ListTickets::class)
+        ->assertSee(__('filament-help-desk::filament-help-desk.empty_states.user_heading'))
+        ->assertSee(__('filament-help-desk::filament-help-desk.empty_states.user_action'));
+});

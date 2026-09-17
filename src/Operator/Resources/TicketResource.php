@@ -100,6 +100,17 @@ class TicketResource extends Resource
             ->columns(static::getTicketTableColumns(showUser: true, showApplication: true))
             ->filters(static::getTicketTableFilters(showApplication: true))
             ->defaultSort('created_at', 'desc')
+            ->emptyStateIcon(Heroicon::OutlinedInboxStack)
+            ->emptyStateHeading(fn (Pages\ListTickets $livewire): string => match ($livewire->activeTab) {
+                'my' => __('filament-help-desk::filament-help-desk.empty_states.operator_my_heading'),
+                'unassigned' => __('filament-help-desk::filament-help-desk.empty_states.operator_unassigned_heading'),
+                default => __('filament-help-desk::filament-help-desk.empty_states.operator_all_heading'),
+            })
+            ->emptyStateDescription(fn (Pages\ListTickets $livewire): string => match ($livewire->activeTab) {
+                'my' => __('filament-help-desk::filament-help-desk.empty_states.operator_my_description'),
+                'unassigned' => __('filament-help-desk::filament-help-desk.empty_states.operator_unassigned_description'),
+                default => __('filament-help-desk::filament-help-desk.empty_states.operator_all_description'),
+            })
             ->recordActions([
                 Action::make('claim')
                     ->label(__('filament-help-desk::filament-help-desk.actions.assign_to_me'))

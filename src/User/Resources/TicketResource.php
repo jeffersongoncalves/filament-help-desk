@@ -6,6 +6,7 @@ namespace JeffersonGoncalves\FilamentHelpDesk\User\Resources;
 
 use BackedEnum;
 use Closure;
+use Filament\Actions\CreateAction;
 use Filament\Facades\Filament;
 use Filament\Panel;
 use Filament\Resources\Resource;
@@ -82,7 +83,14 @@ class TicketResource extends Resource
         $table = $table
             ->columns(static::getTicketTableColumns(showUser: false, forApi: Driver::isApi()))
             ->filters(static::getTicketTableFilters(forApi: Driver::isApi()))
-            ->defaultSort('created_at', 'desc');
+            ->defaultSort('created_at', 'desc')
+            ->emptyStateIcon(Heroicon::OutlinedTicket)
+            ->emptyStateHeading(__('filament-help-desk::filament-help-desk.empty_states.user_heading'))
+            ->emptyStateDescription(__('filament-help-desk::filament-help-desk.empty_states.user_description'))
+            ->emptyStateActions([
+                CreateAction::make()
+                    ->label(__('filament-help-desk::filament-help-desk.empty_states.user_action')),
+            ]);
 
         if (! Driver::isApi()) {
             return $table->modifyQueryUsing(function (Builder $query): Builder {
