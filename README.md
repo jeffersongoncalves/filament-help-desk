@@ -49,7 +49,7 @@ php artisan vendor:publish --tag="filament-help-desk-views"
 php artisan vendor:publish --tag="filament-help-desk-translations"
 ```
 
-> **Note:** Make sure you have already installed and configured [jeffersongoncalves/laravel-help-desk](https://github.com/jeffersongoncalves/laravel-help-desk) (migrations, config, etc.) before using this package.
+> **Note:** Make sure you have already installed and configured [jeffersongoncalves/laravel-help-desk](https://github.com/jeffersongoncalves/laravel-help-desk) (migrations, config, etc.) before using this package. On a satellite application running `HELPDESK_DRIVER=api` there are no migrations to run at all — see [Satellite applications](#satellite-applications-helpdesk_driverapi).
 
 ## Setup
 
@@ -68,7 +68,7 @@ class User extends Authenticatable
 
 ### 2. Register plugins in your Filament panels
 
-This package provides **3 independent plugins** that can be registered in any combination across your panels:
+This package provides **3 independent plugins** that can be registered in any combination across your panels — except on a satellite, where only the User plugin may be registered and the other two throw at boot.
 
 #### User Plugin
 
