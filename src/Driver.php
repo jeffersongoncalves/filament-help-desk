@@ -32,10 +32,15 @@ final class Driver
      */
     public static function maxAttachmentSize(): int
     {
-        $size = self::isApi()
-            ? config('help-desk.api.max_inline_attachment', 2048)
-            : config('help-desk.ticket.max_file_size', 10240);
+        [$key, $default] = self::isApi()
+            ? ['help-desk.api.max_inline_attachment', 2048]
+            : ['help-desk.ticket.max_file_size', 10240];
 
-        return is_numeric($size) ? (int) $size : 10240;
+        $size = config($key, $default);
+
+        // The fallback follows the transport, not the larger of the two. A
+        // misconfigured cap that silently became the database limit would let
+        // the browser accept an upload the central application then refuses.
+        return is_numeric($size) ? (int) $size : $default;
     }
 }

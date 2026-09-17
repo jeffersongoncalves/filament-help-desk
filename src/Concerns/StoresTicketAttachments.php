@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use JeffersonGoncalves\HelpDesk\Facades\HelpDesk;
 use JeffersonGoncalves\HelpDesk\Models\Ticket;
 use JeffersonGoncalves\HelpDesk\Models\TicketComment;
+use RuntimeException;
 
 /**
  * Hands the files a Filament upload left on disk to the attachment repository.
@@ -53,7 +54,15 @@ trait StoresTicketAttachments
             $temporaryPath = sys_get_temp_dir().DIRECTORY_SEPARATOR.Str::random(8).'-'.basename($path);
 
             try {
-                file_put_contents($temporaryPath, $contents);
+                // A full temporary filesystem writes what fits and reports it
+                // rather than failing, so a short write has to be caught here.
+                // Storing the truncated file would hand the requester a
+                // corrupted attachment and nothing would ever say so.
+                if (file_put_contents($temporaryPath, $contents) !== strlen($contents)) {
+                    throw new RuntimeException(
+                        "The attachment [{$path}] could not be staged in full for upload."
+                    );
+                }
 
                 HelpDesk::attachments()->storeFromPath(
                     ticket: $ticket,
