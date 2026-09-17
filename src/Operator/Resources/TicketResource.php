@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace JeffersonGoncalves\FilamentHelpDesk\Operator\Resources;
 
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\BulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -100,6 +101,27 @@ class TicketResource extends Resource
             ->filters(static::getTicketTableFilters(showApplication: true))
             ->defaultSort('created_at', 'desc')
             ->recordActions([
+                Action::make('claim')
+                    ->label(__('filament-help-desk::filament-help-desk.actions.assign_to_me'))
+                    ->icon(Heroicon::OutlinedUserPlus)
+                    ->color('primary')
+                    ->visible(fn (Ticket $record): bool => is_null($record->assigned_to_id))
+                    ->action(function (Ticket $record): void {
+                        /** @var TicketService $ticketService */
+                        $ticketService = app(TicketService::class);
+                        $operator = Filament::auth()->user();
+
+                        $ticketService->assign(
+                            ticket: $record,
+                            operator: $operator,
+                            assignedBy: $operator,
+                        );
+
+                        Notification::make()
+                            ->title(__('filament-help-desk::filament-help-desk.notifications.ticket_assigned'))
+                            ->success()
+                            ->send();
+                    }),
                 ViewAction::make(),
                 EditAction::make(),
             ])
