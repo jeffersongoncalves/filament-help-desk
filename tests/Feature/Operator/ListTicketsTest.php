@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource\Pages\ListTickets;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\DepartmentFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\TicketFactory;
@@ -68,4 +69,30 @@ it('claims a ticket for the current operator with one click', function () {
     expect($ticket->refresh())
         ->assigned_to_id->toBe($this->operator->id)
         ->assigned_to_type->toBe(User::class);
+});
+
+it('computes the three tab badge counts in a single query', function () {
+    $department = DepartmentFactory::new()->create();
+    $requester = UserFactory::new()->create();
+
+    TicketFactory::new()->count(3)->create([
+        'department_id' => $department->id,
+        'user_type' => User::class,
+        'user_id' => $requester->id,
+        'assigned_to_type' => null,
+        'assigned_to_id' => null,
+    ]);
+
+    DB::enableQueryLog();
+
+    $tabs = (new ListTickets)->getTabs();
+
+    $ticketCountQueries = collect(DB::getQueryLog())
+        ->filter(fn (array $query): bool => str_contains($query['query'], 'help_desk_tickets')
+            && (str_contains($query['query'], 'count(') || str_contains($query['query'], 'sum(')));
+
+    DB::disableQueryLog();
+
+    expect($ticketCountQueries)->toHaveCount(1)
+        ->and($tabs['unassigned']->getBadge())->toBe('3');
 });
