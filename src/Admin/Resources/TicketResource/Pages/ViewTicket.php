@@ -9,9 +9,12 @@ use Filament\Facades\Filament;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\StateCasts\BooleanStateCast;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Collection;
@@ -59,44 +62,70 @@ class ViewTicket extends ViewRecord
         return $schema
             ->columns(null)
             ->schema([
-                RichEditor::make('body')
-                    ->label(__('filament-help-desk::filament-help-desk.comments.reply'))
-                    ->required()
-                    ->toolbarButtons([
-                        'bold',
-                        'italic',
-                        'underline',
-                        'strike',
-                        'link',
-                        'orderedList',
-                        'bulletList',
-                        'blockquote',
-                        'codeBlock',
-                    ])
-                    ->columnSpanFull(),
-
-                Toggle::make('is_internal')
-                    ->label(__('filament-help-desk::filament-help-desk.fields.internal_note'))
+                ToggleButtons::make('is_internal')
+                    ->label(__('filament-help-desk::filament-help-desk.comments.reply_mode'))
                     ->helperText(__('filament-help-desk::filament-help-desk.comments.internal_note_help'))
-                    ->default(false),
+                    ->options([
+                        0 => __('filament-help-desk::filament-help-desk.comments.mode_public'),
+                        1 => __('filament-help-desk::filament-help-desk.comments.mode_internal'),
+                    ])
+                    ->icons([
+                        0 => Heroicon::OutlinedChatBubbleLeftRight,
+                        1 => Heroicon::OutlinedLockClosed,
+                    ])
+                    ->colors([
+                        0 => 'primary',
+                        1 => 'warning',
+                    ])
+                    ->stateCast(app(BooleanStateCast::class, ['isStoredAsInt' => true]))
+                    ->default(false)
+                    ->inline()
+                    ->live()
+                    ->required(),
 
-                FileUpload::make('attachments')
-                    ->label(__('filament-help-desk::filament-help-desk.fields.attachments'))
-                    ->multiple()
-                    ->maxFiles(config('help-desk.ticket.max_attachments_per_comment', 5))
-                    ->maxSize(config('help-desk.ticket.max_file_size', 10240))
-                    ->acceptedFileTypes(
-                        collect(config('help-desk.ticket.allowed_extensions', []))
-                            ->flatMap(fn (string $ext): array => MimeTypes::getDefault()->getMimeTypes($ext))
-                            ->unique()
-                            ->values()
-                            ->toArray()
-                    )
-                    ->disk(config('help-desk.ticket.attachment_disk', 'local'))
-                    ->directory(config('help-desk.ticket.attachment_path', 'help-desk/attachments'))
-                    ->columnSpanFull(),
+                Group::make([
+                    RichEditor::make('body')
+                        ->label(__('filament-help-desk::filament-help-desk.comments.reply'))
+                        ->required()
+                        ->toolbarButtons([
+                            'bold',
+                            'italic',
+                            'underline',
+                            'strike',
+                            'link',
+                            'orderedList',
+                            'bulletList',
+                            'blockquote',
+                            'codeBlock',
+                        ])
+                        ->columnSpanFull(),
+
+                    FileUpload::make('attachments')
+                        ->label(__('filament-help-desk::filament-help-desk.fields.attachments'))
+                        ->multiple()
+                        ->maxFiles(config('help-desk.ticket.max_attachments_per_comment', 5))
+                        ->maxSize(config('help-desk.ticket.max_file_size', 10240))
+                        ->acceptedFileTypes(
+                            collect(config('help-desk.ticket.allowed_extensions', []))
+                                ->flatMap(fn (string $ext): array => MimeTypes::getDefault()->getMimeTypes($ext))
+                                ->unique()
+                                ->values()
+                                ->toArray()
+                        )
+                        ->disk(config('help-desk.ticket.attachment_disk', 'local'))
+                        ->directory(config('help-desk.ticket.attachment_path', 'help-desk/attachments'))
+                        ->columnSpanFull(),
+                ])
+                    ->extraAttributes(
+                        fn (Get $get): array => ['class' => $get('is_internal') ? 'fi-hd-comment-form-internal' : 'fi-hd-comment-form-public'],
+                    ),
             ])
             ->statePath('commentData');
+    }
+
+    public function isInternalNote(): bool
+    {
+        return (bool) ($this->commentData['is_internal'] ?? false);
     }
 
     public function getComments(): Collection
