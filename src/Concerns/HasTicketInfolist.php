@@ -26,9 +26,11 @@ trait HasTicketInfolist
      * @param  bool  $showApplication  When true, includes the originating application
      *                                 entry — shown only for a ticket that carries an
      *                                 app key.
+     * @param  bool  $forApi  When true, drops the relation entries an API-hydrated
+     *                        ticket cannot resolve.
      * @return array<int, Component>
      */
-    public static function getTicketInfolistSchema(bool $showApplication = false): array
+    public static function getTicketInfolistSchema(bool $showApplication = false, bool $forApi = false): array
     {
         return [
             Section::make(__('filament-help-desk::filament-help-desk.sections.ticket_details'))
@@ -63,16 +65,27 @@ trait HasTicketInfolist
                         })
                         ->formatStateUsing(fn (TicketPriority $state): string => $state->label()),
 
-                    TextEntry::make('department.name')
-                        ->label(__('filament-help-desk::filament-help-desk.fields.department')),
+                    // All three are relations, and the show response carries
+                    // none of them: the department and category arrive as ids,
+                    // and assignment is an operator concern a satellite is not
+                    // shown. Reading any of them on an API-hydrated ticket
+                    // throws, so they are left out rather than rendered empty.
+                    // Resolving the names would cost a request each per view.
+                    // Left out entirely rather than hidden: a hidden entry is
+                    // still an entry whose state may be resolved, and reading
+                    // any of these on an API-hydrated ticket throws.
+                    ...($forApi ? [] : [
+                        TextEntry::make('department.name')
+                            ->label(__('filament-help-desk::filament-help-desk.fields.department')),
 
-                    TextEntry::make('category.name')
-                        ->label(__('filament-help-desk::filament-help-desk.fields.category'))
-                        ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.na')),
+                        TextEntry::make('category.name')
+                            ->label(__('filament-help-desk::filament-help-desk.fields.category'))
+                            ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.na')),
 
-                    TextEntry::make('assignedTo.name')
-                        ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
-                        ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.unassigned')),
+                        TextEntry::make('assignedTo.name')
+                            ->label(__('filament-help-desk::filament-help-desk.fields.assigned_to'))
+                            ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.unassigned')),
+                    ]),
 
                     TextEntry::make('requester_name')
                         ->label(__('filament-help-desk::filament-help-desk.fields.requester')),

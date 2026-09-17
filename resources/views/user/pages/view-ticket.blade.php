@@ -5,15 +5,17 @@
     </div>
 
     {{-- Ticket Attachments (uploaded at creation) --}}
-    @if ($this->record->attachments()->whereNull('comment_id')->exists())
+    @php($ticketAttachments = $this->getTicketAttachments())
+
+    @if ($ticketAttachments->isNotEmpty())
         <x-filament::section
             :heading="__('filament-help-desk::filament-help-desk.sections.attachments')"
             icon="heroicon-o-paper-clip"
         >
             <div class="flex flex-wrap gap-2">
-                @foreach ($this->record->attachments()->whereNull('comment_id')->get() as $attachment)
+                @foreach ($ticketAttachments as $attachment)
                     <a
-                        href="{{ $attachment->getUrl() }}"
+                        href="{{ $this->getAttachmentUrl($attachment) }}"
                         target="_blank"
                         class="inline-flex items-center gap-x-1.5 rounded-md bg-gray-50 px-2.5 py-1.5 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-100 dark:bg-white/5 dark:text-gray-300 dark:ring-white/10 dark:hover:bg-white/10"
                     >
@@ -34,11 +36,12 @@
         @include('filament-help-desk::ticket.timeline', [
             'comments' => $this->getComments(),
             'showInternal' => false,
+            'attachmentUrl' => fn ($attachment) => $this->getAttachmentUrl($attachment),
         ])
     </x-filament::section>
 
     {{-- Reply Form --}}
-    @if (in_array($this->record->status, [
+    @if (in_array($this->getTicket()->status, [
         \JeffersonGoncalves\HelpDesk\Enums\TicketStatus::Open,
         \JeffersonGoncalves\HelpDesk\Enums\TicketStatus::Pending,
         \JeffersonGoncalves\HelpDesk\Enums\TicketStatus::InProgress,
@@ -62,7 +65,7 @@
         <x-filament::section>
             <div class="text-center text-sm text-gray-500 dark:text-gray-400">
                 {{ __('filament-help-desk::filament-help-desk.comments.ticket_closed_message', [
-                    'status' => $this->record->status->label(),
+                    'status' => $this->getTicket()->status->label(),
                 ]) }}
             </div>
         </x-filament::section>

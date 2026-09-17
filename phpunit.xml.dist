@@ -21,6 +21,9 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
+        <testsuite name="ApiDriver">
+            <directory>tests/ApiDriver</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>
