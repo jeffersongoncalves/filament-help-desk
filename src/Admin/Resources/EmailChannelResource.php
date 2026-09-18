@@ -23,6 +23,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\EmailChannelResource\Pages;
 use JeffersonGoncalves\HelpDesk\Contracts\EmailDriver;
+use JeffersonGoncalves\HelpDesk\Exceptions\EmailProcessingException;
 use JeffersonGoncalves\HelpDesk\Mail\Drivers\ImapDriver;
 use JeffersonGoncalves\HelpDesk\Mail\Drivers\MailgunDriver;
 use JeffersonGoncalves\HelpDesk\Mail\Drivers\PostmarkDriver;
@@ -117,12 +118,7 @@ class EmailChannelResource extends Resource
                         ->color('gray')
                         ->disabled(fn (Get $get): bool => blank($get('driver')))
                         ->action(function (Get $get): void {
-                            $driver = static::resolveDriver($get('driver'));
-
-                            $result = $driver->testConnection(new EmailChannel([
-                                'driver' => $get('driver'),
-                                'settings' => $get('settings') ?? [],
-                            ]));
+                            $result = static::testDriverConnection($get('driver'), $get('settings') ?? []);
 
                             Notification::make()
                                 ->title($result['message'])
@@ -200,6 +196,25 @@ class EmailChannelResource extends Resource
             'postmark' => new PostmarkDriver,
             default => new ImapDriver,
         };
+    }
+
+    /**
+     * @param  array<string, mixed>  $settings
+     * @return array{success: bool, message: string}
+     */
+    public static function testDriverConnection(?string $driver, array $settings): array
+    {
+        try {
+            return static::resolveDriver($driver)->testConnection(new EmailChannel([
+                'driver' => $driver,
+                'settings' => $settings,
+            ]));
+        } catch (EmailProcessingException $exception) {
+            return [
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public static function getPages(): array
