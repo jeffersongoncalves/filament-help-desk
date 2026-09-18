@@ -185,6 +185,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Deflection de Base de Conhecimento
+    |--------------------------------------------------------------------------
+    */
+    'deflection' => [
+        'heading' => 'Isso resolve seu problema?',
+        'description' => 'Alguns artigos que talvez já respondam isso, com base no que você digitou até agora.',
+        'empty' => 'Nenhum artigo relacionado encontrado.',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Comentários
     |--------------------------------------------------------------------------
     */

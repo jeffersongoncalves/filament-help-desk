@@ -185,6 +185,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Knowledge Base Deflection
+    |--------------------------------------------------------------------------
+    */
+    'deflection' => [
+        'heading' => 'Does this solve your problem?',
+        'description' => 'A few articles that might already answer this, based on what you have typed so far.',
+        'empty' => 'No related articles found.',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Comments
     |--------------------------------------------------------------------------
     */

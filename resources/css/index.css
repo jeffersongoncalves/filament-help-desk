@@ -339,6 +339,37 @@
 }
 
 /* ========================
+   Knowledge Base Deflection
+   ======================== */
+
+.fi-hd-kb-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.fi-hd-kb-link {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--primary-600);
+    text-decoration: underline;
+}
+
+:is(.dark) .fi-hd-kb-link {
+    color: var(--primary-400);
+}
+
+.fi-hd-kb-empty {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--gray-500);
+}
+
+:is(.dark) .fi-hd-kb-empty {
+    color: var(--gray-400);
+}
+
+/* ========================
    Comment Form (Public vs Internal)
    ======================== */
 

@@ -4,6 +4,7 @@ namespace JeffersonGoncalves\FilamentHelpDesk;
 
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
+use JeffersonGoncalves\FilamentHelpDesk\Contracts\KnowledgeBaseProvider;
 use JeffersonGoncalves\HelpDesk\Models\Department;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -28,6 +29,31 @@ class FilamentHelpDeskServiceProvider extends PackageServiceProvider
         ], 'jeffersongoncalves/filament-help-desk');
 
         $this->registerDepartmentOperatorsRelationship();
+        $this->bindKnowledgeBaseProvider();
+    }
+
+    /**
+     * Bound only when a host application actually configured one, so
+     * `app()->bound(KnowledgeBaseProvider::class)` alone tells the deflection
+     * card whether it has anything to call — no separate enabled check.
+     */
+    protected function bindKnowledgeBaseProvider(): void
+    {
+        $provider = config('filament-help-desk.knowledge_base.provider');
+
+        if (! config('filament-help-desk.knowledge_base.enabled')) {
+            return;
+        }
+
+        if (! is_string($provider) || ! class_exists($provider)) {
+            return;
+        }
+
+        if (! is_subclass_of($provider, KnowledgeBaseProvider::class)) {
+            return;
+        }
+
+        $this->app->bind(KnowledgeBaseProvider::class, $provider);
     }
 
     protected function registerDepartmentOperatorsRelationship(): void

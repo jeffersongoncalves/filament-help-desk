@@ -74,4 +74,21 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Knowledge Base (article deflection)
+    |--------------------------------------------------------------------------
+    |
+    | Nested under its own key, rather than a single flat setting, so a
+    | future default provider backed by the core package's own Knowledge
+    | Base can flip `enabled` and `provider` without renaming either key.
+    |
+    | `provider` is a class implementing
+    | JeffersonGoncalves\FilamentHelpDesk\Contracts\KnowledgeBaseProvider.
+    */
+    'knowledge_base' => [
+        'enabled' => false,
+        'provider' => null,
+    ],
+
 ];
