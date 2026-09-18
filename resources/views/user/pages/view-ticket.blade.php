@@ -1,4 +1,7 @@
 <x-filament-panels::page>
+    {{-- Status Stepper --}}
+    @include('filament-help-desk::ticket.stepper', ['status' => $this->getTicket()->status])
+
     {{-- Ticket Infolist --}}
     <div class="fi-hd-page-content">
         {{ $this->infolist }}

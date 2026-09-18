@@ -89,3 +89,26 @@ it('resolves the ticket without closing it', function () {
 
     expect($ticket->refresh()->status)->toBe(TicketStatus::Resolved);
 });
+
+it('shows the status stepper with the current step highlighted', function () {
+    $department = DepartmentFactory::new()->create();
+
+    $ticket = TicketFactory::new()->create([
+        'department_id' => $department->id,
+        'user_type' => User::class,
+        'user_id' => $this->user->id,
+        'status' => TicketStatus::Pending,
+    ]);
+
+    $html = livewire(ViewTicket::class, ['record' => $ticket->uuid])
+        ->assertSuccessful()
+        ->assertSee(TicketStatus::Open->label())
+        ->assertSee(TicketStatus::InProgress->label())
+        ->assertSee(TicketStatus::Resolved->label())
+        ->assertSee(TicketStatus::Closed->label())
+        ->html();
+
+    // Pending maps onto the InProgress step — that one is current, not Open.
+    expect($html)->toContain('fi-hd-stepper-step--current')
+        ->and(substr_count($html, 'fi-hd-stepper-step--done'))->toBe(1);
+});
