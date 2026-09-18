@@ -25,12 +25,16 @@
         "spatie/laravel-package-tools": "^1.16"
     },
     "require-dev": {
+        "jeffersongoncalves/filament-kanban": "^3.0",
         "larastan/larastan": "^3.0",
         "laravel/pint": "^1.0",
         "orchestra/testbench": "^10.0|^11.0",
         "pestphp/pest": "^4.0",
         "pestphp/pest-plugin-laravel": "^4.0",
         "pestphp/pest-plugin-livewire": "^4.0"
+    },
+    "suggest": {
+        "jeffersongoncalves/filament-kanban": "Adds an optional drag-and-drop Kanban board to the Operator panel. Enable it with FilamentHelpDeskOperatorPlugin::make()->kanban()."
     },
     "autoload": {
         "psr-4": {
