@@ -36,9 +36,16 @@ class FilamentHelpDeskServiceProvider extends PackageServiceProvider
      * Bound only when a host application actually configured one, so
      * `app()->bound(KnowledgeBaseProvider::class)` alone tells the deflection
      * card whether it has anything to call — no separate enabled check.
+     *
+     * Unbinds first: this runs once at boot in production, but a test
+     * flipping config and calling it again should not find a binding this
+     * same call is about to decide against — the container never removes a
+     * binding on its own just because the config that produced it changed.
      */
     protected function bindKnowledgeBaseProvider(): void
     {
+        $this->app->offsetUnset(KnowledgeBaseProvider::class);
+
         $provider = config('filament-help-desk.knowledge_base.provider');
 
         if (! config('filament-help-desk.knowledge_base.enabled')) {

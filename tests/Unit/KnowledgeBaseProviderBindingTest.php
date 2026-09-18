@@ -2,6 +2,7 @@
 
 use JeffersonGoncalves\FilamentHelpDesk\Contracts\KnowledgeBaseProvider;
 use JeffersonGoncalves\FilamentHelpDesk\FilamentHelpDeskServiceProvider;
+use JeffersonGoncalves\FilamentHelpDesk\Providers\CoreKnowledgeBaseProvider;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Fakes\FakeKnowledgeBaseProvider;
 use JeffersonGoncalves\HelpDesk\Models\Ticket;
 
@@ -14,7 +15,16 @@ function rebindKnowledgeBaseProvider(): void
     $method->invoke($provider);
 }
 
-it('is not bound by default, config disabled', function () {
+it('binds the core provider by default, enabled with no config', function () {
+    expect(app()->bound(KnowledgeBaseProvider::class))->toBeTrue()
+        ->and(app(KnowledgeBaseProvider::class))->toBeInstanceOf(CoreKnowledgeBaseProvider::class);
+});
+
+it('is not bound when the host app disables the knowledge base', function () {
+    config()->set('filament-help-desk.knowledge_base.enabled', false);
+
+    rebindKnowledgeBaseProvider();
+
     expect(app()->bound(KnowledgeBaseProvider::class))->toBeFalse();
 });
 

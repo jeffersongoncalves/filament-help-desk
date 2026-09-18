@@ -82,9 +82,13 @@ class TicketResource extends Resource
         $fields = static::getTicketFormSchema(isUser: true);
 
         // Only wired up when a host application configured a provider — see
-        // FilamentHelpDeskServiceProvider::bindKnowledgeBaseProvider(). No
-        // binding, no reactivity added, no card, no extra query.
-        if (app()->bound(KnowledgeBaseProvider::class)) {
+        // FilamentHelpDeskServiceProvider::bindKnowledgeBaseProvider() — and
+        // never on the API driver: a satellite has no local tables at all,
+        // and the default CoreKnowledgeBaseProvider queries KbArticle
+        // directly against this application's own database, which a
+        // satellite does not have. No binding, no API driver, no reactivity
+        // added, no card, no extra query.
+        if (app()->bound(KnowledgeBaseProvider::class) && ! Driver::isApi()) {
             $categoryIndex = null;
 
             foreach ($fields as $index => $field) {

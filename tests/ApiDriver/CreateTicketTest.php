@@ -53,3 +53,18 @@ it('opens a ticket over the API', function (): void {
         // satellite made up, and the repository is what stamps it.
         && isset($request['actor']['type'], $request['actor']['id']));
 });
+
+it('never wires up knowledge base deflection on a satellite', function (): void {
+    // CoreKnowledgeBaseProvider (bound by default) queries KbArticle
+    // directly against this application's own database — a satellite has
+    // no help_desk_kb_articles table at all, so typing a title here must
+    // never trigger a search. Regression test for a real failure: this
+    // used to throw "no such table" the moment the title field was filled.
+    livewire(CreateTicket::class)
+        ->fillForm([
+            'department_id' => 1,
+            'title' => 'Scanner will not feed',
+        ])
+        ->assertOk()
+        ->assertDontSee(__('filament-help-desk::filament-help-desk.deflection.heading'));
+});
