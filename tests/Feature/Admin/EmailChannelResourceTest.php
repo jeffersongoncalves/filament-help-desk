@@ -55,3 +55,10 @@ it('surfaces the missing IMAP dependency instead of pretending the connection wo
     EmailChannelResource::resolveDriver('imap')
         ->testConnection(new EmailChannel(['driver' => 'imap', 'settings' => []]));
 })->throws(EmailProcessingException::class);
+
+it('turns a driver exception into a failure result instead of letting it crash the form action', function () {
+    $result = EmailChannelResource::testDriverConnection('imap', ['host' => 'imap.example.com']);
+
+    expect($result['success'])->toBeFalse()
+        ->and($result['message'])->not->toBeEmpty();
+});
