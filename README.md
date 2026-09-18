@@ -19,9 +19,9 @@ Filament plugins for [jeffersongoncalves/laravel-help-desk](https://github.com/j
 
 | `filament-help-desk` | `laravel-help-desk` | Filament |
 | --- | --- | --- |
-| `1.x` | `^1.9` | `v3` |
-| `2.x` | `^1.9` | `v4` |
-| `3.x` | `^1.9` | `v5` |
+| `1.x` | `^1.10` | `v3` |
+| `2.x` | `^1.10` | `v4` |
+| `3.x` | `^1.10` | `v5` |
 
 ## Installation
 
