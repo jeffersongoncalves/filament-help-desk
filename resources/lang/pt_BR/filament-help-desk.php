@@ -231,6 +231,15 @@ return [
             'heading' => 'Tickets por Prioridade',
             'dataset_label' => 'Tickets',
         ],
+        'tickets_by_category' => [
+            'heading' => 'Tickets por Categoria',
+            'dataset_label' => 'Tickets',
+        ],
+        'operator_workload' => [
+            'heading' => 'Carga de Trabalho por Operador',
+            'pending_label' => 'Pendentes',
+            'resolved_label' => 'Resolvidos',
+        ],
         'my_assigned_tickets' => 'Meus Tickets Atribuídos',
     ],
 

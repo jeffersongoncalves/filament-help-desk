@@ -231,6 +231,15 @@ return [
             'heading' => 'Tickets by Priority',
             'dataset_label' => 'Tickets',
         ],
+        'tickets_by_category' => [
+            'heading' => 'Tickets by Category',
+            'dataset_label' => 'Tickets',
+        ],
+        'operator_workload' => [
+            'heading' => 'Operator Workload',
+            'pending_label' => 'Pending',
+            'resolved_label' => 'Resolved',
+        ],
         'my_assigned_tickets' => 'My Assigned Tickets',
     ],
 
