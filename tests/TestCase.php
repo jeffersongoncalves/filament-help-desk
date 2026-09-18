@@ -14,6 +14,7 @@ use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use JeffersonGoncalves\Filament\Kanban\KanbanServiceProvider;
 use JeffersonGoncalves\FilamentHelpDesk\FilamentHelpDeskServiceProvider;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Models\User;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Panel\AdminPanelProvider;
@@ -58,6 +59,11 @@ class TestCase extends Orchestra
             UserPanelProvider::class,
             OperatorPanelProvider::class,
             AdminPanelProvider::class,
+            // Optional (require-dev only, see composer.json "suggest") — exercises
+            // the ->kanban() code path. Testbench has no package auto-discovery of
+            // its own, so this stands in for what a host app's composer.json would
+            // trigger automatically once it requires the package for real.
+            ...(class_exists(KanbanServiceProvider::class) ? [KanbanServiceProvider::class] : []),
         ];
     }
 
