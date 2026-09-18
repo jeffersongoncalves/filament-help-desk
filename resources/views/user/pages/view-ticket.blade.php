@@ -22,7 +22,7 @@
                         target="_blank"
                         class="fi-hd-attachment-link"
                     >
-                        <x-heroicon-m-paper-clip class="fi-hd-attachment-icon" />
+                        <x-filament::icon icon="heroicon-o-paper-clip" class="fi-hd-attachment-icon" />
                         {{ $attachment->file_name }}
                         <span class="fi-hd-attachment-size">({{ $attachment->getFileSizeForHumans() }})</span>
                     </a>
