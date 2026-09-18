@@ -88,6 +88,7 @@ return [
         'setting_key' => 'Chave',
         'setting_value' => 'Valor',
         'operator' => 'Operador',
+        'other_open_tickets' => 'Outros Chamados Abertos',
     ],
 
     /*
@@ -139,6 +140,7 @@ return [
         'edit_ticket' => 'Editar Ticket',
         'close_ticket' => 'Fechar Ticket',
         'reopen_ticket' => 'Reabrir Ticket',
+        'resolve_ticket' => 'Meu Problema Foi Resolvido',
         'assign_to_me' => 'Atribuir a Mim',
         'assign' => 'Atribuir',
         'unassign' => 'Desatribuir',
@@ -177,6 +179,19 @@ return [
     'sections' => [
         'ticket_details' => 'Detalhes do Ticket',
         'attachments' => 'Anexos',
+        'requester' => 'Solicitante',
+        'ticket_metadata' => 'Informações do Chamado',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Deflection de Base de Conhecimento
+    |--------------------------------------------------------------------------
+    */
+    'deflection' => [
+        'heading' => 'Isso resolve seu problema?',
+        'description' => 'Alguns artigos que talvez já respondam isso, com base no que você digitou até agora.',
+        'empty' => 'Nenhum artigo relacionado encontrado.',
     ],
 
     /*
@@ -228,6 +243,15 @@ return [
             'heading' => 'Tickets por Prioridade',
             'dataset_label' => 'Tickets',
         ],
+        'tickets_by_category' => [
+            'heading' => 'Tickets por Categoria',
+            'dataset_label' => 'Tickets',
+        ],
+        'operator_workload' => [
+            'heading' => 'Carga de Trabalho por Operador',
+            'pending_label' => 'Pendentes',
+            'resolved_label' => 'Resolvidos',
+        ],
         'my_assigned_tickets' => 'Meus Tickets Atribuídos',
     ],
 
@@ -241,6 +265,7 @@ return [
         'ticket_updated' => 'Ticket atualizado com sucesso.',
         'ticket_closed' => 'Ticket fechado.',
         'ticket_reopened' => 'Ticket reaberto.',
+        'ticket_resolved' => 'Que bom que ajudamos! Seu ticket foi marcado como resolvido.',
         'ticket_assigned' => 'Ticket atribuído com sucesso.',
         'status_changed' => 'Status alterado com sucesso.',
         'priority_changed' => 'Prioridade alterada com sucesso.',

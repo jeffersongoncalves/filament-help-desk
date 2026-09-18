@@ -88,6 +88,7 @@ return [
         'setting_key' => 'Key',
         'setting_value' => 'Value',
         'operator' => 'Operator',
+        'other_open_tickets' => 'Other Open Tickets',
     ],
 
     /*
@@ -139,6 +140,7 @@ return [
         'edit_ticket' => 'Edit Ticket',
         'close_ticket' => 'Close Ticket',
         'reopen_ticket' => 'Reopen Ticket',
+        'resolve_ticket' => 'My Problem Is Solved',
         'assign_to_me' => 'Assign to Me',
         'assign' => 'Assign',
         'unassign' => 'Unassign',
@@ -177,6 +179,19 @@ return [
     'sections' => [
         'ticket_details' => 'Ticket Details',
         'attachments' => 'Attachments',
+        'requester' => 'Requester',
+        'ticket_metadata' => 'Ticket Info',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Knowledge Base Deflection
+    |--------------------------------------------------------------------------
+    */
+    'deflection' => [
+        'heading' => 'Does this solve your problem?',
+        'description' => 'A few articles that might already answer this, based on what you have typed so far.',
+        'empty' => 'No related articles found.',
     ],
 
     /*
@@ -228,6 +243,15 @@ return [
             'heading' => 'Tickets by Priority',
             'dataset_label' => 'Tickets',
         ],
+        'tickets_by_category' => [
+            'heading' => 'Tickets by Category',
+            'dataset_label' => 'Tickets',
+        ],
+        'operator_workload' => [
+            'heading' => 'Operator Workload',
+            'pending_label' => 'Pending',
+            'resolved_label' => 'Resolved',
+        ],
         'my_assigned_tickets' => 'My Assigned Tickets',
     ],
 
@@ -241,6 +265,7 @@ return [
         'ticket_updated' => 'Ticket updated successfully.',
         'ticket_closed' => 'Ticket closed.',
         'ticket_reopened' => 'Ticket reopened.',
+        'ticket_resolved' => 'Glad we could help! Your ticket is marked resolved.',
         'ticket_assigned' => 'Ticket assigned successfully.',
         'status_changed' => 'Status changed successfully.',
         'priority_changed' => 'Priority changed successfully.',

@@ -8,17 +8,23 @@ use BackedEnum;
 use Closure;
 use Filament\Actions\CreateAction;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Field;
+use Filament\Forms\Components\Placeholder;
 use Filament\Panel;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketForm;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketInfolist;
 use JeffersonGoncalves\FilamentHelpDesk\Concerns\HasTicketTable;
+use JeffersonGoncalves\FilamentHelpDesk\Contracts\KnowledgeBaseProvider;
 use JeffersonGoncalves\FilamentHelpDesk\Driver;
 use JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource\Pages;
 use JeffersonGoncalves\HelpDesk\Exceptions\TicketNotFoundException;
@@ -73,9 +79,84 @@ class TicketResource extends Resource
 
     public static function form(Schema $schema): Schema
     {
+        $fields = static::getTicketFormSchema(isUser: true);
+
+        // Only wired up when a host application configured a provider — see
+        // FilamentHelpDeskServiceProvider::bindKnowledgeBaseProvider(). No
+        // binding, no reactivity added, no card, no extra query.
+        if (app()->bound(KnowledgeBaseProvider::class)) {
+            $categoryIndex = null;
+
+            foreach ($fields as $index => $field) {
+                if (! $field instanceof Field) {
+                    continue;
+                }
+
+                if (! in_array($field->getName(), ['title', 'category_id'], true)) {
+                    continue;
+                }
+
+                $field->live(debounce: '500ms');
+
+                if ($field->getName() === 'category_id') {
+                    $categoryIndex = $index;
+                }
+            }
+
+            array_splice($fields, ($categoryIndex ?? count($fields) - 1) + 1, 0, [
+                static::getKnowledgeBaseCard(),
+            ]);
+        }
+
         return $schema
             ->columns(null)
-            ->schema(static::getTicketFormSchema(isUser: true));
+            ->schema($fields);
+    }
+
+    /**
+     * "Does this solve your problem?" — searches whatever KnowledgeBaseProvider
+     * the host application bound, as the requester types the title or picks a
+     * category. Debounced on the form fields above, not here: the provider is
+     * called once per render regardless.
+     */
+    protected static function getKnowledgeBaseCard(): Section
+    {
+        return Section::make(__('filament-help-desk::filament-help-desk.deflection.heading'))
+            ->description(__('filament-help-desk::filament-help-desk.deflection.description'))
+            ->icon(Heroicon::OutlinedLightBulb)
+            ->visible(fn (Get $get): bool => filled($get('title')))
+            ->schema([
+                Placeholder::make('knowledge_base_suggestions')
+                    ->hiddenLabel()
+                    ->content(function (Get $get): HtmlString {
+                        /** @var KnowledgeBaseProvider $provider */
+                        $provider = app(KnowledgeBaseProvider::class);
+
+                        $departmentId = $get('department_id');
+
+                        $results = $provider->search(
+                            query: (string) $get('title'),
+                            departmentId: $departmentId ? (int) $departmentId : null,
+                        );
+
+                        if ($results->isEmpty()) {
+                            return new HtmlString(
+                                '<p class="fi-hd-kb-empty">'.e(__('filament-help-desk::filament-help-desk.deflection.empty')).'</p>'
+                            );
+                        }
+
+                        $items = $results->map(function (mixed $item): string {
+                            $title = e((string) (data_get($item, 'title') ?? $item));
+                            $url = data_get($item, 'url');
+
+                            return $url
+                                ? '<li><a href="'.e((string) $url).'" target="_blank" rel="noopener" class="fi-hd-kb-link">'.$title.'</a></li>'
+                                : '<li>'.$title.'</li>';
+                        })->implode('');
+
+                        return new HtmlString('<ul class="fi-hd-kb-list">'.$items.'</ul>');
+                    }),
+            ]);
     }
 
     public static function table(Table $table): Table
