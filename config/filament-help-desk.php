@@ -10,6 +10,7 @@ use JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets\TicketsByPriorityWidget;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets\TicketStatsOverviewWidget;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Widgets\AssignedTicketsWidget;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Widgets\TicketsByStatusWidget;
+use JeffersonGoncalves\FilamentHelpDesk\Providers\CoreKnowledgeBaseProvider;
 use JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource;
 use JeffersonGoncalves\FilamentHelpDesk\User\Widgets\UserTicketStatsWidget;
 
@@ -79,16 +80,16 @@ return [
     | Knowledge Base (article deflection)
     |--------------------------------------------------------------------------
     |
-    | Nested under its own key, rather than a single flat setting, so a
-    | future default provider backed by the core package's own Knowledge
-    | Base can flip `enabled` and `provider` without renaming either key.
-    |
-    | `provider` is a class implementing
+    | Nested under its own key, rather than a single flat setting, so this
+    | default provider (backed by the core package's own Knowledge Base,
+    | laravel-help-desk ^1.10+) could flip `enabled` and `provider` without
+    | renaming either key — which is exactly what happened here. An app with
+    | its own FAQ/KB overrides `provider` with its own implementation of
     | JeffersonGoncalves\FilamentHelpDesk\Contracts\KnowledgeBaseProvider.
     */
     'knowledge_base' => [
-        'enabled' => false,
-        'provider' => null,
+        'enabled' => true,
+        'provider' => CoreKnowledgeBaseProvider::class,
     ],
 
 ];

@@ -1,6 +1,7 @@
 <?php
 
 use JeffersonGoncalves\FilamentHelpDesk\Contracts\KnowledgeBaseProvider;
+use JeffersonGoncalves\FilamentHelpDesk\Providers\CoreKnowledgeBaseProvider;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\DepartmentFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\UserFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Fakes\FakeKnowledgeBaseProvider;
@@ -20,12 +21,25 @@ beforeEach(function () {
     FakeKnowledgeBaseProvider::$lastDepartmentId = null;
 });
 
-it('shows no deflection card when no provider is bound', function () {
+it('shows no deflection card when the host app disables the knowledge base', function () {
     DepartmentFactory::new()->create();
+
+    // The default (CoreKnowledgeBaseProvider, bound at packageBooted()) is
+    // exactly what every other test in this file relies on being present.
+    // Unbinding here simulates a host app that set knowledge_base.enabled
+    // to false, the one case where the card must not render.
+    app()->offsetUnset(KnowledgeBaseProvider::class);
 
     livewire(CreateTicket::class)
         ->assertSuccessful()
         ->assertDontSee(__('filament-help-desk::filament-help-desk.deflection.heading'));
+});
+
+it('binds CoreKnowledgeBaseProvider by default, with no config needed', function () {
+    expect(app()->bound(KnowledgeBaseProvider::class))->toBeTrue()
+        ->and(app(KnowledgeBaseProvider::class))->toBeInstanceOf(
+            CoreKnowledgeBaseProvider::class
+        );
 });
 
 it('shows the deflection card and searches the bound provider as the title is typed', function () {
