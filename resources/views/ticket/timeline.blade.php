@@ -9,7 +9,7 @@
         </div>
     @empty
         <div class="fi-hd-timeline-empty">
-            <x-heroicon-o-chat-bubble-left-right class="fi-hd-timeline-empty-icon" />
+            <x-filament::icon icon="heroicon-o-chat-bubble-left-right" class="fi-hd-timeline-empty-icon" />
             <p class="fi-hd-timeline-empty-text">
                 {{ __('filament-help-desk::filament-help-desk.comments.empty') }}
             </p>

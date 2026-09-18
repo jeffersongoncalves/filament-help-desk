@@ -2,11 +2,11 @@
     <div class="fi-hd-comment-avatar-wrap">
         <div class="fi-hd-comment-avatar {{ $comment->is_internal ? 'fi-hd-comment-avatar--warning' : 'fi-hd-comment-avatar--primary' }}">
             @if ($comment->isSystem())
-                <x-heroicon-m-cog-6-tooth class="fi-hd-comment-avatar-icon fi-hd-comment-avatar-icon--gray" />
+                <x-filament::icon icon="heroicon-m-cog-6-tooth" class="fi-hd-comment-avatar-icon fi-hd-comment-avatar-icon--gray" />
             @elseif ($comment->is_internal)
-                <x-heroicon-m-lock-closed class="fi-hd-comment-avatar-icon fi-hd-comment-avatar-icon--warning" />
+                <x-filament::icon icon="heroicon-m-lock-closed" class="fi-hd-comment-avatar-icon fi-hd-comment-avatar-icon--warning" />
             @else
-                <x-heroicon-m-user class="fi-hd-comment-avatar-icon fi-hd-comment-avatar-icon--primary" />
+                <x-filament::icon icon="heroicon-m-user" class="fi-hd-comment-avatar-icon fi-hd-comment-avatar-icon--primary" />
             @endif
         </div>
     </div>
@@ -46,7 +46,7 @@
                         target="_blank"
                         class="fi-hd-attachment-link"
                     >
-                        <x-heroicon-m-paper-clip class="fi-hd-attachment-icon" />
+                        <x-filament::icon icon="heroicon-o-paper-clip" class="fi-hd-attachment-icon" />
                         {{ $attachment->file_name }}
                         <span class="fi-hd-attachment-size">({{ $attachment->getFileSizeForHumans() }})</span>
                     </a>
