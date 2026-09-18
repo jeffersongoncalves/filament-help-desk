@@ -1,6 +1,6 @@
 <?php
 
-use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource\Pages\ViewTicket;
+use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\TicketResource\Pages\ViewTicket;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\DepartmentFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\TicketFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\UserFactory;
@@ -11,14 +11,14 @@ use JeffersonGoncalves\HelpDesk\Models\TicketComment;
 use function Pest\Livewire\livewire;
 
 beforeEach(function () {
-    $this->operator = UserFactory::new()->create();
+    $this->admin = UserFactory::new()->create();
 
-    filament()->setCurrentPanel(filament()->getPanel('operator'));
+    filament()->setCurrentPanel(filament()->getPanel('admin'));
 
-    $this->actingAs($this->operator);
+    $this->actingAs($this->admin);
 });
 
-it('can render the operator view ticket page', function () {
+it('can render the admin view ticket page', function () {
     $department = DepartmentFactory::new()->create();
     $user = UserFactory::new()->create();
 

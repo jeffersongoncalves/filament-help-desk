@@ -78,6 +78,18 @@ trait InteractsWithTicketComments
     }
 
     /**
+     * Whether the comment being composed is a private note rather than a
+     * public reply.
+     *
+     * Read straight off the live form state so the submit button can say
+     * which of the two the operator is about to do before they do it.
+     */
+    public function isInternalNote(): bool
+    {
+        return (bool) ($this->commentData['is_internal'] ?? false);
+    }
+
+    /**
      * Submit a new comment on the current ticket.
      *
      * Routed through the comment repository rather than the database service,
