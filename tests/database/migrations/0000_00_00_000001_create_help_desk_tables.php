@@ -36,6 +36,17 @@ return new class extends Migration
             $table->unique(['department_id', 'slug']);
         });
 
+        Schema::create('help_desk_sla_policies', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('department_id')->nullable()->constrained('help_desk_departments')->nullOnDelete();
+            $table->string('priority', 16)->nullable();
+            $table->unsignedInteger('first_response_minutes');
+            $table->unsignedInteger('resolution_minutes');
+            $table->json('business_hours')->nullable();
+            $table->boolean('is_active')->default(true)->index();
+            $table->timestamps();
+        });
+
         Schema::create('help_desk_tickets', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
@@ -50,12 +61,20 @@ return new class extends Migration
             $table->longText('description');
             $table->string('status', 32)->default('open')->index();
             $table->string('priority', 16)->default('medium')->index();
+            $table->foreignId('sla_policy_id')->nullable()->constrained('help_desk_sla_policies')->nullOnDelete();
             $table->string('source', 32)->default('web');
             $table->string('app_key', 64)->nullable()->index();
             $table->string('email_message_id')->nullable()->index();
             $table->timestamp('closed_at')->nullable();
             $table->timestamp('due_at')->nullable();
             $table->timestamp('last_replied_at')->nullable();
+            $table->timestamp('first_response_at')->nullable();
+            $table->timestamp('sla_first_response_due_at')->nullable();
+            $table->timestamp('sla_resolution_due_at')->nullable();
+            $table->timestamp('sla_paused_at')->nullable();
+            $table->unsignedInteger('total_sla_paused_minutes')->default(0);
+            $table->timestamp('sla_first_response_breached_at')->nullable();
+            $table->timestamp('sla_resolution_breached_at')->nullable();
             $table->json('metadata')->nullable();
             $table->timestamps();
             $table->softDeletes();
@@ -202,6 +221,7 @@ return new class extends Migration
         Schema::dropIfExists('help_desk_ticket_attachments');
         Schema::dropIfExists('help_desk_ticket_comments');
         Schema::dropIfExists('help_desk_tickets');
+        Schema::dropIfExists('help_desk_sla_policies');
         Schema::dropIfExists('help_desk_categories');
         Schema::dropIfExists('help_desk_departments');
     }
