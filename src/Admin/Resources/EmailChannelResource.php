@@ -5,19 +5,30 @@ declare(strict_types=1);
 namespace JeffersonGoncalves\FilamentHelpDesk\Admin\Resources;
 
 use BackedEnum;
+use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\EmailChannelResource\Pages;
+use JeffersonGoncalves\HelpDesk\Contracts\EmailDriver;
+use JeffersonGoncalves\HelpDesk\Exceptions\EmailProcessingException;
+use JeffersonGoncalves\HelpDesk\Mail\Drivers\ImapDriver;
+use JeffersonGoncalves\HelpDesk\Mail\Drivers\MailgunDriver;
+use JeffersonGoncalves\HelpDesk\Mail\Drivers\PostmarkDriver;
+use JeffersonGoncalves\HelpDesk\Mail\Drivers\ResendDriver;
+use JeffersonGoncalves\HelpDesk\Mail\Drivers\SendGridDriver;
 use JeffersonGoncalves\HelpDesk\Models\Department;
 use JeffersonGoncalves\HelpDesk\Models\EmailChannel;
 
@@ -100,6 +111,22 @@ class EmailChannelResource extends Resource
                     ->valueLabel(__('filament-help-desk::filament-help-desk.fields.setting_value'))
                     ->columnSpanFull(),
 
+                Actions::make([
+                    Action::make('testConnection')
+                        ->label(__('filament-help-desk::filament-help-desk.actions.test_connection'))
+                        ->icon(Heroicon::OutlinedSignal)
+                        ->color('gray')
+                        ->disabled(fn (Get $get): bool => blank($get('driver')))
+                        ->action(function (Get $get): void {
+                            $result = static::testDriverConnection($get('driver'), $get('settings') ?? []);
+
+                            Notification::make()
+                                ->title($result['message'])
+                                ->status($result['success'] ? 'success' : 'danger')
+                                ->send();
+                        }),
+                ]),
+
                 Toggle::make('is_active')
                     ->label(__('filament-help-desk::filament-help-desk.fields.is_active'))
                     ->default(true),
@@ -158,6 +185,36 @@ class EmailChannelResource extends Resource
     public static function shouldRegisterNavigation(): bool
     {
         return config('filament-help-desk.admin.resources.email_channel') !== null;
+    }
+
+    public static function resolveDriver(?string $driver): EmailDriver
+    {
+        return match ($driver) {
+            'mailgun' => new MailgunDriver,
+            'sendgrid' => new SendGridDriver,
+            'resend' => new ResendDriver,
+            'postmark' => new PostmarkDriver,
+            default => new ImapDriver,
+        };
+    }
+
+    /**
+     * @param  array<string, mixed>  $settings
+     * @return array{success: bool, message: string}
+     */
+    public static function testDriverConnection(?string $driver, array $settings): array
+    {
+        try {
+            return static::resolveDriver($driver)->testConnection(new EmailChannel([
+                'driver' => $driver,
+                'settings' => $settings,
+            ]));
+        } catch (EmailProcessingException $exception) {
+            return [
+                'success' => false,
+                'message' => $exception->getMessage(),
+            ];
+        }
     }
 
     public static function getPages(): array
