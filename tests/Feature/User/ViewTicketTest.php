@@ -5,6 +5,7 @@ use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\TicketFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\UserFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Models\User;
 use JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource\Pages\ViewTicket;
+use JeffersonGoncalves\HelpDesk\Enums\TicketStatus;
 
 use function Pest\Livewire\livewire;
 
@@ -46,4 +47,45 @@ it('can display ticket details', function () {
     ])
         ->assertSuccessful()
         ->assertSee($ticket->reference_number);
+});
+
+it('shows the resolve action only when the ticket can transition to Resolved', function () {
+    $department = DepartmentFactory::new()->create();
+
+    $openTicket = TicketFactory::new()->create([
+        'department_id' => $department->id,
+        'user_type' => User::class,
+        'user_id' => $this->user->id,
+        'status' => TicketStatus::Open,
+    ]);
+
+    livewire(ViewTicket::class, ['record' => $openTicket->uuid])
+        ->assertActionVisible('resolve');
+
+    $resolvedTicket = TicketFactory::new()->create([
+        'department_id' => $department->id,
+        'user_type' => User::class,
+        'user_id' => $this->user->id,
+        'status' => TicketStatus::Resolved,
+    ]);
+
+    livewire(ViewTicket::class, ['record' => $resolvedTicket->uuid])
+        ->assertActionHidden('resolve');
+});
+
+it('resolves the ticket without closing it', function () {
+    $department = DepartmentFactory::new()->create();
+
+    $ticket = TicketFactory::new()->create([
+        'department_id' => $department->id,
+        'user_type' => User::class,
+        'user_id' => $this->user->id,
+        'status' => TicketStatus::Open,
+    ]);
+
+    livewire(ViewTicket::class, ['record' => $ticket->uuid])
+        ->callAction('resolve')
+        ->assertNotified();
+
+    expect($ticket->refresh()->status)->toBe(TicketStatus::Resolved);
 });
