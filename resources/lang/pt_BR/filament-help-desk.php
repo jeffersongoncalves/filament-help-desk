@@ -88,6 +88,7 @@ return [
         'setting_key' => 'Chave',
         'setting_value' => 'Valor',
         'operator' => 'Operador',
+        'other_open_tickets' => 'Outros Chamados Abertos',
     ],
 
     /*
@@ -177,6 +178,8 @@ return [
     'sections' => [
         'ticket_details' => 'Detalhes do Ticket',
         'attachments' => 'Anexos',
+        'requester' => 'Solicitante',
+        'ticket_metadata' => 'Informações do Chamado',
     ],
 
     /*

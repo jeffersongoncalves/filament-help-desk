@@ -284,6 +284,60 @@
     color: var(--gray-400);
 }
 
+.fi-hd-view-ticket-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+    .fi-hd-view-ticket-grid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+.fi-hd-view-ticket-main {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    min-width: 0;
+}
+
+.fi-hd-view-ticket-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.fi-hd-sidebar-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.fi-hd-sidebar-list-item dt {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    color: var(--gray-500);
+}
+
+:is(.dark) .fi-hd-sidebar-list-item dt {
+    color: var(--gray-400);
+}
+
+.fi-hd-sidebar-list-item dd {
+    margin-top: 0.125rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: var(--gray-950);
+}
+
+:is(.dark) .fi-hd-sidebar-list-item dd {
+    color: #fff;
+}
+
 /* ========================
    Comment Form (Public vs Internal)
    ======================== */

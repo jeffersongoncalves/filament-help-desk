@@ -85,3 +85,29 @@ it('submits a private note when toggled internal, hidden from the requester time
     livewire(UserViewTicket::class, ['record' => $ticket->uuid])
         ->assertDontSee('Internal note, not for the requester.');
 });
+
+it('shows requester context and ticket metadata in the sidebar', function () {
+    $department = DepartmentFactory::new()->create();
+    $requester = UserFactory::new()->create();
+
+    $ticket = TicketFactory::new()->create([
+        'department_id' => $department->id,
+        'user_type' => User::class,
+        'user_id' => $requester->id,
+    ]);
+
+    // Another open ticket from the same requester, to be counted.
+    TicketFactory::new()->create([
+        'department_id' => $department->id,
+        'user_type' => User::class,
+        'user_id' => $requester->id,
+    ]);
+
+    $component = livewire(ViewTicket::class, ['record' => $ticket->uuid])
+        ->assertSuccessful()
+        ->assertSee(__('filament-help-desk::filament-help-desk.sections.requester'))
+        ->assertSee(__('filament-help-desk::filament-help-desk.sections.ticket_metadata'))
+        ->assertSee($department->name);
+
+    expect($component->instance()->getOtherOpenTicketsCount())->toBe(1);
+});

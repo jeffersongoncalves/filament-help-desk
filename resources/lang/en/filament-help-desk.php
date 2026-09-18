@@ -88,6 +88,7 @@ return [
         'setting_key' => 'Key',
         'setting_value' => 'Value',
         'operator' => 'Operator',
+        'other_open_tickets' => 'Other Open Tickets',
     ],
 
     /*
@@ -177,6 +178,8 @@ return [
     'sections' => [
         'ticket_details' => 'Ticket Details',
         'attachments' => 'Attachments',
+        'requester' => 'Requester',
+        'ticket_metadata' => 'Ticket Info',
     ],
 
     /*
