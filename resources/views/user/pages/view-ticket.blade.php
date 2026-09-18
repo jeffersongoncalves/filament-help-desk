@@ -19,7 +19,7 @@
                         target="_blank"
                         class="inline-flex items-center gap-x-1.5 rounded-md bg-gray-50 px-2.5 py-1.5 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-100 dark:bg-white/5 dark:text-gray-300 dark:ring-white/10 dark:hover:bg-white/10"
                     >
-                        <x-heroicon-m-paper-clip class="h-3.5 w-3.5 text-gray-400" />
+                        <x-filament::icon icon="heroicon-o-paper-clip" class="h-3.5 w-3.5 text-gray-400" />
                         {{ $attachment->file_name }}
                         <span class="text-gray-400">({{ $attachment->getFileSizeForHumans() }})</span>
                     </a>

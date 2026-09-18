@@ -13,7 +13,7 @@
         </div>
     @empty
         <div class="text-center py-6">
-            <x-heroicon-o-chat-bubble-left-right class="mx-auto h-12 w-12 text-gray-400" />
+            <x-filament::icon icon="heroicon-o-chat-bubble-left-right" class="mx-auto h-12 w-12 text-gray-400" />
             <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
                 {{ __('filament-help-desk::filament-help-desk.comments.empty') }}
             </p>
