@@ -185,6 +185,53 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('help_desk_kb_articles', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('department_id')->nullable()->constrained('help_desk_departments')->nullOnDelete();
+            $table->foreignId('category_id')->nullable()->constrained('help_desk_categories')->nullOnDelete();
+            $table->string('app_key', 64)->nullable()->index();
+            $table->string('title');
+            $table->string('slug')->unique();
+            $table->longText('body');
+            $table->boolean('is_published')->default(false);
+            $table->unsignedInteger('views_count')->default(0);
+            $table->timestamps();
+            $table->softDeletes();
+        });
+
+        Schema::create('help_desk_automation_rules', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->foreignId('department_id')->nullable()->constrained('help_desk_departments')->nullOnDelete();
+            $table->json('conditions');
+            $table->json('actions');
+            $table->boolean('is_active')->default(true)->index();
+            $table->timestamp('last_run_at')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('help_desk_ticket_automations_applied', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('ticket_id')->constrained('help_desk_tickets')->cascadeOnDelete();
+            $table->foreignId('automation_rule_id')->constrained('help_desk_automation_rules')->cascadeOnDelete();
+            $table->timestamp('applied_at');
+
+            $table->unique(['ticket_id', 'automation_rule_id'], 'help_desk_automations_applied_unique');
+        });
+
+        Schema::create('help_desk_ticket_feedback', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('ticket_id')->unique()->constrained('help_desk_tickets')->cascadeOnDelete();
+            $table->unsignedTinyInteger('rating');
+            $table->text('comment')->nullable();
+            $table->string('submitted_by_type');
+            $table->unsignedBigInteger('submitted_by_id');
+            $table->json('metadata')->nullable();
+            $table->timestamp('created_at')->nullable();
+
+            $table->index(['submitted_by_type', 'submitted_by_id'], 'help_desk_feedback_submitted_by_index');
+        });
+
         Schema::create('help_desk_inbound_emails', function (Blueprint $table) {
             $table->id();
             $table->foreignId('email_channel_id')->nullable()->constrained('help_desk_email_channels')->nullOnDelete();
@@ -213,6 +260,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('help_desk_inbound_emails');
+        Schema::dropIfExists('help_desk_ticket_feedback');
+        Schema::dropIfExists('help_desk_ticket_automations_applied');
+        Schema::dropIfExists('help_desk_automation_rules');
+        Schema::dropIfExists('help_desk_kb_articles');
         Schema::dropIfExists('help_desk_email_channels');
         Schema::dropIfExists('help_desk_canned_responses');
         Schema::dropIfExists('help_desk_ticket_watchers');
