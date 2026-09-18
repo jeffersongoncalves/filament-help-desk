@@ -209,6 +209,21 @@ class ViewTicket extends ViewRecord
         return $this->getCommentsForTimeline();
     }
 
+    /**
+     * How many other open tickets the same requester has, shown in the
+     * sidebar so the operator sees the wider context without leaving
+     * this ticket.
+     */
+    public function getOtherOpenTicketsCount(): int
+    {
+        return Ticket::query()
+            ->where('user_type', $this->record->user_type)
+            ->where('user_id', $this->record->user_id)
+            ->where('id', '!=', $this->record->id)
+            ->open()
+            ->count();
+    }
+
     protected function getHeaderActions(): array
     {
         return [

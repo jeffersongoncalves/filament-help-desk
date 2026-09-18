@@ -4,6 +4,8 @@ use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CannedResponseResource;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\CategoryResource;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\DepartmentResource;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\EmailChannelResource;
+use JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets\OperatorWorkloadWidget;
+use JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets\TicketsByCategoryWidget;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets\TicketsByPriorityWidget;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Widgets\TicketStatsOverviewWidget;
 use JeffersonGoncalves\FilamentHelpDesk\Operator\Widgets\AssignedTicketsWidget;
@@ -67,7 +69,26 @@ return [
         'widgets' => [
             TicketsByPriorityWidget::class,
             TicketStatsOverviewWidget::class,
+            TicketsByCategoryWidget::class,
+            OperatorWorkloadWidget::class,
         ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Knowledge Base (article deflection)
+    |--------------------------------------------------------------------------
+    |
+    | Nested under its own key, rather than a single flat setting, so a
+    | future default provider backed by the core package's own Knowledge
+    | Base can flip `enabled` and `provider` without renaming either key.
+    |
+    | `provider` is a class implementing
+    | JeffersonGoncalves\FilamentHelpDesk\Contracts\KnowledgeBaseProvider.
+    */
+    'knowledge_base' => [
+        'enabled' => false,
+        'provider' => null,
     ],
 
 ];

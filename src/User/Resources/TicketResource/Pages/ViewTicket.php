@@ -164,6 +164,35 @@ class ViewTicket extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('resolve')
+                ->label(__('filament-help-desk::filament-help-desk.actions.resolve_ticket'))
+                ->icon(Heroicon::OutlinedCheckCircle)
+                ->color('success')
+                ->requiresConfirmation()
+                ->visible(fn (): bool => in_array(TicketStatus::Resolved, $this->getTicket()->status->allowedTransitions()))
+                ->action(function (): void {
+                    // Resolved, never Closed directly: it keeps the door open
+                    // for a CSAT prompt on this status and for a clean reopen,
+                    // both of which a requester-initiated Closed would skip.
+                    HelpDesk::tickets()->changeStatus(
+                        ticket: $this->getTicket(),
+                        newStatus: TicketStatus::Resolved,
+                        performer: Filament::auth()->user(),
+                    );
+
+                    // Re-resolved rather than kept: the status endpoint answers
+                    // with the ticket alone, and the page still needs the
+                    // comments and attachments the show response carries.
+                    $this->record = HelpDesk::tickets()->findByUuid($this->getTicket()->uuid);
+
+                    Notification::make()
+                        ->title(__('filament-help-desk::filament-help-desk.notifications.ticket_resolved'))
+                        ->success()
+                        ->send();
+
+                    $this->refreshFormData(['status']);
+                }),
+
             Actions\Action::make('close')
                 ->label(__('filament-help-desk::filament-help-desk.actions.close_ticket'))
                 ->icon(Heroicon::OutlinedXCircle)
