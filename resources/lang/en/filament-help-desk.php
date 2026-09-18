@@ -152,6 +152,7 @@ return [
         'add_comment' => 'Add Comment',
         'delete' => 'Delete',
         'restore' => 'Restore',
+        'test_connection' => 'Test Connection',
     ],
 
     /*
