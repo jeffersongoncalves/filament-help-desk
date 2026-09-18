@@ -295,6 +295,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Estados Vazios
+    |--------------------------------------------------------------------------
+    */
+    'empty_states' => [
+        'user_heading' => 'Nenhum chamado ainda',
+        'user_description' => 'Abra seu primeiro chamado e nossa equipe cuida do resto.',
+        'user_action' => 'Abrir meu primeiro chamado',
+        'operator_my_heading' => 'Nada atribuído a você',
+        'operator_my_description' => 'Assuma um chamado na aba Não atribuídos, ou espere um chegar até você.',
+        'operator_unassigned_heading' => 'Nenhum chamado não atribuído',
+        'operator_unassigned_description' => 'Bom trabalho — a fila está limpa.',
+        'operator_all_heading' => 'Nenhum chamado ainda',
+        'operator_all_description' => 'Os chamados vão aparecer aqui assim que os solicitantes começarem a abri-los.',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Relação de Operadores
     |--------------------------------------------------------------------------
     */

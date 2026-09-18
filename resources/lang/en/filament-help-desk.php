@@ -295,6 +295,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Empty States
+    |--------------------------------------------------------------------------
+    */
+    'empty_states' => [
+        'user_heading' => 'No tickets yet',
+        'user_description' => 'Open your first ticket and our team will take it from there.',
+        'user_action' => 'Create my first ticket',
+        'operator_my_heading' => 'Nothing assigned to you',
+        'operator_my_description' => 'Claim a ticket from the Unassigned tab, or wait for one to come your way.',
+        'operator_unassigned_heading' => 'No unassigned tickets',
+        'operator_unassigned_description' => 'Nice work — the queue is clear.',
+        'operator_all_heading' => 'No tickets yet',
+        'operator_all_description' => 'Tickets will show up here once requesters start opening them.',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Operators Relation
     |--------------------------------------------------------------------------
     */

@@ -96,3 +96,13 @@ it('computes the three tab badge counts in a single query', function () {
     expect($ticketCountQueries)->toHaveCount(1)
         ->and($tabs['unassigned']->getBadge())->toBe('3');
 });
+
+it('shows a tab-specific empty state message', function () {
+    livewire(ListTickets::class)
+        ->set('activeTab', 'my')
+        ->assertSee(__('filament-help-desk::filament-help-desk.empty_states.operator_my_heading'))
+        ->set('activeTab', 'unassigned')
+        ->assertSee(__('filament-help-desk::filament-help-desk.empty_states.operator_unassigned_heading'))
+        ->set('activeTab', 'all')
+        ->assertSee(__('filament-help-desk::filament-help-desk.empty_states.operator_all_heading'));
+});
