@@ -21,6 +21,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\EmailChannelResource\Pages;
 use JeffersonGoncalves\HelpDesk\Contracts\EmailDriver;
+use JeffersonGoncalves\HelpDesk\Exceptions\EmailProcessingException;
 use JeffersonGoncalves\HelpDesk\Mail\Drivers\ImapDriver;
 use JeffersonGoncalves\HelpDesk\Mail\Drivers\MailgunDriver;
 use JeffersonGoncalves\HelpDesk\Mail\Drivers\PostmarkDriver;
@@ -116,10 +117,19 @@ class EmailChannelResource extends Resource
                         ->action(function (Get $get): void {
                             $driver = static::resolveDriver($get('driver'));
 
-                            $result = $driver->testConnection(new EmailChannel([
-                                'driver' => $get('driver'),
-                                'settings' => $get('settings') ?? [],
-                            ]));
+                            try {
+                                $result = $driver->testConnection(new EmailChannel([
+                                    'driver' => $get('driver'),
+                                    'settings' => $get('settings') ?? [],
+                                ]));
+                            } catch (EmailProcessingException $exception) {
+                                Notification::make()
+                                    ->title($exception->getMessage())
+                                    ->status('danger')
+                                    ->send();
+
+                                return;
+                            }
 
                             Notification::make()
                                 ->title($result['message'])

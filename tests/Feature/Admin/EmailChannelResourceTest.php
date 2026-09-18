@@ -55,3 +55,13 @@ it('surfaces the missing IMAP dependency instead of pretending the connection wo
     EmailChannelResource::resolveDriver('imap')
         ->testConnection(new EmailChannel(['driver' => 'imap', 'settings' => []]));
 })->throws(EmailProcessingException::class);
+
+it('notifies instead of crashing when the test-connection action hits a driver exception', function () {
+    livewire(CreateEmailChannel::class)
+        ->fillForm([
+            'driver' => 'imap',
+            'settings' => ['host' => 'imap.example.com', 'username' => 'user', 'password' => 'secret'],
+        ])
+        ->callFormComponentAction('testConnectionAction', 'testConnection')
+        ->assertNotified();
+});
