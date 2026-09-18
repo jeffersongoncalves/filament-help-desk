@@ -5,6 +5,12 @@ All notable changes to `filament-help-desk` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.5.0 - 2026-09-18
+
+**Added:** "Test Connection" action on the EmailChannel form (Admin panel) — validates IMAP/webhook driver credentials before saving, via `laravel-help-desk` v1.11's `EmailDriver::testConnection()`. See #93.
+
+**Docs:** Version Compatibility table now links each branch and reports the correct `laravel-help-desk` constraint (`^1.11`). See #96.
+
 ## 2.4.1 - 2026-09-18
 
 **Fix:** `InvalidArgumentException: Unable to locate a class or view for component [heroicon-m-paper-clip]` on ticket attachment views, when a consuming app runs with `blade-icons.components.disabled = true`. Icons in the affected views now render through `<x-filament::icon>` instead of `<x-heroicon-*>` component tags. See #86, #87.
@@ -24,6 +30,7 @@ HELPDESK_DRIVER=api
 HELPDESK_API_URL=https://support.example.com
 HELPDESK_APP_KEY=app-a
 HELPDESK_API_SECRET=a-long-random-string
+
 
 
 ```
@@ -65,6 +72,7 @@ Two of its twenty tests exist for failures that are silent by nature: a page of 
 composer update jeffersongoncalves/filament-help-desk
 
 
+
 ```
 No migration. Applications already on `driver=database` need no configuration change; the only visible difference is that attachment links now point at the package route.
 
@@ -84,6 +92,7 @@ No panel code changed. Every history entry and watcher the panels create goes th
 composer update jeffersongoncalves/laravel-help-desk
 php artisan vendor:publish --tag=help-desk-migrations
 php artisan migrate
+
 
 
 
@@ -108,6 +117,7 @@ They also move to `resources/boost/guidelines/core.blade.php`, the layout every 
 
 ```bash
 composer update jeffersongoncalves/filament-help-desk
+
 
 
 
@@ -154,6 +164,7 @@ Class "satellite-app-user" not found
 
 
 
+
 ```
 The ticket list, the ticket detail page and the comment timeline all went down together. Reads now go through `requester_name` and `author_name`, which return the live model where its class exists here and the identity snapshot in `metadata` where it does not. The comment timeline also stopped eager loading the author, since eager loading a `morphTo` instantiates every stored type up front.
 
@@ -172,6 +183,7 @@ Set a key and a label per application:
 ```dotenv
 HELPDESK_APP_KEY=app-a
 HELPDESK_APP_NAME="Application A"
+
 
 
 
@@ -196,6 +208,7 @@ CI now pins **PHP 8.4 and Laravel 13** across every branch, and PHPStan runs on 
 
 ```bash
 composer update jeffersongoncalves/filament-help-desk
+
 
 
 
