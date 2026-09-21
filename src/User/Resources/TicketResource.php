@@ -72,6 +72,41 @@ class TicketResource extends Resource
             ->schema(static::getTicketFormSchema(isUser: true));
     }
 
+    /**
+     * Scope every query a database-driver install runs through this
+     * resource — the list, and the single-record lookup behind `/{uuid}`
+     * that view/comment both resolve through — to what the authenticated
+     * user may see: every ticket from their company when the host
+     * application's User model resolves one, otherwise only their own.
+     *
+     * Fixing it here rather than in `table()`'s `modifyQueryUsing()` also
+     * closes the record lookup, which Filament does not otherwise scope by
+     * itself — a user who guessed or was sent another company's ticket uuid
+     * could previously view and comment on it.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        if (Driver::isApi()) {
+            return $query;
+        }
+
+        $user = Filament::auth()->user();
+        $companyId = $user->company_id ?? null;
+
+        // Same condition `Ticket::scopeForCompany()` applies for a non-null
+        // key — written out rather than called, since the parent's return
+        // type erases the model generic and PHPStan cannot see the scope.
+        if ($companyId !== null) {
+            return $query->where('company_id', $companyId);
+        }
+
+        return $query
+            ->where('user_type', $user->getMorphClass())
+            ->where('user_id', $user->getAuthIdentifier());
+    }
+
     public static function table(Table $table): Table
     {
         $table = $table
@@ -80,13 +115,7 @@ class TicketResource extends Resource
             ->defaultSort('created_at', 'desc');
 
         if (! Driver::isApi()) {
-            return $table->modifyQueryUsing(function (Builder $query): Builder {
-                $user = Filament::auth()->user();
-
-                return $query
-                    ->where('user_type', $user->getMorphClass())
-                    ->where('user_id', $user->getAuthIdentifier());
-            });
+            return $table;
         }
 
         // A satellite has no tickets table to query. Filament v3 has no
