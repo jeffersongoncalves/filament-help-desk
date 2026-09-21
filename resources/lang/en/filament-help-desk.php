@@ -62,6 +62,7 @@ return [
         'assigned_to' => 'Assigned To',
         'requester' => 'Requester',
         'application' => 'Application',
+        'company' => 'Company',
         'created_at' => 'Created At',
         'updated_at' => 'Updated At',
         'closed_at' => 'Closed At',
