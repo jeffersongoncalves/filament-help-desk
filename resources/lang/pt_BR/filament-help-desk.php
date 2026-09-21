@@ -62,6 +62,7 @@ return [
         'assigned_to' => 'Atribuído a',
         'requester' => 'Solicitante',
         'application' => 'Aplicação',
+        'company' => 'Empresa',
         'created_at' => 'Criado em',
         'updated_at' => 'Atualizado em',
         'closed_at' => 'Fechado em',

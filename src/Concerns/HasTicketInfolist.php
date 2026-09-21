@@ -26,11 +26,13 @@ trait HasTicketInfolist
      * @param  bool  $showApplication  When true, includes the originating application
      *                                 entry — shown only for a ticket that carries an
      *                                 app key.
+     * @param  bool  $showCompany  When true, includes the company entry — shown only
+     *                             for a ticket that carries a company id.
      * @param  bool  $forApi  When true, drops the relation entries an API-hydrated
      *                        ticket cannot resolve.
      * @return array<int, Component>
      */
-    public static function getTicketInfolistSchema(bool $showApplication = false, bool $forApi = false): array
+    public static function getTicketInfolistSchema(bool $showApplication = false, bool $showCompany = false, bool $forApi = false): array
     {
         return [
             Section::make(__('filament-help-desk::filament-help-desk.sections.ticket_details'))
@@ -97,6 +99,10 @@ trait HasTicketInfolist
                     TextEntry::make('app_name')
                         ->label(__('filament-help-desk::filament-help-desk.fields.application'))
                         ->visible(fn (Ticket $record): bool => $showApplication && filled($record->app_key)),
+
+                    TextEntry::make('company_id')
+                        ->label(__('filament-help-desk::filament-help-desk.fields.company'))
+                        ->visible(fn (Ticket $record): bool => $showCompany && filled($record->company_id)),
 
                     TextEntry::make('created_at')
                         ->label(__('filament-help-desk::filament-help-desk.fields.created_at'))
