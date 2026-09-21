@@ -31,9 +31,11 @@ trait HasTicketTable
      * @param  bool  $forApi  When true, drops what the API transport cannot serve:
      *                        the relation columns, and sorting by a column the
      *                        central application will not sort on.
+     * @param  bool  $showCompany  When true, includes the company column — provided
+     *                             any ticket carries a company id.
      * @return array<int, Column>
      */
-    public static function getTicketTableColumns(bool $showUser = true, bool $showApplication = false, bool $forApi = false): array
+    public static function getTicketTableColumns(bool $showUser = true, bool $showApplication = false, bool $forApi = false, bool $showCompany = false): array
     {
         $columns = [
             // Searchable on both transports: the API searches the title and
@@ -101,6 +103,12 @@ trait HasTicketTable
                 ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.na'));
         }
 
+        if ($showCompany && static::getTicketCompanyOptions() !== []) {
+            $columns[] = TextColumn::make('company_id')
+                ->label(__('filament-help-desk::filament-help-desk.fields.company'))
+                ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.na'));
+        }
+
         $columns[] = TextColumn::make('created_at')
             ->label(__('filament-help-desk::filament-help-desk.fields.created_at'))
             ->dateTime()
@@ -115,9 +123,11 @@ trait HasTicketTable
      * @param  bool  $showApplication  When true, includes the originating application
      *                                 filter — provided any ticket carries an app key.
      * @param  bool  $forApi  When true, keeps only the filters the API accepts.
+     * @param  bool  $showCompany  When true, includes the company filter — provided
+     *                             any ticket carries a company id.
      * @return array<int, BaseFilter>
      */
-    public static function getTicketTableFilters(bool $showApplication = false, bool $forApi = false): array
+    public static function getTicketTableFilters(bool $showApplication = false, bool $forApi = false, bool $showCompany = false): array
     {
         $filters = [
             SelectFilter::make('status')
@@ -160,6 +170,12 @@ trait HasTicketTable
                 ->options($applications);
         }
 
+        if ($showCompany && ($companies = static::getTicketCompanyOptions()) !== []) {
+            $filters[] = SelectFilter::make('company_id')
+                ->label(__('filament-help-desk::filament-help-desk.fields.company'))
+                ->options($companies);
+        }
+
         return $filters;
     }
 
@@ -189,6 +205,26 @@ trait HasTicketTable
 
                 return [$key => $ticket->app_name ?? $key];
             })
+            ->all();
+    }
+
+    /**
+     * The companies that have opened a ticket, keyed and labelled by the raw
+     * `company_id` value — the package carries no separate label for it, since
+     * it has no notion of what a "company" is (see `Ticket::scopeForCompany()`).
+     * Empty on a single-company install, which is what hides the column and
+     * the filter there.
+     *
+     * @return array<string, string>
+     */
+    protected static function getTicketCompanyOptions(): array
+    {
+        return Ticket::query()
+            ->whereNotNull('company_id')
+            ->distinct()
+            ->orderBy('company_id')
+            ->pluck('company_id')
+            ->mapWithKeys(fn ($id): array => [(string) $id => (string) $id])
             ->all();
     }
 }
