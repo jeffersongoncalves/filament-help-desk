@@ -64,6 +64,7 @@ return new class extends Migration
             $table->foreignId('sla_policy_id')->nullable()->constrained('help_desk_sla_policies')->nullOnDelete();
             $table->string('source', 32)->default('web');
             $table->string('app_key', 64)->nullable()->index();
+            $table->string('company_id', 64)->nullable()->index();
             $table->string('email_message_id')->nullable()->index();
             $table->timestamp('closed_at')->nullable();
             $table->timestamp('due_at')->nullable();

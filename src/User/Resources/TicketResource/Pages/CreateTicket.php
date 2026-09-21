@@ -35,7 +35,16 @@ class CreateTicket extends CreateRecord
         // an unknown field.
         unset($data['attachments']);
 
-        return HelpDesk::createTicket($data, Filament::auth()->user());
+        $user = Filament::auth()->user();
+
+        // Carried over from the requester so the company-scoped list/view in
+        // TicketResource::getEloquentQuery() has something to match against.
+        // The package itself has no notion of "company" and never sets this.
+        if (($companyId = $user->company_id ?? null) !== null) {
+            $data['company_id'] = $companyId;
+        }
+
+        return HelpDesk::createTicket($data, $user);
     }
 
     protected function afterCreate(): void
