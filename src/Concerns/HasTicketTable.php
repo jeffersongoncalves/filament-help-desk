@@ -28,14 +28,14 @@ trait HasTicketTable
      * @param  bool  $showUser  When true, includes the requester (user) column.
      * @param  bool  $showApplication  When true, includes the originating application
      *                                 column — provided any ticket carries an app key.
-     * @param  bool  $showCompany  When true, includes the company column — provided
-     *                             any ticket carries a company id.
      * @param  bool  $forApi  When true, drops what the API transport cannot serve:
      *                        the relation columns, and sorting by a column the
      *                        central application will not sort on.
+     * @param  bool  $showCompany  When true, includes the company column — provided
+     *                             any ticket carries a company id.
      * @return array<int, Column>
      */
-    public static function getTicketTableColumns(bool $showUser = true, bool $showApplication = false, bool $showCompany = false, bool $forApi = false): array
+    public static function getTicketTableColumns(bool $showUser = true, bool $showApplication = false, bool $forApi = false, bool $showCompany = false): array
     {
         $columns = [
             // Searchable on both transports: the API searches the title and
@@ -122,12 +122,12 @@ trait HasTicketTable
      *
      * @param  bool  $showApplication  When true, includes the originating application
      *                                 filter — provided any ticket carries an app key.
+     * @param  bool  $forApi  When true, keeps only the filters the API accepts.
      * @param  bool  $showCompany  When true, includes the company filter — provided
      *                             any ticket carries a company id.
-     * @param  bool  $forApi  When true, keeps only the filters the API accepts.
      * @return array<int, BaseFilter>
      */
-    public static function getTicketTableFilters(bool $showApplication = false, bool $showCompany = false, bool $forApi = false): array
+    public static function getTicketTableFilters(bool $showApplication = false, bool $forApi = false, bool $showCompany = false): array
     {
         $filters = [
             SelectFilter::make('status')
