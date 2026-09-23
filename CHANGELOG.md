@@ -5,6 +5,22 @@ All notable changes to `filament-help-desk` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.9.0 - 2026-09-23
+
+### What's new
+
+- **Translations:** 17 new locales (ar, az, de, es, fa, fr, hi, it, ja, nl, pl, pt, ru, tr, uk, uz, zh_CN). (#109)
+
+Thanks to @Elvin-Qulizade (Elvin Qulizada) for the i18n initiative behind these translations — first contributed in jeffersongoncalves/filament-scanner-guard#2 and now rolled out across the Filament plugins. He is credited as co-author.
+
+### What's Changed
+
+* ci: standardize tests workflow (1.x) by @jeffersongoncalves in https://github.com/jeffersongoncalves/filament-help-desk/pull/106
+* build(deps-dev): bump the npm-deps group with 7 updates by @dependabot[bot] in https://github.com/jeffersongoncalves/filament-help-desk/pull/104
+* feat(i18n): add translations (1.x) by @jeffersongoncalves in https://github.com/jeffersongoncalves/filament-help-desk/pull/109
+
+**Full Changelog**: https://github.com/jeffersongoncalves/filament-help-desk/compare/1.8.0...1.9.0
+
 ## 1.8.0 - 2026-09-21
 
 ### What's Changed
@@ -38,6 +54,7 @@ HELPDESK_DRIVER=api
 HELPDESK_API_URL=https://support.example.com
 HELPDESK_APP_KEY=app-a
 HELPDESK_API_SECRET=a-long-random-string
+
 
 
 
@@ -83,6 +100,7 @@ composer update jeffersongoncalves/filament-help-desk
 
 
 
+
 ```
 No migration. Applications already on `driver=database` need no configuration change; the only visible difference is that attachment links now point at the package route.
 
@@ -102,6 +120,7 @@ No panel code changed. Every history entry and watcher the panels create goes th
 composer update jeffersongoncalves/laravel-help-desk
 php artisan vendor:publish --tag=help-desk-migrations
 php artisan migrate
+
 
 
 
@@ -128,6 +147,7 @@ They also move to `resources/boost/guidelines/core.blade.php`, the layout every 
 
 ```bash
 composer update jeffersongoncalves/filament-help-desk
+
 
 
 
@@ -178,6 +198,7 @@ Class "satellite-app-user" not found
 
 
 
+
 ```
 The ticket list, the ticket detail page and the comment timeline all went down together. Reads now go through `requester_name` and `author_name`, which return the live model where its class exists here and the identity snapshot in `metadata` where it does not. The comment timeline also stopped eager loading the author, since eager loading a `morphTo` instantiates every stored type up front.
 
@@ -196,6 +217,7 @@ Set a key and a label per application:
 ```dotenv
 HELPDESK_APP_KEY=app-a
 HELPDESK_APP_NAME="Application A"
+
 
 
 
@@ -222,6 +244,7 @@ CI now pins **PHP 8.4 and Laravel 13** across every branch, and PHPStan runs on 
 
 ```bash
 composer update jeffersongoncalves/filament-help-desk
+
 
 
 
