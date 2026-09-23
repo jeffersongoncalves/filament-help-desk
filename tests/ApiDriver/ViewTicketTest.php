@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Http;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\UserFactory;
 use JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource\Pages\ViewTicket;
@@ -141,5 +140,5 @@ it('returns a 404 for a ticket the central application will not serve', function
 
     $this->actingAs(UserFactory::new()->create());
 
-    livewire(ViewTicket::class, ['record' => $uuid]);
-})->throws(ModelNotFoundException::class);
+    assertLivewireNotFound(fn () => livewire(ViewTicket::class, ['record' => $uuid]));
+});

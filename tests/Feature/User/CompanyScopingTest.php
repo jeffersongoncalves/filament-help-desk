@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\DepartmentFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\TicketFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\UserFactory;
@@ -111,8 +110,8 @@ it('404s a ticket belonging to another company', function () {
     filament()->setCurrentPanel(filament()->getPanel('user'));
     $this->actingAs($me);
 
-    livewire(ViewTicket::class, ['record' => $ticket->uuid]);
-})->throws(ModelNotFoundException::class);
+    assertLivewireNotFound(fn () => livewire(ViewTicket::class, ['record' => $ticket->uuid]));
+});
 
 it('stamps the ticket with the requester\'s company id on creation', function () {
     $me = UserFactory::new()->create(['company_id' => 'acme']);
