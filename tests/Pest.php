@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\ApiTestCase;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\TicketFactory;
@@ -10,6 +11,25 @@ use JeffersonGoncalves\HelpDesk\Models\Ticket;
 
 uses(TestCase::class)->in('Unit', 'Feature');
 uses(ApiTestCase::class)->in('ApiDriver');
+
+/**
+ * Assert that mounting a Livewire page answers 404.
+ *
+ * Livewire up to 4.4.5 rethrows the ModelNotFoundException in tests; 4.4.6+
+ * renders it through the exception handler, so the test gets the 404 page.
+ */
+function assertLivewireNotFound(Closure $mount): void
+{
+    try {
+        $testable = $mount();
+    } catch (ModelNotFoundException) {
+        expect(true)->toBeTrue();
+
+        return;
+    }
+
+    expect(\Livewire\invade($testable)->lastState->getResponse()->getStatusCode())->toBe(404);
+}
 
 /**
  * A ticket opened by another application sharing this help desk database.
