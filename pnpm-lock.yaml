@@ -18,8 +18,8 @@ importers:
         specifier: ^10.6.1
         version: 10.6.1(postcss@8.5.28)
       cssnano:
-        specifier: ^9.0.4
-        version: 9.0.4(postcss@8.5.28)
+        specifier: ^9.0.5
+        version: 9.0.5(postcss@8.5.28)
       npm-run-all2:
         specifier: ^9.0.3
         version: 9.0.3
@@ -42,8 +42,8 @@ packages:
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
 
-  '@colordx/core@6.6.0':
-    resolution: {integrity: sha512-FpFXatXfF1vnFksLDTnGR/tho64ETOpymuZXxlx4/b2o4Sq1zsfY0FwJJrmRWdUvm/DvyQa8rfyitpuLmVOSwg==}
+  '@colordx/core@6.5.0':
+    resolution: {integrity: sha512-mhkTHXTERodsL6kMw2LRrXVlGaY+osu/YnxkcwO8c/JO+YOb+/f+F+gOxmeBWTP+nzG47Kz6gZCJq8tyESqrWg==}
 
   '@csstools/css-tokenizer@4.0.1':
     resolution: {integrity: sha512-bPlN9S9O1A0euCpEWE4qnvB5YDuyYVsUTrxSgmAM1Is0j4tICHoVyOVAXfWMP/kS9ZrjvyIXWV2PmomiAXXqOw==}
@@ -212,8 +212,8 @@ packages:
     peerDependencies:
       postcss: ^8.5.28
 
-  cssnano@9.0.4:
-    resolution: {integrity: sha512-CdXjUnePN8UmFySZ65Oh83DUf/z/VV+yRc86PlMUA4JBJizXiwelynZvfLji+gY/Z94xH+RrCT48wZyqSJdhuw==}
+  cssnano@9.0.5:
+    resolution: {integrity: sha512-D25KanNkgIIcJnFvbm1xinel2YWULKjOao+4pv1m2qCR6KPRxOWh4yRQboxhwVVtifwdVa3cVnSL651sAvHQoA==}
     engines: {node: ^22.22.3 || ^24.15.0 || >=26.0}
     peerDependencies:
       postcss: ^8.5.28
@@ -441,8 +441,8 @@ packages:
     resolution: {integrity: sha512-TfySrs/5nm8fQJDcBDuUng3VOUKsd7S+zqvbOTiGXHfxX4wK31ard+hoNuvkicM/2YFzlpDgABOevKSsB4G/FA==}
     engines: {node: '>= 6'}
 
-  postcss-calc@11.2.1:
-    resolution: {integrity: sha512-B5KZhrbeVyFznh7aj96O9oYvmipuobzWJVlPZ2NksjHdgSaqiVJ0UijuOuQTk/KVIzrKXp7399AiZGKtZF0jZA==}
+  postcss-calc@11.2.0:
+    resolution: {integrity: sha512-GeWPgrs+s7W0b35ePAMvyNq0fP4fKsJXt9dLmO919TTiZ93aVUj+enI5t5eba7/YMkUJvWanNunMctyeuP+Dsg==}
     engines: {node: ^22.22.3 || ^24.15 || >=26.0}
     peerDependencies:
       postcss: ^8.5.28
@@ -837,7 +837,7 @@ snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
 
-  '@colordx/core@6.6.0': {}
+  '@colordx/core@6.5.0': {}
 
   '@csstools/css-tokenizer@4.0.1': {}
 
@@ -995,7 +995,7 @@ snapshots:
       browserslist: 4.29.0
       cssnano-utils: 7.0.3(postcss@8.5.28)
       postcss: 8.5.28
-      postcss-calc: 11.2.1(postcss@8.5.28)
+      postcss-calc: 11.2.0(postcss@8.5.28)
       postcss-colormin: 9.0.3(postcss@8.5.28)
       postcss-convert-values: 9.0.3(postcss@8.5.28)
       postcss-discard-comments: 9.0.3(postcss@8.5.28)
@@ -1027,7 +1027,7 @@ snapshots:
     dependencies:
       postcss: 8.5.28
 
-  cssnano@9.0.4(postcss@8.5.28):
+  cssnano@9.0.5(postcss@8.5.28):
     dependencies:
       cssnano-preset-default: 9.0.5(postcss@8.5.28)
       postcss: 8.5.28
@@ -1203,7 +1203,7 @@ snapshots:
 
   pirates@4.0.7: {}
 
-  postcss-calc@11.2.1(postcss@8.5.28):
+  postcss-calc@11.2.0(postcss@8.5.28):
     dependencies:
       '@csstools/css-tokenizer': 4.0.1
       postcss: 8.5.28
@@ -1228,7 +1228,7 @@ snapshots:
 
   postcss-colormin@9.0.3(postcss@8.5.28):
     dependencies:
-      '@colordx/core': 6.6.0
+      '@colordx/core': 6.5.0
       browserslist: 4.29.0
       caniuse-api: 4.0.0
       postcss: 8.5.28
@@ -1298,7 +1298,7 @@ snapshots:
 
   postcss-minify-gradients@9.0.3(postcss@8.5.28):
     dependencies:
-      '@colordx/core': 6.6.0
+      '@colordx/core': 6.5.0
       cssnano-utils: 7.0.3(postcss@8.5.28)
       postcss: 8.5.28
       postcss-value-parser: 4.2.0
