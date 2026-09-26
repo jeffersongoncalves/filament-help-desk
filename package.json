@@ -6,7 +6,7 @@
         "build": "npm-run-all build:*"
     },
     "devDependencies": {
-        "cssnano": "^9.0.4",
+        "cssnano": "^9.0.5",
         "npm-run-all2": "^9.0.3",
         "postcss": "^8.5.28",
         "postcss-cli": "^12.0.0",
