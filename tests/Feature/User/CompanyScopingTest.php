@@ -115,7 +115,7 @@ it('404s a ticket belonging to another company', function () {
 })->throws(ModelNotFoundException::class);
 
 it('stamps the ticket with the requester\'s company id on creation', function () {
-    $me = UserFactory::new()->create(['company_id' => 'acme']);
+    $me = UserFactory::new()->create(['company_id' => 'acme', 'company_name' => 'Acme Inc.']);
 
     filament()->setCurrentPanel(filament()->getPanel('user'));
     $this->actingAs($me);
@@ -132,7 +132,8 @@ it('stamps the ticket with the requester\'s company id on creation', function ()
     $ticket = Ticket::query()->where('title', 'Printer on fire')->first();
 
     expect($ticket)->not->toBeNull()
-        ->and($ticket->company_id)->toBe('acme');
+        ->and($ticket->company_id)->toBe('acme')
+        ->and($ticket->company_name)->toBe('Acme Inc.');
 });
 
 it('leaves company_id null when the requester resolves no company', function () {
