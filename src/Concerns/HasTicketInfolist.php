@@ -98,7 +98,7 @@ trait HasTicketInfolist
                         ->label(__('filament-help-desk::filament-help-desk.fields.application'))
                         ->visible(fn (Ticket $record): bool => $showApplication && filled($record->app_key)),
 
-                    TextEntry::make('company_id')
+                    TextEntry::make('company_name')
                         ->label(__('filament-help-desk::filament-help-desk.fields.company'))
                         ->visible(fn (Ticket $record): bool => $showCompany && filled($record->company_id)),
 

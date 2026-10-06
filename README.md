@@ -18,9 +18,9 @@ Filament plugins for [jeffersongoncalves/laravel-help-desk](https://github.com/j
 
 | `filament-help-desk` | `laravel-help-desk` | Filament |
 | --- | --- | --- |
-| [`1.x`](https://github.com/jeffersongoncalves/filament-help-desk/tree/1.x) | `^1.12` | `v3` |
-| [`2.x`](https://github.com/jeffersongoncalves/filament-help-desk/tree/2.x) | `^1.12` | `v4` |
-| [`3.x`](https://github.com/jeffersongoncalves/filament-help-desk/tree/3.x) | `^1.12` | `v5` |
+| [`1.x`](https://github.com/jeffersongoncalves/filament-help-desk/tree/1.x) | `^1.13` | `v3` |
+| [`2.x`](https://github.com/jeffersongoncalves/filament-help-desk/tree/2.x) | `^1.13` | `v4` |
+| [`3.x`](https://github.com/jeffersongoncalves/filament-help-desk/tree/3.x) | `^1.13` | `v5` |
 
 ## Installation
 
@@ -226,9 +226,9 @@ See [Sharing One Help Desk Database Across Applications](https://github.com/jeff
 
 ### 6. Multi-company portals
 
-One installation can serve several client companies from the same User panel, where everyone at a company sees every ticket their company raised — not just the ones they opened themselves. It needs `jeffersongoncalves/laravel-help-desk` `^1.12`, which adds a nullable `company_id` column to `help_desk_tickets`, so publish and run its migrations after upgrading.
+One installation can serve several client companies from the same User panel, where everyone at a company sees every ticket their company raised — not just the ones they opened themselves. It needs `jeffersongoncalves/laravel-help-desk` `^1.13` — 1.12 added the nullable `company_id` column to `help_desk_tickets`, so publish and run its migrations after upgrading.
 
-Then give your User model a `company_id`. The package has no notion of what a "company" is, so any string or integer works — a column on `users`, or an accessor when the company lives elsewhere:
+Then give your User model a `company_id`, and optionally a `company_name` to show in the Admin and Operator panels. The package has no notion of what a "company" is, so any string or integer works — columns on `users`, or accessors when the company lives elsewhere:
 
 ```php
 class User extends Authenticatable
@@ -238,7 +238,13 @@ class User extends Authenticatable
     // Only needed when `users` has no `company_id` column of its own
     public function getCompanyIdAttribute(): ?string
     {
-        return $this->company?->slug;
+        return $this->company?->id;
+    }
+
+    // Optional: the label the Admin and Operator panels show
+    public function getCompanyNameAttribute(): ?string
+    {
+        return $this->company?->name;
     }
 }
 ```
@@ -246,8 +252,8 @@ class User extends Authenticatable
 With that in place:
 
 - **User panel** — a user with a `company_id` sees, opens and comments on every ticket of their company; a ticket from another company returns a 404. A user whose `company_id` is `null` keeps the default behaviour and sees only their own tickets.
-- **New tickets** — the requester's `company_id` is copied onto the ticket on creation.
-- **Admin and Operator panels** — the ticket table gains a **Company** column and filter, and the ticket detail view shows the company. Where no ticket carries a company, none of that appears, so a single-company install sees no change.
+- **New tickets** — the requester's `company_id` is copied onto the ticket on creation, and so is `company_name`, the way the requester's own name is — so a later rename does not rewrite old tickets.
+- **Admin and Operator panels** — the ticket table gains a **Company** column and filter, and the ticket detail view shows the company, all labelled with `company_name`. Tickets created without a name (before `laravel-help-desk` 1.13, or for a user with no `company_name`) show the `company_id` instead. Where no ticket carries a company, none of that appears, so a single-company install sees no change.
 
 Each user belongs to one company at a time — there is no switcher for a user who works for several. Company scoping applies to the database driver; a satellite running `HELPDESK_DRIVER=api` lists the requester's own tickets.
 
