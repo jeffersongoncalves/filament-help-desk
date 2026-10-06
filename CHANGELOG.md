@@ -5,6 +5,26 @@ All notable changes to `filament-help-desk` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.8.0 - 2026-10-06
+
+### What's new
+
+- **Company name in Admin and Operator:** the company column, filter and ticket detail show the company name instead of the raw `company_id`. Give your User model a `company_name` (column or accessor); it is copied onto each new ticket. Tickets created without one show the id. Requires `jeffersongoncalves/laravel-help-desk` `^1.13`. (#133)
+- **Category hierarchy in the ticket form:** child categories are grouped under their parent, and a parent with active children can no longer be picked. Grandchildren show as `Child › Grandchild`. Tickets already filed under a parent keep it on edit. (#130, closes #128)
+- **Docs:** README section on multi-company portals. (#126)
+
+### What's Changed
+
+* ci: standardize tests workflow (2.x) by @jeffersongoncalves in https://github.com/jeffersongoncalves/filament-help-desk/pull/113
+* build(deps-dev): bump cssnano from 9.0.4 to 9.0.5 in the npm-deps group by @dependabot[bot] in https://github.com/jeffersongoncalves/filament-help-desk/pull/118
+* ci: auto-merge dependabot github-actions minor/patch by @jeffersongoncalves in https://github.com/jeffersongoncalves/filament-help-desk/pull/120
+* build(deps-dev): bump postcss-nesting from 14.0.1 to 14.0.2 in the npm-deps group by @dependabot[bot] in https://github.com/jeffersongoncalves/filament-help-desk/pull/122
+* docs: document multi-company portals by @jeffersongoncalves in https://github.com/jeffersongoncalves/filament-help-desk/pull/126
+* fix: group ticket categories by parent by @jeffersongoncalves in https://github.com/jeffersongoncalves/filament-help-desk/pull/130
+* feat: show the company name instead of company_id by @jeffersongoncalves in https://github.com/jeffersongoncalves/filament-help-desk/pull/133
+
+**Full Changelog**: https://github.com/jeffersongoncalves/filament-help-desk/compare/2.7.0...2.8.0
+
 ## 2.7.0 - 2026-09-23
 
 ### What's new
@@ -59,6 +79,7 @@ HELPDESK_API_SECRET=a-long-random-string
 
 
 
+
 ```
 - **The list** is fed by `forActor()`, and paged, filtered, searched and sorted by the central application. Not by narrowing the page the satellite happens to hold — a list that filters 25 rows out of 300 looks filtered and is wrong, with nothing on screen saying so.
 - **A ticket** is resolved by uuid through the repository. One belonging to another user or another application comes back as a 404 without saying which.
@@ -101,6 +122,7 @@ composer update jeffersongoncalves/filament-help-desk
 
 
 
+
 ```
 No migration. Applications already on `driver=database` need no configuration change; the only visible difference is that attachment links now point at the package route.
 
@@ -120,6 +142,7 @@ No panel code changed. Every history entry and watcher the panels create goes th
 composer update jeffersongoncalves/laravel-help-desk
 php artisan vendor:publish --tag=help-desk-migrations
 php artisan migrate
+
 
 
 
@@ -147,6 +170,7 @@ They also move to `resources/boost/guidelines/core.blade.php`, the layout every 
 
 ```bash
 composer update jeffersongoncalves/filament-help-desk
+
 
 
 
@@ -199,6 +223,7 @@ Class "satellite-app-user" not found
 
 
 
+
 ```
 The ticket list, the ticket detail page and the comment timeline all went down together. Reads now go through `requester_name` and `author_name`, which return the live model where its class exists here and the identity snapshot in `metadata` where it does not. The comment timeline also stopped eager loading the author, since eager loading a `morphTo` instantiates every stored type up front.
 
@@ -217,6 +242,7 @@ Set a key and a label per application:
 ```dotenv
 HELPDESK_APP_KEY=app-a
 HELPDESK_APP_NAME="Application A"
+
 
 
 
@@ -244,6 +270,7 @@ CI now pins **PHP 8.4 and Laravel 13** across every branch, and PHPStan runs on 
 
 ```bash
 composer update jeffersongoncalves/filament-help-desk
+
 
 
 
