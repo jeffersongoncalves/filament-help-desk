@@ -40,8 +40,12 @@ class CreateTicket extends CreateRecord
         // Carried over from the requester so the company-scoped list/view in
         // TicketResource::getEloquentQuery() has something to match against.
         // The package itself has no notion of "company" and never sets this.
+        // The name is copied too, like the requester's, so the Admin and
+        // Operator panels can label the company without knowing the host
+        // application's company model.
         if (($companyId = $user->company_id ?? null) !== null) {
             $data['company_id'] = $companyId;
+            $data['company_name'] = $user->company_name ?? null;
         }
 
         return HelpDesk::createTicket($data, $user);
