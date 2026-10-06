@@ -18,9 +18,9 @@ Filament plugins for [jeffersongoncalves/laravel-help-desk](https://github.com/j
 
 | `filament-help-desk` | `laravel-help-desk` | Filament |
 | --- | --- | --- |
-| [`1.x`](https://github.com/jeffersongoncalves/filament-help-desk/tree/1.x) | `^1.11` | `v3` |
-| [`2.x`](https://github.com/jeffersongoncalves/filament-help-desk/tree/2.x) | `^1.11` | `v4` |
-| [`3.x`](https://github.com/jeffersongoncalves/filament-help-desk/tree/3.x) | `^1.11` | `v5` |
+| [`1.x`](https://github.com/jeffersongoncalves/filament-help-desk/tree/1.x) | `^1.12` | `v3` |
+| [`2.x`](https://github.com/jeffersongoncalves/filament-help-desk/tree/2.x) | `^1.12` | `v4` |
+| [`3.x`](https://github.com/jeffersongoncalves/filament-help-desk/tree/3.x) | `^1.12` | `v5` |
 
 ## Installation
 
@@ -223,6 +223,33 @@ Four things decide whether this works.
 **`HELPDESK_SCOPE_TO_APP` belongs on the satellites only.** It scopes *every* `Ticket` query to that application's key, which is what keeps a satellite's User panel honest even before the morph alias is considered. Leave it off centrally, or the Admin and Operator panels see nothing.
 
 See [Sharing One Help Desk Database Across Applications](https://github.com/jeffersongoncalves/laravel-help-desk#sharing-one-help-desk-database-across-applications) in the core package for the data side of the same topology.
+
+### 6. Multi-company portals
+
+One installation can serve several client companies from the same User panel, where everyone at a company sees every ticket their company raised — not just the ones they opened themselves. It needs `jeffersongoncalves/laravel-help-desk` `^1.12`, which adds a nullable `company_id` column to `help_desk_tickets`, so publish and run its migrations after upgrading.
+
+Then give your User model a `company_id`. The package has no notion of what a "company" is, so any string or integer works — a column on `users`, or an accessor when the company lives elsewhere:
+
+```php
+class User extends Authenticatable
+{
+    use HasTickets;
+
+    // Only needed when `users` has no `company_id` column of its own
+    public function getCompanyIdAttribute(): ?string
+    {
+        return $this->company?->slug;
+    }
+}
+```
+
+With that in place:
+
+- **User panel** — a user with a `company_id` sees, opens and comments on every ticket of their company; a ticket from another company returns a 404. A user whose `company_id` is `null` keeps the default behaviour and sees only their own tickets.
+- **New tickets** — the requester's `company_id` is copied onto the ticket on creation.
+- **Admin and Operator panels** — the ticket table gains a **Company** column and filter, and the ticket detail view shows the company. Where no ticket carries a company, none of that appears, so a single-company install sees no change.
+
+Each user belongs to one company at a time — there is no switcher for a user who works for several. Company scoping applies to the database driver; a satellite running `HELPDESK_DRIVER=api` lists the requester's own tickets.
 
 ## Configuration
 
