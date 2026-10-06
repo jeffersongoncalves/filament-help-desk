@@ -104,7 +104,7 @@ trait HasTicketTable
         }
 
         if ($showCompany && static::getTicketCompanyOptions() !== []) {
-            $columns[] = TextColumn::make('company_id')
+            $columns[] = TextColumn::make('company_name')
                 ->label(__('filament-help-desk::filament-help-desk.fields.company'))
                 ->placeholder(__('filament-help-desk::filament-help-desk.placeholders.na'));
         }
@@ -209,11 +209,11 @@ trait HasTicketTable
     }
 
     /**
-     * The companies that have opened a ticket, keyed and labelled by the raw
-     * `company_id` value — the package carries no separate label for it, since
-     * it has no notion of what a "company" is (see `Ticket::scopeForCompany()`).
-     * Empty on a single-company install, which is what hides the column and
-     * the filter there.
+     * The companies that have opened a ticket, keyed by `company_id` and
+     * labelled with the company name the latest ticket carries — the id itself
+     * for tickets created before laravel-help-desk 1.13. Empty on a
+     * single-company install, which is what hides the column and the filter
+     * there.
      *
      * @return array<string, string>
      */
@@ -224,7 +224,16 @@ trait HasTicketTable
             ->distinct()
             ->orderBy('company_id')
             ->pluck('company_id')
-            ->mapWithKeys(fn ($id): array => [(string) $id => (string) $id])
+            ->mapWithKeys(function ($id): array {
+                $id = (string) $id;
+
+                $ticket = Ticket::query()
+                    ->where('company_id', $id)
+                    ->latest('id')
+                    ->first(['id', 'company_id', 'metadata']);
+
+                return [$id => $ticket->company_name ?? $id];
+            })
             ->all();
     }
 }
