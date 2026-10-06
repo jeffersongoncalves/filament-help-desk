@@ -1,6 +1,7 @@
 <?php
 
 use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\TicketResource\Pages\ListTickets;
+use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\TicketResource\Pages\ViewTicket;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\DepartmentFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\TicketFactory;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Factories\UserFactory;
@@ -39,6 +40,35 @@ it('filters the ticket list by company', function () {
         ->assertCanNotSeeTableRecords([$globex]);
 });
 
+it('labels the company by the name the ticket carries, falling back to the id', function () {
+    $named = TicketFactory::new()->create([
+        'department_id' => $this->department->id,
+        'user_type' => User::class,
+        'user_id' => UserFactory::new()->create()->id,
+        'company_id' => '4',
+        'metadata' => ['company' => ['name' => 'Uberaba Imóveis']],
+    ]);
+
+    // Created before laravel-help-desk 1.13: no name was copied.
+    TicketFactory::new()->create([
+        'department_id' => $this->department->id,
+        'user_type' => User::class,
+        'user_id' => UserFactory::new()->create()->id,
+        'company_id' => '7',
+    ]);
+
+    $filter = collect(ListTickets::getResource()::getTicketTableFilters(showCompany: true))
+        ->first(fn ($filter): bool => $filter->getName() === 'company_id');
+
+    expect($filter->getOptions())->toBe(['4' => 'Uberaba Imóveis', '7' => '7']);
+
+    livewire(ListTickets::class)
+        ->assertTableColumnStateSet('company_name', 'Uberaba Imóveis', $named);
+
+    livewire(ViewTicket::class, ['record' => $named->uuid])
+        ->assertSee('Uberaba Imóveis');
+});
+
 it('hides the company column and filter on a single-company install', function () {
     TicketFactory::new()->create([
         'department_id' => $this->department->id,
@@ -53,6 +83,6 @@ it('hides the company column and filter on a single-company install', function (
     $filters = collect(ListTickets::getResource()::getTicketTableFilters(showCompany: true))
         ->map(fn ($filter): string => $filter->getName());
 
-    expect($columns)->not->toContain('company_id')
+    expect($columns)->not->toContain('company_name')
         ->and($filters)->not->toContain('company_id');
 });
