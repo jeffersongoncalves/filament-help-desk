@@ -20,11 +20,14 @@ use JeffersonGoncalves\FilamentHelpDesk\Tests\Panel\AdminPanelProvider;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Panel\OperatorPanelProvider;
 use JeffersonGoncalves\FilamentHelpDesk\Tests\Panel\UserPanelProvider;
 use JeffersonGoncalves\HelpDesk\HelpDeskServiceProvider;
+use JeffersonGoncalves\PestPluginDatabaseMigrations\LoadsPackageMigrations;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 class TestCase extends Orchestra
 {
+    use LoadsPackageMigrations;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -64,6 +67,7 @@ class TestCase extends Orchestra
     protected function defineDatabaseMigrations(): void
     {
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadPackageMigrations(HelpDeskServiceProvider::class);
     }
 
     protected function getEnvironmentSetUp($app): void
