@@ -90,6 +90,7 @@ return [
         'setting_value' => 'Valor',
         'operator' => 'Operador',
         'other_open_tickets' => 'Outros Chamados Abertos',
+        'email_notifications' => 'Notificações por E-mail',
     ],
 
     /*
@@ -154,6 +155,8 @@ return [
         'delete' => 'Excluir',
         'restore' => 'Restaurar',
         'test_connection' => 'Testar Conexão',
+        'enable_email_notifications' => 'Ativar E-mails',
+        'disable_email_notifications' => 'Desativar E-mails',
     ],
 
     /*
