@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\DepartmentResource\RelationManagers;
 
+use Filament\Actions\Action;
 use Filament\Actions\AttachAction;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -46,6 +49,11 @@ class OperatorsRelationManager extends RelationManager
                         'manager' => 'success',
                         default => 'info',
                     }),
+
+                IconColumn::make('email_notifications')
+                    ->label(__('filament-help-desk::filament-help-desk.fields.email_notifications'))
+                    ->getStateUsing(fn ($record): bool => (bool) ($record->pivot->email_notifications ?? true))
+                    ->boolean(),
             ])
             ->headerActions([
                 AttachAction::make()
@@ -73,9 +81,27 @@ class OperatorsRelationManager extends RelationManager
                             ])
                             ->default('operator')
                             ->required(),
+
+                        Toggle::make('email_notifications')
+                            ->label(__('filament-help-desk::filament-help-desk.fields.email_notifications'))
+                            ->default(true),
                     ]),
             ])
             ->recordActions([
+                // Updates the pivot row directly: the row's record is the
+                // operator model, which has no such column of its own.
+                Action::make('toggleEmailNotifications')
+                    ->label(fn ($record): string => ($record->pivot->email_notifications ?? true)
+                        ? __('filament-help-desk::filament-help-desk.actions.disable_email_notifications')
+                        : __('filament-help-desk::filament-help-desk.actions.enable_email_notifications'))
+                    ->icon(fn ($record): string => ($record->pivot->email_notifications ?? true) ? 'heroicon-o-bell-slash' : 'heroicon-o-bell')
+                    ->color('gray')
+                    ->action(function ($record): void {
+                        $record->pivot->update([
+                            'email_notifications' => ! ($record->pivot->email_notifications ?? true),
+                        ]);
+                    }),
+
                 DetachAction::make()
                     ->requiresConfirmation(),
             ])
