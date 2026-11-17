@@ -153,6 +153,8 @@ class AdminPanelProvider extends PanelProvider
 
 > **Tip:** You can combine plugins in a single panel. For example, register both `FilamentHelpDeskAdminPlugin` and `FilamentHelpDeskOperatorPlugin` in your admin panel.
 
+Notification emails link to the ticket's view page: the requester lands on the User panel, everyone else on the Operator panel (or the Admin panel when there is no Operator panel). To send them elsewhere, register your own `Ticket::resolveNotificationUrlUsing(...)` in your `AppServiceProvider` — it overrides the plugin's.
+
 ### 3. Register a morph alias when sharing one Help Desk database
 
 Tickets store the requester and the assigned operator as polymorphic pairs (`user_type`/`user_id`, `assigned_to_type`/`assigned_to_id`). The plugin resolves the type side through `getMorphClass()`, so it honours any morph map you enforce.
