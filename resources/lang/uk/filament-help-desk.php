@@ -34,6 +34,7 @@ return [
         ],
     ],
     'fields' => [
+        'email_notifications' => 'Сповіщення електронною поштою',
         'reference_number' => 'Номер',
         'title' => 'Заголовок',
         'description' => 'Опис',
@@ -110,6 +111,8 @@ return [
         'delete' => 'Видалити',
         'restore' => 'Відновити',
         'test_connection' => 'Перевірити підключення',
+        'enable_email_notifications' => 'Увімкнути листи',
+        'disable_email_notifications' => 'Вимкнути листи',
     ],
     'tabs' => [
         'all' => 'Усі',

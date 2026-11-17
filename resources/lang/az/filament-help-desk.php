@@ -34,6 +34,7 @@ return [
         ],
     ],
     'fields' => [
+        'email_notifications' => 'E-poçt bildirişləri',
         'reference_number' => 'İstinad',
         'title' => 'Başlıq',
         'description' => 'Təsvir',
@@ -110,6 +111,8 @@ return [
         'delete' => 'Sil',
         'restore' => 'Bərpa et',
         'test_connection' => 'Bağlantını yoxla',
+        'enable_email_notifications' => 'E-poçtları aktiv et',
+        'disable_email_notifications' => 'E-poçtları deaktiv et',
     ],
     'tabs' => [
         'all' => 'Hamısı',

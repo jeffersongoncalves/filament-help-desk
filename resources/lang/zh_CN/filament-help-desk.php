@@ -34,6 +34,7 @@ return [
         ],
     ],
     'fields' => [
+        'email_notifications' => '邮件通知',
         'reference_number' => '编号',
         'title' => '标题',
         'description' => '描述',
@@ -110,6 +111,8 @@ return [
         'delete' => '删除',
         'restore' => '恢复',
         'test_connection' => '测试连接',
+        'enable_email_notifications' => '启用邮件',
+        'disable_email_notifications' => '停用邮件',
     ],
     'tabs' => [
         'all' => '全部',
