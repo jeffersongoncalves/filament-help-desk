@@ -89,6 +89,7 @@ return [
         'setting_key' => 'Chave',
         'setting_value' => 'Valor',
         'operator' => 'Operador',
+        'email_notifications' => 'Notificações por E-mail',
     ],
 
     /*
@@ -152,6 +153,8 @@ return [
         'delete' => 'Excluir',
         'restore' => 'Restaurar',
         'test_connection' => 'Testar Conexão',
+        'enable_email_notifications' => 'Ativar E-mails',
+        'disable_email_notifications' => 'Desativar E-mails',
     ],
 
     /*

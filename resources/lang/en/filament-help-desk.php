@@ -89,6 +89,7 @@ return [
         'setting_key' => 'Key',
         'setting_value' => 'Value',
         'operator' => 'Operator',
+        'email_notifications' => 'Email Notifications',
     ],
 
     /*
@@ -152,6 +153,8 @@ return [
         'delete' => 'Delete',
         'restore' => 'Restore',
         'test_connection' => 'Test Connection',
+        'enable_email_notifications' => 'Enable Emails',
+        'disable_email_notifications' => 'Disable Emails',
     ],
 
     /*

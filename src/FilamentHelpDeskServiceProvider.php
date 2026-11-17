@@ -41,7 +41,7 @@ class FilamentHelpDeskServiceProvider extends PackageServiceProvider
                 'help_desk_department_operator',
                 'department_id',
                 null,
-            )->withPivot('role')->withTimestamps();
+            )->withPivot('role', 'email_notifications')->withTimestamps();
         });
     }
 }
