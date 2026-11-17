@@ -72,6 +72,7 @@ return [
         'setting_value' => 'Değer',
         'operator' => 'Operatör',
         'other_open_tickets' => 'Diğer açık talepler',
+        'email_notifications' => 'E-posta bildirimleri',
     ],
     'statuses' => [
         'open' => 'Açık',
@@ -112,6 +113,8 @@ return [
         'delete' => 'Sil',
         'restore' => 'Geri yükle',
         'test_connection' => 'Bağlantıyı test et',
+        'enable_email_notifications' => 'E-postaları etkinleştir',
+        'disable_email_notifications' => 'E-postaları devre dışı bırak',
     ],
     'tabs' => [
         'all' => 'Tümü',

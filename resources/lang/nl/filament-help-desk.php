@@ -72,6 +72,7 @@ return [
         'setting_value' => 'Waarde',
         'operator' => 'Medewerker',
         'other_open_tickets' => 'Andere open tickets',
+        'email_notifications' => 'E-mailmeldingen',
     ],
     'statuses' => [
         'open' => 'Open',
@@ -112,6 +113,8 @@ return [
         'delete' => 'Verwijderen',
         'restore' => 'Herstellen',
         'test_connection' => 'Verbinding testen',
+        'enable_email_notifications' => 'E-mails inschakelen',
+        'disable_email_notifications' => 'E-mails uitschakelen',
     ],
     'tabs' => [
         'all' => 'Alle',

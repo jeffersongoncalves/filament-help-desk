@@ -72,6 +72,7 @@ return [
         'setting_value' => 'Valor',
         'operator' => 'Operador',
         'other_open_tickets' => 'Otros tickets abiertos',
+        'email_notifications' => 'Notificaciones por correo',
     ],
     'statuses' => [
         'open' => 'Abierto',
@@ -112,6 +113,8 @@ return [
         'delete' => 'Eliminar',
         'restore' => 'Restaurar',
         'test_connection' => 'Probar conexión',
+        'enable_email_notifications' => 'Activar correos',
+        'disable_email_notifications' => 'Desactivar correos',
     ],
     'tabs' => [
         'all' => 'Todos',

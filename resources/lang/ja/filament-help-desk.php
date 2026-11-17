@@ -72,6 +72,7 @@ return [
         'setting_value' => '値',
         'operator' => '担当者',
         'other_open_tickets' => 'その他の未解決チケット',
+        'email_notifications' => 'メール通知',
     ],
     'statuses' => [
         'open' => 'オープン',
@@ -112,6 +113,8 @@ return [
         'delete' => '削除',
         'restore' => '復元',
         'test_connection' => '接続をテスト',
+        'enable_email_notifications' => 'メールを有効化',
+        'disable_email_notifications' => 'メールを無効化',
     ],
     'tabs' => [
         'all' => 'すべて',

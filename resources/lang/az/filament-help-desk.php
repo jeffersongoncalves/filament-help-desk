@@ -72,6 +72,7 @@ return [
         'setting_value' => 'Dəyər',
         'operator' => 'Operator',
         'other_open_tickets' => 'Digər açıq biletlər',
+        'email_notifications' => 'E-poçt bildirişləri',
     ],
     'statuses' => [
         'open' => 'Açıq',
@@ -112,6 +113,8 @@ return [
         'delete' => 'Sil',
         'restore' => 'Bərpa et',
         'test_connection' => 'Bağlantını yoxla',
+        'enable_email_notifications' => 'E-poçtları aktiv et',
+        'disable_email_notifications' => 'E-poçtları deaktiv et',
     ],
     'tabs' => [
         'all' => 'Hamısı',
