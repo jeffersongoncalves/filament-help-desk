@@ -34,6 +34,7 @@ return [
         ],
     ],
     'fields' => [
+        'email_notifications' => 'اعلان‌های ایمیلی',
         'reference_number' => 'شماره مرجع',
         'title' => 'عنوان',
         'description' => 'توضیحات',
@@ -110,6 +111,8 @@ return [
         'delete' => 'حذف',
         'restore' => 'بازیابی',
         'test_connection' => 'آزمایش اتصال',
+        'enable_email_notifications' => 'فعال‌سازی ایمیل‌ها',
+        'disable_email_notifications' => 'غیرفعال‌سازی ایمیل‌ها',
     ],
     'tabs' => [
         'all' => 'همه',

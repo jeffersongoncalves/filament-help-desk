@@ -34,6 +34,7 @@ return [
         ],
     ],
     'fields' => [
+        'email_notifications' => 'E-posta bildirimleri',
         'reference_number' => 'Referans',
         'title' => 'Başlık',
         'description' => 'Açıklama',
@@ -110,6 +111,8 @@ return [
         'delete' => 'Sil',
         'restore' => 'Geri yükle',
         'test_connection' => 'Bağlantıyı test et',
+        'enable_email_notifications' => 'E-postaları etkinleştir',
+        'disable_email_notifications' => 'E-postaları devre dışı bırak',
     ],
     'tabs' => [
         'all' => 'Tümü',
