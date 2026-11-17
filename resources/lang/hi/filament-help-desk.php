@@ -34,6 +34,7 @@ return [
         ],
     ],
     'fields' => [
+        'email_notifications' => 'ईमेल सूचनाएँ',
         'reference_number' => 'संदर्भ',
         'title' => 'शीर्षक',
         'description' => 'विवरण',
@@ -110,6 +111,8 @@ return [
         'delete' => 'हटाएँ',
         'restore' => 'पुनर्स्थापित करें',
         'test_connection' => 'कनेक्शन जाँचें',
+        'enable_email_notifications' => 'ईमेल चालू करें',
+        'disable_email_notifications' => 'ईमेल बंद करें',
     ],
     'tabs' => [
         'all' => 'सभी',

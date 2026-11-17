@@ -34,6 +34,7 @@ return [
         ],
     ],
     'fields' => [
+        'email_notifications' => 'E-mailmeldingen',
         'reference_number' => 'Referentie',
         'title' => 'Titel',
         'description' => 'Beschrijving',
@@ -110,6 +111,8 @@ return [
         'delete' => 'Verwijderen',
         'restore' => 'Herstellen',
         'test_connection' => 'Verbinding testen',
+        'enable_email_notifications' => 'E-mails inschakelen',
+        'disable_email_notifications' => 'E-mails uitschakelen',
     ],
     'tabs' => [
         'all' => 'Alle',

@@ -34,6 +34,7 @@ return [
         ],
     ],
     'fields' => [
+        'email_notifications' => 'Elektron pochta bildirishnomalari',
         'reference_number' => 'Raqam',
         'title' => 'Sarlavha',
         'description' => 'Tavsif',
@@ -110,6 +111,8 @@ return [
         'delete' => 'Oʻchirish',
         'restore' => 'Tiklash',
         'test_connection' => 'Ulanishni tekshirish',
+        'enable_email_notifications' => 'Xatlarni yoqish',
+        'disable_email_notifications' => 'Xatlarni o\'chirish',
     ],
     'tabs' => [
         'all' => 'Barchasi',

@@ -34,6 +34,7 @@ return [
         ],
     ],
     'fields' => [
+        'email_notifications' => 'Powiadomienia e-mail',
         'reference_number' => 'Numer referencyjny',
         'title' => 'Tytuł',
         'description' => 'Opis',
@@ -110,6 +111,8 @@ return [
         'delete' => 'Usuń',
         'restore' => 'Przywróć',
         'test_connection' => 'Testuj połączenie',
+        'enable_email_notifications' => 'Włącz e-maile',
+        'disable_email_notifications' => 'Wyłącz e-maile',
     ],
     'tabs' => [
         'all' => 'Wszystkie',

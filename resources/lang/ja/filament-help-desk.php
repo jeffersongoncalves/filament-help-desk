@@ -34,6 +34,7 @@ return [
         ],
     ],
     'fields' => [
+        'email_notifications' => 'メール通知',
         'reference_number' => '参照番号',
         'title' => 'タイトル',
         'description' => '説明',
@@ -110,6 +111,8 @@ return [
         'delete' => '削除',
         'restore' => '復元',
         'test_connection' => '接続をテスト',
+        'enable_email_notifications' => 'メールを有効化',
+        'disable_email_notifications' => 'メールを無効化',
     ],
     'tabs' => [
         'all' => 'すべて',
