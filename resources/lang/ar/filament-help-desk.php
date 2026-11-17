@@ -34,6 +34,7 @@ return [
         ],
     ],
     'fields' => [
+        'email_notifications' => 'إشعارات البريد الإلكتروني',
         'reference_number' => 'المرجع',
         'title' => 'العنوان',
         'description' => 'الوصف',
@@ -110,6 +111,8 @@ return [
         'delete' => 'حذف',
         'restore' => 'استعادة',
         'test_connection' => 'اختبار الاتصال',
+        'enable_email_notifications' => 'تفعيل رسائل البريد',
+        'disable_email_notifications' => 'تعطيل رسائل البريد',
     ],
     'tabs' => [
         'all' => 'الكل',
