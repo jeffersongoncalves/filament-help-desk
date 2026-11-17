@@ -109,11 +109,27 @@ class FilamentHelpDeskServiceProvider extends PackageServiceProvider
     {
         Department::resolveRelationUsing('operators', function (Department $department) {
             $operatorModel = config('help-desk.models.operator');
+            $table = 'help_desk_department_operator';
+
+            // The query runs on the operator's connection, but the pivot lives
+            // on the help desk one: point at the help desk database by name.
+            // ponytail: MySQL/MariaDB with both databases on one server, and no table
+            // prefix on the operator connection (Laravel prefixes `db.table` joins and
+            // `db.table.column` references differently, so they would diverge).
+            $helpDeskConnection = $department->getConnection();
+            $operator = new $operatorModel;
+            // A related model without its own connection inherits the parent's (newRelatedInstance).
+            $operatorConnection = $operator->getConnectionName() === null ? $helpDeskConnection : $operator->getConnection();
+
+            if ($helpDeskConnection->getDatabaseName() !== $operatorConnection->getDatabaseName()
+                && $operatorConnection->getTablePrefix() === '') {
+                $table = $helpDeskConnection->getDatabaseName().'.'.$helpDeskConnection->getTablePrefix().$table;
+            }
 
             return $department->morphedByMany(
                 $operatorModel,
                 'operator',
-                'help_desk_department_operator',
+                $table,
                 'department_id',
                 null,
             )->withPivot('role', 'email_notifications')->withTimestamps();
