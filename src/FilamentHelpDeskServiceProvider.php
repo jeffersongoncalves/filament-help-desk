@@ -2,12 +2,18 @@
 
 namespace JeffersonGoncalves\FilamentHelpDesk;
 
+use Filament\Facades\Filament;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
+use JeffersonGoncalves\FilamentHelpDesk\Admin\Resources\TicketResource as AdminTicketResource;
 use JeffersonGoncalves\FilamentHelpDesk\Contracts\KnowledgeBaseProvider;
+use JeffersonGoncalves\FilamentHelpDesk\Operator\Resources\TicketResource as OperatorTicketResource;
+use JeffersonGoncalves\FilamentHelpDesk\User\Resources\TicketResource as UserTicketResource;
 use JeffersonGoncalves\HelpDesk\Models\Department;
+use JeffersonGoncalves\HelpDesk\Models\Ticket;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Throwable;
 
 class FilamentHelpDeskServiceProvider extends PackageServiceProvider
 {
@@ -30,6 +36,42 @@ class FilamentHelpDeskServiceProvider extends PackageServiceProvider
 
         $this->registerDepartmentOperatorsRelationship();
         $this->bindKnowledgeBaseProvider();
+        $this->registerNotificationUrls();
+    }
+
+    /**
+     * Point help desk notification links at the ticket's view page: operators
+     * on the operator panel (or the admin panel without one), requesters on the
+     * user panel. An application registering its own resolver in its
+     * AppServiceProvider overrides this one, since app providers boot later.
+     */
+    protected function registerNotificationUrls(): void
+    {
+        Ticket::resolveNotificationUrlUsing(function (Ticket $ticket, object $notifiable, bool $forOperator): string {
+            $targets = $forOperator
+                ? [
+                    'filament-help-desk-operator' => config('filament-help-desk.operator.resource', OperatorTicketResource::class),
+                    'filament-help-desk-admin' => config('filament-help-desk.admin.resources.ticket', AdminTicketResource::class),
+                ]
+                : ['filament-help-desk-user' => config('filament-help-desk.user.resource', UserTicketResource::class)];
+
+            foreach ($targets as $pluginId => $resource) {
+                foreach (Filament::getPanels() as $panel) {
+                    if (! $panel->hasPlugin($pluginId)) {
+                        continue;
+                    }
+
+                    try {
+                        return $resource::getUrl('view', ['record' => $ticket], panel: $panel->getId());
+                    } catch (Throwable) {
+                        // ponytail: a tenant-scoped panel needs a tenant to build the URL; fall back to home rather than fail the email.
+                        break;
+                    }
+                }
+            }
+
+            return url('/');
+        });
     }
 
     /**
