@@ -72,6 +72,7 @@ return [
         'setting_value' => '值',
         'operator' => '客服人员',
         'other_open_tickets' => '其他未关闭工单',
+        'email_notifications' => '邮件通知',
     ],
     'statuses' => [
         'open' => '待处理',
@@ -112,6 +113,8 @@ return [
         'delete' => '删除',
         'restore' => '恢复',
         'test_connection' => '测试连接',
+        'enable_email_notifications' => '启用邮件',
+        'disable_email_notifications' => '停用邮件',
     ],
     'tabs' => [
         'all' => '全部',

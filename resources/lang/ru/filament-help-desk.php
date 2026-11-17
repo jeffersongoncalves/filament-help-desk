@@ -72,6 +72,7 @@ return [
         'setting_value' => 'Значение',
         'operator' => 'Оператор',
         'other_open_tickets' => 'Другие открытые заявки',
+        'email_notifications' => 'Уведомления по e-mail',
     ],
     'statuses' => [
         'open' => 'Открыта',
@@ -112,6 +113,8 @@ return [
         'delete' => 'Удалить',
         'restore' => 'Восстановить',
         'test_connection' => 'Проверить подключение',
+        'enable_email_notifications' => 'Включить письма',
+        'disable_email_notifications' => 'Отключить письма',
     ],
     'tabs' => [
         'all' => 'Все',

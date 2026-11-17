@@ -72,6 +72,7 @@ return [
         'setting_value' => 'مقدار',
         'operator' => 'اپراتور',
         'other_open_tickets' => 'سایر تیکت‌های باز',
+        'email_notifications' => 'اعلان‌های ایمیلی',
     ],
     'statuses' => [
         'open' => 'باز',
@@ -112,6 +113,8 @@ return [
         'delete' => 'حذف',
         'restore' => 'بازیابی',
         'test_connection' => 'آزمایش اتصال',
+        'enable_email_notifications' => 'فعال‌سازی ایمیل‌ها',
+        'disable_email_notifications' => 'غیرفعال‌سازی ایمیل‌ها',
     ],
     'tabs' => [
         'all' => 'همه',

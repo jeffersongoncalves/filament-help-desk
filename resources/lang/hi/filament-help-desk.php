@@ -72,6 +72,7 @@ return [
         'setting_value' => 'मान',
         'operator' => 'ऑपरेटर',
         'other_open_tickets' => 'अन्य खुले टिकट',
+        'email_notifications' => 'ईमेल सूचनाएँ',
     ],
     'statuses' => [
         'open' => 'खुला',
@@ -112,6 +113,8 @@ return [
         'delete' => 'हटाएँ',
         'restore' => 'पुनर्स्थापित करें',
         'test_connection' => 'कनेक्शन जाँचें',
+        'enable_email_notifications' => 'ईमेल चालू करें',
+        'disable_email_notifications' => 'ईमेल बंद करें',
     ],
     'tabs' => [
         'all' => 'सभी',

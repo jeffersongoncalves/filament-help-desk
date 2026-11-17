@@ -72,6 +72,7 @@ return [
         'setting_value' => 'القيمة',
         'operator' => 'الموظف',
         'other_open_tickets' => 'تذاكر مفتوحة أخرى',
+        'email_notifications' => 'إشعارات البريد الإلكتروني',
     ],
     'statuses' => [
         'open' => 'مفتوحة',
@@ -112,6 +113,8 @@ return [
         'delete' => 'حذف',
         'restore' => 'استعادة',
         'test_connection' => 'اختبار الاتصال',
+        'enable_email_notifications' => 'تفعيل رسائل البريد',
+        'disable_email_notifications' => 'تعطيل رسائل البريد',
     ],
     'tabs' => [
         'all' => 'الكل',

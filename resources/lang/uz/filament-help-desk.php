@@ -72,6 +72,7 @@ return [
         'setting_value' => 'Qiymat',
         'operator' => 'Operator',
         'other_open_tickets' => 'Boshqa ochiq murojaatlar',
+        'email_notifications' => 'Elektron pochta bildirishnomalari',
     ],
     'statuses' => [
         'open' => 'Ochiq',
@@ -112,6 +113,8 @@ return [
         'delete' => 'Oʻchirish',
         'restore' => 'Tiklash',
         'test_connection' => 'Ulanishni tekshirish',
+        'enable_email_notifications' => 'Xatlarni yoqish',
+        'disable_email_notifications' => 'Xatlarni o\'chirish',
     ],
     'tabs' => [
         'all' => 'Barchasi',
