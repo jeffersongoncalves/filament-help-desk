@@ -35,7 +35,7 @@
         </div>
 
         <div class="fi-hd-comment-content prose prose-sm dark:prose-invert">
-            {!! $comment->body !!}
+            {!! str($comment->body)->sanitizeHtml() !!}
         </div>
 
         @if ($comment->attachments->isNotEmpty())
