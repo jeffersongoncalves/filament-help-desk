@@ -5,6 +5,12 @@ All notable changes to `filament-help-desk` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.11.0 - 2026-11-26
+
+### Security
+
+- Ticket comment bodies are now sanitized before rendering in the admin, operator and user panels (stored XSS, GHSA-66m7-g6f8-83xh). #184
+
 ## 2.10.1 - 2026-11-17
 
 Fix: the department Operators tab works when HELPDESK_DB_CONNECTION points to a separate database. The operator pivot is qualified with the help desk database (and its table prefix) when the operator model runs on another database. Requires both databases on the same MySQL/MariaDB server. (#175)
@@ -102,6 +108,7 @@ HELPDESK_API_SECRET=a-long-random-string
 
 
 
+
 ```
 - **The list** is fed by `forActor()`, and paged, filtered, searched and sorted by the central application. Not by narrowing the page the satellite happens to hold — a list that filters 25 rows out of 300 looks filtered and is wrong, with nothing on screen saying so.
 - **A ticket** is resolved by uuid through the repository. One belonging to another user or another application comes back as a 404 without saying which.
@@ -148,6 +155,7 @@ composer update jeffersongoncalves/filament-help-desk
 
 
 
+
 ```
 No migration. Applications already on `driver=database` need no configuration change; the only visible difference is that attachment links now point at the package route.
 
@@ -167,6 +175,7 @@ No panel code changed. Every history entry and watcher the panels create goes th
 composer update jeffersongoncalves/laravel-help-desk
 php artisan vendor:publish --tag=help-desk-migrations
 php artisan migrate
+
 
 
 
@@ -198,6 +207,7 @@ They also move to `resources/boost/guidelines/core.blade.php`, the layout every 
 
 ```bash
 composer update jeffersongoncalves/filament-help-desk
+
 
 
 
@@ -258,6 +268,7 @@ Class "satellite-app-user" not found
 
 
 
+
 ```
 The ticket list, the ticket detail page and the comment timeline all went down together. Reads now go through `requester_name` and `author_name`, which return the live model where its class exists here and the identity snapshot in `metadata` where it does not. The comment timeline also stopped eager loading the author, since eager loading a `morphTo` instantiates every stored type up front.
 
@@ -276,6 +287,7 @@ Set a key and a label per application:
 ```dotenv
 HELPDESK_APP_KEY=app-a
 HELPDESK_APP_NAME="Application A"
+
 
 
 
@@ -307,6 +319,7 @@ CI now pins **PHP 8.4 and Laravel 13** across every branch, and PHPStan runs on 
 
 ```bash
 composer update jeffersongoncalves/filament-help-desk
+
 
 
 
